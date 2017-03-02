@@ -7,9 +7,26 @@ def test1():
 
     try:
 
-        print('   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
+        print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |   Temp (C)')
 
-        for i in range(60):
+        for i in range(10):
+
+            (ax,ay,az) = mpu9250.read_accel_data()
+            (gx,gy,gz) = mpu9250.read_gyro_data()
+            temp = mpu9250.read_imu_temp()
+
+            print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
+                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
+                                                               gx, gy, gz, temp),
+                  end='')
+
+            time.sleep(1)
+
+        mpu9250.initialize_imu(enable_magnetometer = True)
+            
+        print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
+
+        for i in range(10):
 
             (ax,ay,az) = mpu9250.read_accel_data()
             (gx,gy,gz) = mpu9250.read_gyro_data()
