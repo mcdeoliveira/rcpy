@@ -8,33 +8,60 @@ static char module_docstring[] =
 
 static PyObject *mpu9250Error;
 
-static PyObject *mpu9250_read_accel_data(PyObject *self, PyObject *args);
-static PyObject *mpu9250_read_gyro_data(PyObject *self, PyObject *args);
-static PyObject *mpu9250_read_mag_data(PyObject *self, PyObject *args);
-static PyObject *mpu9250_read_imu_temp(PyObject *self, PyObject *args);
-static PyObject *mpu9250_power_off_imu(PyObject *self, PyObject *args);
+// initialization
+static PyObject *mpu9250_initialize_imu(PyObject *self, PyObject *args, PyObject *kwargs);
+static PyObject *mpu9250_power_off_imu(PyObject *self);
+
+// one-shot sampling mode functions
+static PyObject *mpu9250_read_accel_data(PyObject *self);
+static PyObject *mpu9250_read_gyro_data(PyObject *self);
+static PyObject *mpu9250_read_mag_data(PyObject *self);
+static PyObject *mpu9250_read_imu_temp(PyObject *self);
+
+/* // interrupt-driven sampling mode functions */
+/* static PyObject *mpu9250_initialize_imu_dmp(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_set_imu_interrupt_func(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_stop_imu_interrupt_func(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_was_last_imu_read_successful(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_nanos_since_last_imu_interrupt(PyObject *self, PyObject *args); */
+
+/* // other */
+/* static PyObject *mpu9250_calibrate_gyro_routine(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_calibrate_mag_routine(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_is_gyro_calibrated(PyObject *self, PyObject *args); */
+/* static PyObject *mpu9250_is_mag_calibrated(PyObject *self, PyObject *args); */
 
 static PyMethodDef module_methods[] = {
-  {"read_accel_data",
-   mpu9250_read_accel_data,
-   METH_VARARGS,
-   "read accelerometer"},
-  {"read_gyro_data",
-   mpu9250_read_gyro_data,
-   METH_VARARGS,
-   "read gyroscope"},
-  {"read_mag_data",
-   mpu9250_read_mag_data,
-   METH_VARARGS,
-   "read magnetometer"},
-  {"read_imu_temp",
-   mpu9250_read_imu_temp,
-   METH_VARARGS,
-   "read temperature"},
+  {"initialize_imu",
+   (PyCFunction)mpu9250_initialize_imu,
+   METH_VARARGS | METH_KEYWORDS,
+   "initialize imu"}
+  ,
   {"power_off_imu",
-   mpu9250_power_off_imu,
-   METH_VARARGS,
-   "power off imu"},
+   (PyCFunction)mpu9250_power_off_imu,
+   METH_NOARGS,
+   "power off imu"}
+  ,
+  {"read_accel_data",
+   (PyCFunction)mpu9250_read_accel_data,
+   METH_NOARGS,
+   "read accelerometer"}
+  ,
+  {"read_gyro_data",
+   (PyCFunction)mpu9250_read_gyro_data,
+   METH_NOARGS,
+   "read gyroscope"}
+  ,
+  {"read_mag_data",
+   (PyCFunction)mpu9250_read_mag_data,
+   METH_NOARGS,
+   "read magnetometer"}
+  ,
+  {"read_imu_temp",
+   (PyCFunction)mpu9250_read_imu_temp,
+   METH_NOARGS,
+   "read temperature"}
+  ,
   {NULL, NULL, 0, NULL}
 };
 
@@ -87,8 +114,100 @@ PyMODINIT_FUNC PyInit_mpu9250(void)
   return m;
 }
 
+
 static
-PyObject *mpu9250_read_accel_data(PyObject *self, PyObject *args)
+PyObject *mpu9250_initialize_imu(PyObject *self,
+				 PyObject *args,
+				 PyObject *kwargs)
+{
+
+  PyObject *accel_fsr;
+  PyObject *gyro_fsr;
+  PyObject *accel_dlpf;
+  PyObject *gyro_dlpf;
+  PyObject *enable_magnetometer;
+  PyObject *imu_orientation;
+  PyObject *compass_time_constant;
+  PyObject *dmp_interrupt_priority;
+  PyObject *dmp_sample_rate;
+
+  static char *kwlist[] = {
+    "accel_fsr",
+    "gyro_fsr",
+    "accel_dlpf",
+    "gyro_dlpf",
+    "enable_magnetometer",
+    "imu_orientation",
+    "compass_time_constant",
+    "dmp_interrupt_priority",
+    "dmp_sample_rate",
+    NULL
+  };
+  
+  PyObject *ret;
+
+  printf("*> Initialize IMU...\n");
+
+  accel_fsr = A_FSR_2G; /* Default value. */
+  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "i|i|i|", kwlist,
+				    &accel_fsr,
+				    &gyro_fsr,
+				    &accel_dlpf,
+				    &gyro_dlpf,
+				    &enable_magnetometer,
+				    &imu_orientation,
+				    &compass_time_constant,
+				    &dmp_interrupt_priority,
+				    &dmp_sample_rate) ) {
+    goto except;
+  }
+      
+  /* power off imu */
+  if (rc_power_off_imu()) {
+    PyErr_SetString(mpu9250Error, "Failed to power off IMU");
+    return NULL;
+  }
+  
+  flag_initialized = 0;
+
+  goto finally;
+  
+ except:
+  
+  PyErr_SetString(mpu9250Error, "Failed to power off IMU");
+
+ finally:
+
+  /* Build the output tuple */
+  ret = Py_BuildValue("");
+
+  return ret;
+}
+
+
+static
+PyObject *mpu9250_power_off_imu(PyObject *self)
+{
+
+  printf("*> Powering off IMU...\n");
+    
+  /* power off imu */
+  if (rc_power_off_imu()) {
+    PyErr_SetString(mpu9250Error, "Failed to power off IMU");
+    return NULL;
+  }
+  
+  flag_initialized = 0;
+
+  /* Build the output tuple */
+  PyObject *ret = 
+    Py_BuildValue("");
+
+  return ret;
+}
+
+static
+PyObject *mpu9250_read_accel_data(PyObject *self)
 {
 
   /* initialize */
@@ -112,7 +231,7 @@ PyObject *mpu9250_read_accel_data(PyObject *self, PyObject *args)
 }
 
 static
-PyObject *mpu9250_read_gyro_data(PyObject *self, PyObject *args)
+PyObject *mpu9250_read_gyro_data(PyObject *self)
 {
 
   /* initialize */
@@ -136,7 +255,7 @@ PyObject *mpu9250_read_gyro_data(PyObject *self, PyObject *args)
 }
 
 static
-PyObject *mpu9250_read_mag_data(PyObject *self, PyObject *args)
+PyObject *mpu9250_read_mag_data(PyObject *self)
 {
 
   /* initialize */
@@ -160,7 +279,7 @@ PyObject *mpu9250_read_mag_data(PyObject *self, PyObject *args)
 }
 
 static
-PyObject *mpu9250_read_imu_temp(PyObject *self, PyObject *args)
+PyObject *mpu9250_read_imu_temp(PyObject *self)
 {
 
   /* initialize */
@@ -176,27 +295,6 @@ PyObject *mpu9250_read_imu_temp(PyObject *self, PyObject *args)
   /* Build the output tuple */
   PyObject *ret = 
     Py_BuildValue("f", data.temp);
-
-  return ret;
-}
-
-static
-PyObject *mpu9250_power_off_imu(PyObject *self, PyObject *args)
-{
-
-  printf("*> Powering off IMU...\n");
-    
-  /* power off imu */
-  if (rc_power_off_imu()) {
-    PyErr_SetString(mpu9250Error, "Failed to power off IMU");
-    return NULL;
-  }
-  
-  flag_initialized = 0;
-
-  /* Build the output tuple */
-  PyObject *ret = 
-    Py_BuildValue("");
 
   return ret;
 }
