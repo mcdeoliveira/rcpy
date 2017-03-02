@@ -79,6 +79,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
+.venv/
 venv/
 ENV/
 
@@ -87,3 +88,17 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# OSC .DS_Store
+.DS_Store
+
+# Local settings
+aed/settings.py
+
+# Emacs backup
+*~
+
+# Object files
+*.o
+
+python/source/mpu9150/test
