@@ -19,8 +19,7 @@ static PyObject *mpu9250_read_mag_data(PyObject *self);
 static PyObject *mpu9250_read_imu_temp(PyObject *self);
 
 /* // interrupt-driven sampling mode functions */
-/* static PyObject *mpu9250_initialize_imu_dmp(PyObject *self, PyObject *args); */
-/* static PyObject *mpu9250_set_imu_interrupt_func(PyObject *self, PyObject *args); */
+static PyObject *mpu9250_set_interrupt(PyObject *self, PyObject *args);
 /* static PyObject *mpu9250_stop_imu_interrupt_func(PyObject *self, PyObject *args); */
 /* static PyObject *mpu9250_was_last_imu_read_successful(PyObject *self, PyObject *args); */
 /* static PyObject *mpu9250_nanos_since_last_imu_interrupt(PyObject *self, PyObject *args); */
@@ -62,6 +61,11 @@ static PyMethodDef module_methods[] = {
    METH_NOARGS,
    "read temperature"}
   ,
+  {"set_interrupt",
+   (PyCFunction)mpu9250_set_interrupt,
+   METH_VARARGS,
+   "set imu interrupt callback"}
+  ,
   {NULL, NULL, 0, NULL}
 };
 
@@ -74,9 +78,55 @@ static struct PyModuleDef module = {
    module_methods
 };
 
+/* auxiliary function */
+
 static rc_imu_config_t imu_conf;     // imu configuration
+static int imu_enable_dmp = 0;       // imu + dmp configuration
 static rc_imu_data_t imu_data;       // imu data
 static int imu_initialized_flag = 0; // initialized flag
+
+static PyObject *imu_thread_callback = NULL;
+
+static
+void mpu9250_interrupt_function(void) {
+
+  printf("INTERRUPTED\n");
+  
+  // quick return if no callback is registered
+  if (imu_thread_callback == NULL)
+    return;
+
+  // otherwise call callback
+  PyObject *dict;
+  PyObject *result;
+
+  // Time to call the callback
+  dict = Py_BuildValue("(s(fff)s(fff)s(fff)sf)",
+		       "accel",
+		       imu_data.accel[0],
+		       imu_data.accel[1],
+		       imu_data.accel[2],
+		       "gyro",
+		       imu_data.gyro[0],
+		       imu_data.gyro[1],
+		       imu_data.gyro[2],
+		       "mag",
+		       imu_data.mag[0],
+		       imu_data.mag[1],
+		       imu_data.mag[2],
+		       "temp",
+		       imu_data.temp);
+  result = PyObject_Call(imu_thread_callback, NULL, dict);
+  Py_DECREF(dict);
+
+  // error?
+  if (result == NULL)
+    return; /* TODO: Raise an exception */
+
+  // otherwise
+  Py_DECREF(result);
+  
+}
 
 static
 int mpu9250_initialize(void) {
@@ -88,9 +138,24 @@ int mpu9250_initialize(void) {
   // Initialize
   printf("*> Initializing IMU...\n");
 
-  if(rc_initialize_imu(&imu_data, imu_conf)){
-    PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
-    return -1;
+  // To dmp or not to dmp?
+  if (imu_enable_dmp) {
+
+    // initialize imu + dmp
+    if(rc_initialize_imu_dmp(&imu_data, imu_conf)){
+      PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
+      return -1;
+    }
+
+    // install thread interrupt
+    rc_set_imu_interrupt_func(&mpu9250_interrupt_function);
+    
+  }
+  else {
+    if(rc_initialize_imu(&imu_data, imu_conf)){
+      PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
+      return -1;
+    }
   }
 
   // set flag
@@ -98,6 +163,8 @@ int mpu9250_initialize(void) {
   
   return 0;
 }
+
+/* python functions */
 
 PyMODINIT_FUNC PyInit_mpu9250(void)
 {
@@ -137,6 +204,7 @@ PyObject *mpu9250_initialize_imu(PyObject *self,
     "dmp_interrupt_priority", /* int */
     "dmp_sample_rate",        /* int */
     "show_warnings",          /* int */
+    "enable_dmp",             /* int */
     NULL
   };
   
@@ -153,7 +221,8 @@ PyObject *mpu9250_initialize_imu(PyObject *self,
 				    &imu_conf.compass_time_constant,  /* float */
 				    &imu_conf.dmp_interrupt_priority, /* int */
 				    &imu_conf.dmp_sample_rate,        /* int */
-				    &imu_conf.show_warnings           /* int */ )) {
+				    &imu_conf.show_warnings,          /* int */ 
+				    &imu_enable_dmp                   /* int */ )) {
     PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
     return NULL;
   }
@@ -288,4 +357,31 @@ PyObject *mpu9250_read_imu_temp(PyObject *self)
     Py_BuildValue("f", imu_data.temp);
 
   return ret;
+}
+
+/* set imu interrupt callback */
+
+
+static
+PyObject * mpu9250_set_interrupt(PyObject *self, PyObject *args)
+{
+  PyObject *result = NULL;
+  PyObject *temp;
+
+  if (PyArg_ParseTuple(args, "O:set_interrupt", &temp)) {
+    if (!PyCallable_Check(temp)) {
+      PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+      return NULL;
+    }
+    Py_XINCREF(temp);                 /* Add a reference to new callback */
+    Py_XDECREF(imu_thread_callback);  /* Dispose of previous callback */
+    imu_thread_callback = temp;       /* Remember new callback */
+    /* Boilerplate to return "None" */
+    Py_INCREF(Py_None);
+    result = Py_None;
+  }
+
+  
+  
+  return result;
 }

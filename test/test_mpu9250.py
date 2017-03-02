@@ -3,13 +3,22 @@ import pytest
 import time
 import rc.mpu9250 as mpu9250
 
+def interrupt(**kwargs):
+
+    print(kwargs)
+
 def test1():
 
+    N = 5
+    
     try:
 
+        # no magnetometer
+        mpu9250.initialize_imu(enable_magnetometer = False)
+        
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |   Temp (C)')
 
-        for i in range(10):
+        for i in range(5):
 
             (ax,ay,az) = mpu9250.read_accel_data()
             (gx,gy,gz) = mpu9250.read_gyro_data()
@@ -22,11 +31,15 @@ def test1():
 
             time.sleep(1)
 
+        with pytest.raises(mpu9250.error):
+            mpu9250.read_mag_data()
+
+        # with magnetometer
         mpu9250.initialize_imu(enable_magnetometer = True)
             
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
 
-        for i in range(10):
+        for i in range(5):
 
             (ax,ay,az) = mpu9250.read_accel_data()
             (gx,gy,gz) = mpu9250.read_gyro_data()
@@ -41,6 +54,12 @@ def test1():
                   end='')
 
             time.sleep(1)
+
+        # with magnetometer and interrupt
+        mpu9250.initialize_imu(enable_dmp = True)
+
+        # set callback
+        mpu9250.set_interrupt(interrupt)
 
     except (KeyboardInterrupt, SystemExit):
         pass
