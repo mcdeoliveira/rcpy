@@ -39,13 +39,11 @@ def test1():
         for i in range(N):
 
             data = mpu9250.read()
-            (ax, ay, az) = data['accel']
-            (gx, gy, gz) = data['gyro']
-            
-            print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
-                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
-                                                               gx, gy, gz,
-                                                               data['temp']),
+            print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
+                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
+                   '{2:6.1f}').format(data['accel'],
+                                      data['gyro'],
+                                      data['temp']),
                   end='')
 
             time.sleep(1)
@@ -76,16 +74,13 @@ def test1():
         for i in range(N):
 
             data = mpu9250.read()
-            (ax, ay, az) = data['accel']
-            (gx, gy, gz) = data['gyro']
-            (mx, my, mz) = data['mag']
-            
-            print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
-                   '{:6.1f} {:6.1f} {:6.1f} |'
-                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
-                                                               gx, gy, gz,
-                                                               mx, my, mz,
-                                                               data['temp']),
+            print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
+                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
+                   '{2[0]:6.1f} {2[1]:6.1f} {2[2]:6.1f} |'
+                   '{3:6.1f}').format(data['accel'],
+                                      data['gyro'],
+                                      data['mag'],
+                                      data['temp']),
                   end='')
 
             time.sleep(1)
@@ -110,13 +105,11 @@ def test2():
         for i in range(N):
 
             data = mpu9250.read()
-            (ax, ay, az) = data['accel']
-            (gx, gy, gz) = data['gyro']
-            
-            print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
-                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
-                                                               gx, gy, gz,
-                                                               data['temp']),
+            print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
+                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
+                   '{2:6.1f}').format(data['accel'],
+                                      data['gyro'],
+                                      data['temp']),
                   end='')
 
         # with dmp, with magnetometer
@@ -127,16 +120,13 @@ def test2():
         for i in range(N):
 
             data = mpu9250.read()
-            (ax, ay, az) = data['accel']
-            (gx, gy, gz) = data['gyro']
-            (mx, my, mz) = data['mag']
-            
-            print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
-                   '{:6.1f} {:6.1f} {:6.1f} |'
-                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
-                                                               gx, gy, gz,
-                                                               mx, my, mz,
-                                                               data['temp']),
+            print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
+                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
+                   '{2[0]:6.1f} {2[1]:6.1f} {2[2]:6.1f} |'
+                   '{3:6.1f}').format(data['accel'],
+                                      data['gyro'],
+                                      data['mag'],
+                                      data['temp']),
                   end='')
 
     except (KeyboardInterrupt, SystemExit):
