@@ -3,10 +3,6 @@ import pytest
 import time
 import rc.mpu9250 as mpu9250
 
-def interrupt(*vargs, **kwargs):
-
-    print("HI!")
-
 def test1():
 
     N = 1
@@ -14,7 +10,7 @@ def test1():
     try:
 
         # no magnetometer
-        mpu9250.initialize_imu(enable_magnetometer = False)
+        mpu9250.initialize(enable_magnetometer = False)
         
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |   Temp (C)')
 
@@ -49,7 +45,7 @@ def test1():
             time.sleep(1)
 
         # with magnetometer
-        mpu9250.initialize_imu(enable_magnetometer = True)
+        mpu9250.initialize(enable_magnetometer = True)
             
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
 
@@ -89,7 +85,7 @@ def test1():
         pass
 
     finally:
-        mpu9250.power_off_imu()
+        mpu9250.power_off()
 
 def test2():
 
@@ -98,7 +94,7 @@ def test2():
     try:
 
         # with dmp, no magnetometer
-        mpu9250.initialize_imu(enable_magnetometer = False, enable_dmp = True)
+        mpu9250.initialize(enable_magnetometer = False, enable_dmp = True)
         
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |   Temp (C)')
 
@@ -113,7 +109,7 @@ def test2():
                   end='')
 
         # with dmp, with magnetometer
-        mpu9250.initialize_imu(enable_magnetometer = True, enable_dmp = True)
+        mpu9250.initialize(enable_magnetometer = True, enable_dmp = True)
             
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
 
@@ -133,7 +129,7 @@ def test2():
         pass
 
     finally:
-        mpu9250.power_off_imu()
+        mpu9250.power_off()
         
 if __name__ == '__main__':
 

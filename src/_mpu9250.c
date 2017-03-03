@@ -9,8 +9,8 @@ static char module_docstring[] =
 static PyObject *mpu9250Error;
 
 // initialization
-static PyObject *mpu9250_initialize_imu(PyObject *self, PyObject *args, PyObject *kwargs);
-static PyObject *mpu9250_power_off_imu(PyObject *self);
+static PyObject *mpu9250_initialize(PyObject *self, PyObject *args, PyObject *kwargs);
+static PyObject *mpu9250_power_off(PyObject *self);
 
 // one-shot sampling mode functions
 static PyObject *mpu9250_read_accel_data(PyObject *self);
@@ -34,13 +34,13 @@ static PyObject *mpu9250_read(PyObject *self);
 /* static PyObject *mpu9250_is_mag_calibrated(PyObject *self, PyObject *args); */
 
 static PyMethodDef module_methods[] = {
-  {"initialize_imu",
-   (PyCFunction)mpu9250_initialize_imu,
+  {"initialize",
+   (PyCFunction)mpu9250_initialize,
    METH_VARARGS | METH_KEYWORDS,
    "initialize imu"}
   ,
-  {"power_off_imu",
-   (PyCFunction)mpu9250_power_off_imu,
+  {"power_off",
+   (PyCFunction)mpu9250_power_off,
    METH_NOARGS,
    "power off imu"}
   ,
@@ -90,7 +90,7 @@ static int imu_initialized_flag = 0; // initialized flag
 static int rc_initialized_flag = 1;  // cape initialized flag
 
 static
-int mpu9250_initialize(void) {
+int mpu9250_initialize_imu(void) {
 
   // Already initialized?
   if (imu_initialized_flag)
@@ -146,12 +146,6 @@ PyMODINIT_FUNC PyInit_mpu9250(void)
   mpu9250Error = PyErr_NewException("mpu9250.error", NULL, NULL);
   Py_INCREF(mpu9250Error);
   PyModule_AddObject(m, "error", mpu9250Error);
-
-  // Make sure the GIL has been created since we need to acquire it in our
-  // callback to safely call into the python application.
-  if (! PyEval_ThreadsInitialized()) {
-    PyEval_InitThreads();
-  }
   
   /* set default parameters for imu */
   imu_conf = rc_default_imu_config();
@@ -161,9 +155,9 @@ PyMODINIT_FUNC PyInit_mpu9250(void)
 
 
 static
-PyObject *mpu9250_initialize_imu(PyObject *self,
-				 PyObject *args,
-				 PyObject *kwargs)
+PyObject *mpu9250_initialize(PyObject *self,
+			     PyObject *args,
+			     PyObject *kwargs)
 {
 
   static char *kwlist[] = {
@@ -202,7 +196,7 @@ PyObject *mpu9250_initialize_imu(PyObject *self,
 
   /* Initialize imu */
   imu_initialized_flag = 0;
-  if(mpu9250_initialize())
+  if(mpu9250_initialize_imu())
     return NULL;
 
   /* Build the output tuple */
@@ -213,7 +207,7 @@ PyObject *mpu9250_initialize_imu(PyObject *self,
 
 
 static
-PyObject *mpu9250_power_off_imu(PyObject *self)
+PyObject *mpu9250_power_off(PyObject *self)
 {
 
   printf("*> Powering off IMU...\n");
@@ -238,7 +232,7 @@ PyObject *mpu9250_read_accel_data(PyObject *self)
 {
 
   /* initialize */
-  if (mpu9250_initialize())
+  if (mpu9250_initialize_imu())
     return NULL;
 
   /* read data */
@@ -262,7 +256,7 @@ PyObject *mpu9250_read_gyro_data(PyObject *self)
 {
 
   /* initialize */
-  if (mpu9250_initialize())
+  if (mpu9250_initialize_imu())
     return NULL;
 
   /* read data */
@@ -286,7 +280,7 @@ PyObject *mpu9250_read_mag_data(PyObject *self)
 {
 
   /* initialize */
-  if (mpu9250_initialize())
+  if (mpu9250_initialize_imu())
     return NULL;
 
   /* enabled? */
@@ -316,7 +310,7 @@ PyObject *mpu9250_read_imu_temp(PyObject *self)
 {
 
   /* initialize */
-  if (mpu9250_initialize())
+  if (mpu9250_initialize_imu())
     return NULL;
 
   /* read data */
@@ -337,7 +331,7 @@ PyObject *mpu9250_read(PyObject *self)
 {
 
   /* initialize */
-  if (mpu9250_initialize())
+  if (mpu9250_initialize_imu())
     return NULL;
 
   /* read data */
