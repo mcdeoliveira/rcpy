@@ -18,8 +18,11 @@ static PyObject *mpu9250_read_gyro_data(PyObject *self);
 static PyObject *mpu9250_read_mag_data(PyObject *self);
 static PyObject *mpu9250_read_imu_temp(PyObject *self);
 
+// read dmp
+static PyObject *mpu9250_read(PyObject *self);
+
 /* // interrupt-driven sampling mode functions */
-static PyObject *mpu9250_set_interrupt(PyObject *self, PyObject *args);
+/* static PyObject *mpu9250_set_interrupt(PyObject *self, PyObject *args); */
 /* static PyObject *mpu9250_stop_imu_interrupt_func(PyObject *self, PyObject *args); */
 /* static PyObject *mpu9250_was_last_imu_read_successful(PyObject *self, PyObject *args); */
 /* static PyObject *mpu9250_nanos_since_last_imu_interrupt(PyObject *self, PyObject *args); */
@@ -61,10 +64,10 @@ static PyMethodDef module_methods[] = {
    METH_NOARGS,
    "read temperature"}
   ,
-  {"set_interrupt",
-   (PyCFunction)mpu9250_set_interrupt,
-   METH_VARARGS,
-   "set imu interrupt callback"}
+  {"read",
+   (PyCFunction)mpu9250_read,
+   METH_NOARGS,
+   "read imu"}
   ,
   {NULL, NULL, 0, NULL}
 };
@@ -84,49 +87,7 @@ static rc_imu_config_t imu_conf;     // imu configuration
 static int imu_enable_dmp = 0;       // imu + dmp configuration
 static rc_imu_data_t imu_data;       // imu data
 static int imu_initialized_flag = 0; // initialized flag
-
-static PyObject *imu_thread_callback = NULL;
-
-static
-void mpu9250_interrupt_function(void) {
-
-  printf("INTERRUPTED\n");
-  
-  // quick return if no callback is registered
-  if (imu_thread_callback == NULL)
-    return;
-
-  // otherwise call callback
-  PyObject *dict;
-  PyObject *result;
-
-  // Time to call the callback
-  dict = Py_BuildValue("(s(fff)s(fff)s(fff)sf)",
-		       "accel",
-		       imu_data.accel[0],
-		       imu_data.accel[1],
-		       imu_data.accel[2],
-		       "gyro",
-		       imu_data.gyro[0],
-		       imu_data.gyro[1],
-		       imu_data.gyro[2],
-		       "mag",
-		       imu_data.mag[0],
-		       imu_data.mag[1],
-		       imu_data.mag[2],
-		       "temp",
-		       imu_data.temp);
-  result = PyObject_Call(imu_thread_callback, NULL, dict);
-  Py_DECREF(dict);
-
-  // error?
-  if (result == NULL)
-    return; /* TODO: Raise an exception */
-
-  // otherwise
-  Py_DECREF(result);
-  
-}
+static int rc_initialized_flag = 1;  // cape initialized flag
 
 static
 int mpu9250_initialize(void) {
@@ -134,6 +95,15 @@ int mpu9250_initialize(void) {
   // Already initialized?
   if (imu_initialized_flag)
     return 0;
+
+  // Cape initialized?
+  if (!rc_initialized_flag) {
+    if(rc_initialize()){
+      PyErr_SetString(mpu9250Error, "Failed to initialize ROBOTICS CAPE");
+      return -1;
+    }
+    rc_initialized_flag = 1;
+  }
 
   // Initialize
   printf("*> Initializing IMU...\n");
@@ -147,9 +117,6 @@ int mpu9250_initialize(void) {
       return -1;
     }
 
-    // install thread interrupt
-    rc_set_imu_interrupt_func(&mpu9250_interrupt_function);
-    
   }
   else {
     if(rc_initialize_imu(&imu_data, imu_conf)){
@@ -180,6 +147,12 @@ PyMODINIT_FUNC PyInit_mpu9250(void)
   Py_INCREF(mpu9250Error);
   PyModule_AddObject(m, "error", mpu9250Error);
 
+  // Make sure the GIL has been created since we need to acquire it in our
+  // callback to safely call into the python application.
+  if (! PyEval_ThreadsInitialized()) {
+    PyEval_InitThreads();
+  }
+  
   /* set default parameters for imu */
   imu_conf = rc_default_imu_config();
   
@@ -211,7 +184,7 @@ PyObject *mpu9250_initialize_imu(PyObject *self,
   PyObject *ret;
 
   /* Parse parameters */
-  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "|iiiiiifiii", kwlist,
+  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "|iiiiiifiiii", kwlist,
 				    &imu_conf.accel_fsr,              /* rc_accel_fsr_t (int) */
 				    &imu_conf.gyro_fsr,               /* rc_gyro_fsr_t (int) */
 				    &imu_conf.accel_dlpf,             /* rc_accel_dlpf_t (int) */
@@ -359,29 +332,82 @@ PyObject *mpu9250_read_imu_temp(PyObject *self)
   return ret;
 }
 
-/* set imu interrupt callback */
-
-
 static
-PyObject * mpu9250_set_interrupt(PyObject *self, PyObject *args)
+PyObject *mpu9250_read(PyObject *self)
 {
-  PyObject *result = NULL;
-  PyObject *temp;
 
-  if (PyArg_ParseTuple(args, "O:set_interrupt", &temp)) {
-    if (!PyCallable_Check(temp)) {
-      PyErr_SetString(PyExc_TypeError, "parameter must be callable");
+  /* initialize */
+  if (mpu9250_initialize())
+    return NULL;
+
+  /* read data */
+  if (imu_enable_dmp) {
+
+    /* from dmp  */
+    
+    // aquires mutex
+    pthread_mutex_lock( &rc_imu_read_mutex );
+
+    // waits until a measurement is available
+    pthread_cond_wait( &rc_imu_read_condition, &rc_imu_read_mutex );
+
+  } else {
+
+    /* or from registers */
+
+    if (rc_read_accel_data(&imu_data)<0) {
+      PyErr_SetString(mpu9250Error, "Failed to read IMU");
       return NULL;
     }
-    Py_XINCREF(temp);                 /* Add a reference to new callback */
-    Py_XDECREF(imu_thread_callback);  /* Dispose of previous callback */
-    imu_thread_callback = temp;       /* Remember new callback */
-    /* Boilerplate to return "None" */
-    Py_INCREF(Py_None);
-    result = Py_None;
+    
+    if (rc_read_gyro_data(&imu_data)<0) {
+      PyErr_SetString(mpu9250Error, "Failed to read IMU");
+      return NULL;
+    }
+
+    if (imu_conf.enable_magnetometer) {
+      if (rc_read_mag_data(&imu_data)<0) {
+	PyErr_SetString(mpu9250Error, "Failed to read magnetometer data");
+	return NULL;
+      }
+    }
+    
+    if (rc_read_imu_temp(&imu_data)<0) {
+      PyErr_SetString(mpu9250Error, "Failed to read IMU");
+      return NULL;
+    }
+
+  }
+    
+  /* Build the output tuple */
+  PyObject *ret;
+
+  if (imu_conf.enable_magnetometer)
+
+    ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)sf}",
+			"accel", imu_data.accel[0], imu_data.accel[1], imu_data.accel[2],
+			"gyro", imu_data.gyro[0], imu_data.gyro[1], imu_data.gyro[2],
+			"mag", imu_data.mag[0], imu_data.mag[1], imu_data.mag[2],
+			"quat", imu_data.dmp_quat[0], imu_data.dmp_quat[1],
+			imu_data.dmp_quat[2], imu_data.dmp_quat[3],
+			"temp", imu_data.temp);
+  
+  else
+
+    ret = Py_BuildValue("{s(fff)s(fff)s(ffff)sf}",
+			"accel", imu_data.accel[0], imu_data.accel[1], imu_data.accel[2],
+			"gyro", imu_data.gyro[0], imu_data.gyro[1], imu_data.gyro[2],
+			"quat", imu_data.dmp_quat[0], imu_data.dmp_quat[1],
+			imu_data.dmp_quat[2], imu_data.dmp_quat[3],
+			"temp", imu_data.temp);
+
+  /* release mutex */
+  if (imu_enable_dmp) {
+    
+    // releases mutex
+    pthread_mutex_unlock( &rc_imu_read_mutex );
+    
   }
 
-  
-  
-  return result;
+  return ret;
 }
