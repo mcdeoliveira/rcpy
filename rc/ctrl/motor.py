@@ -11,8 +11,7 @@ import ctrl.block as block
 
 import rc.motor as mtr
 
-# initialize motor
-mtr.initialize()
+# enable motor
 mtr.enable()
 
 # make sure it is disabled when destroyed

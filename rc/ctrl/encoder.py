@@ -24,7 +24,7 @@ class Encoder(block.BufferBlock):
         # call super
         super().__init__(*vars, **kwargs)
         
-        # output is in cycles/s
+        # output is in cycles
         self.buffer = (encdr.read(self.encoder) / self.ratio, )
 
     def set(self, **kwargs):

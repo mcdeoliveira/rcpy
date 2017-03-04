@@ -34,6 +34,7 @@ class Raw(block.BufferBlock):
             # read imu
             data = self.clock.get_imu()
 
+            # units (m/s^2) and (rad/s)
             self.buffer = itertools.chain(data['accel'],
                                           data['gyro'])
         

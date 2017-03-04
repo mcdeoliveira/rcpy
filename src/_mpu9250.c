@@ -83,53 +83,9 @@ static struct PyModuleDef module = {
 
 /* auxiliary function */
 
+static int imu_enable_dmp = 0;       // enable dmp
 static rc_imu_config_t imu_conf;     // imu configuration
-static int imu_enable_dmp = 0;       // imu + dmp configuration
 static rc_imu_data_t imu_data;       // imu data
-static int imu_initialized_flag = 0; // initialized flag
-static int rc_initialized_flag = 1;  // cape initialized flag
-
-static
-int mpu9250_initialize_imu(void) {
-
-  // Already initialized?
-  if (imu_initialized_flag)
-    return 0;
-
-  // Cape initialized?
-  if (!rc_initialized_flag) {
-    if(rc_initialize()){
-      PyErr_SetString(mpu9250Error, "Failed to initialize ROBOTICS CAPE");
-      return -1;
-    }
-    rc_initialized_flag = 1;
-  }
-
-  // Initialize
-  printf("*> Initializing IMU...\n");
-
-  // To dmp or not to dmp?
-  if (imu_enable_dmp) {
-
-    // initialize imu + dmp
-    if(rc_initialize_imu_dmp(&imu_data, imu_conf)){
-      PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
-      return -1;
-    }
-
-  }
-  else {
-    if(rc_initialize_imu(&imu_data, imu_conf)){
-      PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
-      return -1;
-    }
-  }
-
-  // set flag
-  imu_initialized_flag = 1;
-  
-  return 0;
-}
 
 /* python functions */
 
@@ -147,6 +103,12 @@ PyMODINIT_FUNC PyInit_mpu9250(void)
   Py_INCREF(mpu9250Error);
   PyModule_AddObject(m, "error", mpu9250Error);
   
+  /* initialize cape */
+  if (rc_get_state() == UNINITIALIZED) {
+    if(rc_initialize())
+      return NULL;
+  }
+
   /* set default parameters for imu */
   imu_conf = rc_default_imu_config();
   
@@ -195,16 +157,30 @@ PyObject *mpu9250_initialize(PyObject *self,
   }
 
   /* Initialize imu */
-  imu_initialized_flag = 0;
-  if(mpu9250_initialize_imu())
-    return NULL;
+  printf("*> Initializing IMU...\n");
+
+  // To dmp or not to dmp?
+  if (imu_enable_dmp) {
+
+    // initialize imu + dmp
+    if(rc_initialize_imu_dmp(&imu_data, imu_conf)){
+      PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
+      return NULL;
+    }
+
+  }
+  else {
+    if(rc_initialize_imu(&imu_data, imu_conf)){
+      PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
+      return NULL;
+    }
+  }
 
   /* Build the output tuple */
   ret = Py_BuildValue("");
 
   return ret;
 }
-
 
 static
 PyObject *mpu9250_power_off(PyObject *self)
@@ -218,8 +194,6 @@ PyObject *mpu9250_power_off(PyObject *self)
     return NULL;
   }
   
-  imu_initialized_flag = 0;
-
   /* Build the output tuple */
   PyObject *ret = 
     Py_BuildValue("");
@@ -230,10 +204,6 @@ PyObject *mpu9250_power_off(PyObject *self)
 static
 PyObject *mpu9250_read_accel_data(PyObject *self)
 {
-
-  /* initialize */
-  if (mpu9250_initialize_imu())
-    return NULL;
 
   /* read data */
   if (rc_read_accel_data(&imu_data)<0) {
@@ -255,10 +225,6 @@ static
 PyObject *mpu9250_read_gyro_data(PyObject *self)
 {
 
-  /* initialize */
-  if (mpu9250_initialize_imu())
-    return NULL;
-
   /* read data */
   if (rc_read_gyro_data(&imu_data)<0) {
     PyErr_SetString(mpu9250Error, "Failed to read IMU");
@@ -278,10 +244,6 @@ PyObject *mpu9250_read_gyro_data(PyObject *self)
 static
 PyObject *mpu9250_read_mag_data(PyObject *self)
 {
-
-  /* initialize */
-  if (mpu9250_initialize_imu())
-    return NULL;
 
   /* enabled? */
   if (!imu_conf.enable_magnetometer) {
@@ -309,10 +271,6 @@ static
 PyObject *mpu9250_read_imu_temp(PyObject *self)
 {
 
-  /* initialize */
-  if (mpu9250_initialize_imu())
-    return NULL;
-
   /* read data */
   if (rc_read_imu_temp(&imu_data)<0) {
     PyErr_SetString(mpu9250Error, "Failed to read IMU");
@@ -329,10 +287,6 @@ PyObject *mpu9250_read_imu_temp(PyObject *self)
 static
 PyObject *mpu9250_read(PyObject *self)
 {
-
-  /* initialize */
-  if (mpu9250_initialize_imu())
-    return NULL;
 
   /* read data */
   if (imu_enable_dmp) {

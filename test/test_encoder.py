@@ -7,8 +7,6 @@ def test1():
 
     N = 5
     
-    encoder.initialize()
-
     # set to 10
     
     encoder.set(1, 10)

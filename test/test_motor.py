@@ -9,9 +9,6 @@ def test1():
 
     try:
         
-        # initialize
-        motor.initialize()
-
         # enable
         motor.enable()
         time.sleep(.5)

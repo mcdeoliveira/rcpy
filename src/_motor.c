@@ -8,9 +8,6 @@ static char module_docstring[] =
 
 static PyObject *motorError;
 
-// initialization
-static PyObject *motor_initialize(PyObject *self, PyObject *args, PyObject *kwargs);
-
 // one-shot sampling mode functions
 static PyObject *motor_enable(PyObject *self);
 static PyObject *motor_disable(PyObject *self);
@@ -19,11 +16,6 @@ static PyObject *motor_free_spin(PyObject *self, PyObject *args);
 static PyObject *motor_brake(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-  {"initialize",
-   (PyCFunction)motor_initialize,
-   METH_VARARGS | METH_KEYWORDS,
-   "initialize motors"}
-  ,
   {"enable",
    (PyCFunction)motor_enable,
    METH_NOARGS,
@@ -61,33 +53,6 @@ static struct PyModuleDef module = {
    module_methods
 };
 
-/* auxiliary function */
-
-static int motor_initialized_flag = 0; // initialized flag
-static int rc_initialized_flag = 0;      // cape initialized flag
-
-static
-int motor_initialize_motor(void) {
-
-  // Already initialized?
-  if (motor_initialized_flag)
-    return 0;
-
-  // Cape initialized?
-  if (!rc_initialized_flag) {
-    if(rc_initialize()){
-      PyErr_SetString(motorError, "Failed to initialize ROBOTICS CAPE");
-      return -1;
-    }
-    rc_initialized_flag = 1;
-  }
-
-  // set flag
-  motor_initialized_flag = 1;
-  
-  return 0;
-}
-
 /* python functions */
 
 PyMODINIT_FUNC PyInit_motor(void)
@@ -104,33 +69,18 @@ PyMODINIT_FUNC PyInit_motor(void)
   Py_INCREF(motorError);
   PyModule_AddObject(m, "error", motorError);
 
+  /* initialize cape */
+  if (rc_get_state() == UNINITIALIZED) {
+    if(rc_initialize())
+      return NULL;
+  }
+  
   return m;
-}
-
-static
-PyObject *motor_initialize(PyObject *self,
-			     PyObject *args,
-			     PyObject *kwargs)
-{
-
-  /* Initialize motor */
-  motor_initialized_flag = 0;
-  if(motor_initialize_motor())
-    return NULL;
-
-  /* Build the output tuple */
-  PyObject *ret = Py_BuildValue("");
-
-  return ret;
 }
 
 static
 PyObject *motor_enable(PyObject *self)
 {
-
-  /* initialize */
-  if (motor_initialize_motor())
-    return NULL;
 
   /* enable motor */
   if (rc_enable_motors()<0) {
@@ -148,10 +98,6 @@ static
 PyObject *motor_disable(PyObject *self)
 {
 
-  /* initialize */
-  if (motor_initialize_motor())
-    return NULL;
-
   /* enable motor */
   if (rc_disable_motors()<0) {
     PyErr_SetString(motorError, "Failed to disable motors");
@@ -168,10 +114,6 @@ static
 PyObject *motor_set(PyObject *self,
 		    PyObject *args)
 {
-
-  /* initialize */
-  if (motor_initialize_motor())
-    return NULL;
 
   /* parse arguments */
   int motor;
@@ -198,10 +140,6 @@ PyObject *motor_free_spin(PyObject *self,
 			  PyObject *args)
 {
 
-  /* initialize */
-  if (motor_initialize_motor())
-    return NULL;
-
   /* parse arguments */
   int motor;
   if (!PyArg_ParseTuple(args, "i", &motor)) {
@@ -225,10 +163,6 @@ static
 PyObject *motor_brake(PyObject *self,
 		      PyObject *args)
 {
-
-  /* initialize */
-  if (motor_initialize_motor())
-    return NULL;
 
   /* parse arguments */
   int motor;
