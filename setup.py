@@ -17,6 +17,10 @@ gpio = Extension("rc.gpio",
                  sources = ["src/_gpio.c"],
                  libraries = LIBS)
 
+motor = Extension("rc.motor",
+                 sources = ["src/_motor.c"],
+                 libraries = LIBS)
+
 setup(
-      ext_modules=[mpu9250, encoder, gpio]
+      ext_modules=[mpu9250, encoder, gpio, motor]
 )

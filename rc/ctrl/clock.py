@@ -8,6 +8,9 @@ from ctrl.block import clock as clk
 
 from rc import mpu9250
 
+# make sure it is disabled when destroyed
+import atexit; atexit.register(mpu9250.power_off)
+
 # Uses Alex Martelli's Borg for making Clock a singleton
 
 class Clock(clk.Clock):
@@ -47,8 +50,6 @@ class Clock(clk.Clock):
 #        mpu9250.initialize(enable_dmp = True,
 #                          dmp_sample_rate = int(1/self.period))
         
-
-
     def get_imu(self):
 
         return self.imu
