@@ -13,6 +13,10 @@ encoder = Extension("rc.encoder",
                     sources = ["src/_encoder.c"],
                     libraries = LIBS)
 
+gpio = Extension("rc.gpio",
+                 sources = ["src/_gpio.c"],
+                 libraries = LIBS)
+
 setup(
-      ext_modules=[mpu9250, encoder]
+      ext_modules=[mpu9250, encoder, gpio]
 )

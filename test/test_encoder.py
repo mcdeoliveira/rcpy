@@ -37,7 +37,7 @@ def test1():
     encoder.set(4)
     assert encoder.read(4) == 0
     
-    print('\n ENC #1 | ENC #2 | ENC #3 | ENC #4')
+    print('\n ENC #1 |  ENC #2 |  ENC #3 |  ENC #4')
 
     for i in range(N):
 
@@ -46,9 +46,9 @@ def test1():
         e3 = encoder.read(3)
         e4 = encoder.read(4)
         
-        print(('\r{:7d} | {:7d} | {:7d} | {:7d}').format(e1,e2,e3,e4),
+        print('\r{:7d} | {:7d} | {:7d} | {:7d}'.format(e1,e2,e3,e4),
               end='')
-
+        
         time.sleep(1)
 
 if __name__ == '__main__':

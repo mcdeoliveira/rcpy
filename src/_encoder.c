@@ -87,12 +87,6 @@ PyMODINIT_FUNC PyInit_encoder(void)
   Py_INCREF(encoderError);
   PyModule_AddObject(m, "error", encoderError);
 
-  // Make sure the GIL has been created since we need to acquire it in our
-  // callback to safely call into the python application.
-  if (! PyEval_ThreadsInitialized()) {
-    PyEval_InitThreads();
-  }
-  
   return m;
 }
 
