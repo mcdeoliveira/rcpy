@@ -157,7 +157,6 @@ PyObject *mpu9250_initialize(PyObject *self,
   }
 
   /* Initialize imu */
-  printf("*> Initializing IMU...\n");
 
   // To dmp or not to dmp?
   if (imu_enable_dmp) {
@@ -186,8 +185,6 @@ static
 PyObject *mpu9250_power_off(PyObject *self)
 {
 
-  printf("*> Powering off IMU...\n");
-    
   /* power off imu */
   if (rc_power_off_imu()) {
     PyErr_SetString(mpu9250Error, "Failed to power off IMU");
