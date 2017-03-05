@@ -24,25 +24,25 @@ def test1():
         motor.set(2, 1)
         time.sleep(2)
 
-        motor.free_spin(2)
+        motor.set_free_spin(2)
         time.sleep(1)
 
         motor.set(2, -1)
         time.sleep(2)
 
-        motor.free_spin(2)
+        motor.set_free_spin(2)
 
         # spin motor 2 forward and back
         motor.set(3, 1)
         time.sleep(2)
     
-        motor.free_spin(1)
+        motor.set_free_spin(3)
         time.sleep(3)
 
         motor.set(3, -1)
         time.sleep(2)
 
-        motor.free_spin(3)
+        motor.set_free_spin(3)
 
         # disable motor
         motor.disable()

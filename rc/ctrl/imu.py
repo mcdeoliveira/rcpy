@@ -11,6 +11,7 @@ if __name__ == "__main__":
 
 import ctrl.block as block
 
+import rc
 from rc.ctrl import clock as clk
 
 class Raw(block.BufferBlock):

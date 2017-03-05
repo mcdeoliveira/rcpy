@@ -12,8 +12,8 @@ static PyObject *motorError;
 static PyObject *motor_enable(PyObject *self);
 static PyObject *motor_disable(PyObject *self);
 static PyObject *motor_set(PyObject *self, PyObject *args);
-static PyObject *motor_free_spin(PyObject *self, PyObject *args);
-static PyObject *motor_brake(PyObject *self, PyObject *args);
+static PyObject *motor_set_free_spin(PyObject *self, PyObject *args);
+static PyObject *motor_set_brake(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
   {"enable",
@@ -31,13 +31,13 @@ static PyMethodDef module_methods[] = {
    METH_VARARGS,
    "set motor"}
   ,
-  {"free_spin",
-   (PyCFunction)motor_free_spin,
+  {"set_free_spin",
+   (PyCFunction)motor_set_free_spin,
    METH_VARARGS,
    "set motor to spin freely"}
   ,
-  {"brake",
-   (PyCFunction)motor_brake,
+  {"set_brake",
+   (PyCFunction)motor_set_brake,
    METH_VARARGS,
    "set motor to break"}
   ,
@@ -74,6 +74,9 @@ PyMODINIT_FUNC PyInit_motor(void)
     if(rc_initialize())
       return NULL;
   }
+
+  /* enable motors */
+  rc_enable_motors();
   
   return m;
 }
@@ -136,8 +139,8 @@ PyObject *motor_set(PyObject *self,
 }
 
 static
-PyObject *motor_free_spin(PyObject *self,
-			  PyObject *args)
+PyObject *motor_set_free_spin(PyObject *self,
+			      PyObject *args)
 {
 
   /* parse arguments */
@@ -160,8 +163,8 @@ PyObject *motor_free_spin(PyObject *self,
 }
 
 static
-PyObject *motor_brake(PyObject *self,
-		      PyObject *args)
+PyObject *motor_set_brake(PyObject *self,
+			  PyObject *args)
 {
 
   /* parse arguments */

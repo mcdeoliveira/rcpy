@@ -5,6 +5,10 @@ LIBS = ['roboticscape']
 if platform.system().lower() == 'linux':
     LIBS.append('rt')
 
+rc = Extension("rc.rcpy",
+               sources = ["src/_rcpy.c"],
+               libraries = LIBS)
+
 mpu9250 = Extension("rc.mpu9250",
                     sources = ["src/_mpu9250.c"],
                     libraries = LIBS)
@@ -18,9 +22,9 @@ gpio = Extension("rc.gpio",
                  libraries = LIBS)
 
 motor = Extension("rc.motor",
-                 sources = ["src/_motor.c"],
-                 libraries = LIBS)
+                  sources = ["src/_motor.c"],
+                  libraries = LIBS)
 
 setup(
-      ext_modules=[mpu9250, encoder, gpio, motor]
+    ext_modules=[rc, mpu9250, encoder, gpio, motor]
 )

@@ -6,6 +6,7 @@ from time import perf_counter
 from ctrl import block
 from ctrl.block import clock as clk
 
+import rc
 from rc import mpu9250
 
 # make sure it is disabled when destroyed

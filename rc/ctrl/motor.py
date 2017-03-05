@@ -9,6 +9,7 @@ if __name__ == "__main__":
 
 import ctrl.block as block
 
+import rc
 import rc.motor as mtr
 
 # enable motor
