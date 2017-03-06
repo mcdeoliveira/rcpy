@@ -51,10 +51,10 @@ def main():
     try:
 
         # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING);
+        rc.set_state(rc.RUNNING)
 
         # message
-        print("Press Ctrl-C to exit");
+        print("Press Ctrl-C to exit")
 
         # header
         if channel == 0:
@@ -95,7 +95,7 @@ def main():
     finally:
 
         # say bye
-        print("\nInterrupted.");
+        print("\nInterrupted.")
             
 # exiting program will automatically clean up cape
 

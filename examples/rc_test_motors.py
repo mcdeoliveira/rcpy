@@ -67,7 +67,7 @@ def main():
     try:
 
         # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING);
+        rc.set_state(rc.RUNNING)
 
         # set motor duty (only one option at a time)
         if brk:
@@ -88,7 +88,7 @@ def main():
             sweep = False
 
         # message
-        print("Press Ctrl-C to exit");
+        print("Press Ctrl-C to exit")
         
         # sweep
         if sweep:
@@ -136,7 +136,7 @@ def main():
     finally:
 
         # say bye
-        print("\nInterrupted.");
+        print("\nInterrupted.")
             
 # exiting program will automatically clean up cape
 

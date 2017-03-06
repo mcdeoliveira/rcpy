@@ -46,21 +46,21 @@ def main():
     try:
 
         # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING);
+        rc.set_state(rc.RUNNING)
 
         # no magnetometer
         mpu9250.initialize(enable_magnetometer = enable_magnetometer)
         
         # message
-        print("try 'python rc_test_imu -h' to see other options");
-        print("Press Ctrl-C to exit");
+        print("try 'python rc_test_imu -h' to see other options")
+        print("Press Ctrl-C to exit")
 
         # header
         print("   Accel XYZ (m/s^2) |"
-              "    Gyro XYZ (deg/s) |", end='');
+              "    Gyro XYZ (deg/s) |", end='')
         if enable_magnetometer:
-            print("  Mag Field XYZ (uT) |", end='');
-        print(' Temp (C)');
+            print("  Mag Field XYZ (uT) |", end='')
+        print(' Temp (C)')
 
         # keep running
         while rc.get_state() != rc.EXITING:
@@ -96,7 +96,7 @@ def main():
     finally:
 
         # say bye
-        print("\nInterrupted.");
+        print("\nInterrupted.")
             
 # exiting program will automatically clean up cape
 

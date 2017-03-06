@@ -329,22 +329,51 @@ PyObject *mpu9250_read(PyObject *self)
 
   if (imu_conf.enable_magnetometer)
 
-    ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)sf}",
-			"accel", imu_data.accel[0], imu_data.accel[1], imu_data.accel[2],
-			"gyro", imu_data.gyro[0], imu_data.gyro[1], imu_data.gyro[2],
-			"mag", imu_data.mag[0], imu_data.mag[1], imu_data.mag[2],
-			"quat", imu_data.dmp_quat[0], imu_data.dmp_quat[1],
-			imu_data.dmp_quat[2], imu_data.dmp_quat[3],
-			"temp", imu_data.temp);
+    ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)s(fff)sf}",
+			"accel",
+			imu_data.accel[0],
+			imu_data.accel[1],
+			imu_data.accel[2],
+			"gyro",
+			imu_data.gyro[0],
+			imu_data.gyro[1],
+			imu_data.gyro[2],
+			"mag",
+			imu_data.mag[0],
+			imu_data.mag[1],
+			imu_data.mag[2],
+			"quat",
+			imu_data.fused_quat[0],
+			imu_data.fused_quat[1],
+			imu_data.fused_quat[2],
+			imu_data.fused_quat[3],
+			"tb",
+			imu_data.fused_TaitBryan[TB_PITCH_X],
+			imu_data.fused_TaitBryan[TB_ROLL_Y],
+			imu_data.fused_TaitBryan[TB_YAW_Z],
+			"head",
+			imu_data.compass_heading);
   
   else
 
-    ret = Py_BuildValue("{s(fff)s(fff)s(ffff)sf}",
-			"accel", imu_data.accel[0], imu_data.accel[1], imu_data.accel[2],
-			"gyro", imu_data.gyro[0], imu_data.gyro[1], imu_data.gyro[2],
-			"quat", imu_data.dmp_quat[0], imu_data.dmp_quat[1],
-			imu_data.dmp_quat[2], imu_data.dmp_quat[3],
-			"temp", imu_data.temp);
+    ret = Py_BuildValue("{s(fff)s(fff)s(ffff)s(fff)}",
+			"accel",
+			imu_data.accel[0],
+			imu_data.accel[1],
+			imu_data.accel[2],
+			"gyro",
+			imu_data.gyro[0],
+			imu_data.gyro[1],
+			imu_data.gyro[2],
+			"quat",
+			imu_data.dmp_quat[0],
+			imu_data.dmp_quat[1],
+			imu_data.dmp_quat[2],
+			imu_data.dmp_quat[3],
+			"tb",
+			imu_data.dmp_TaitBryan[TB_PITCH_X],
+			imu_data.dmp_TaitBryan[TB_ROLL_Y],
+			imu_data.dmp_TaitBryan[TB_YAW_Z]);
 
   /* release mutex */
   if (imu_enable_dmp) {

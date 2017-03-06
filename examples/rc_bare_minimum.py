@@ -14,11 +14,11 @@ import rc
 try:
 
     # welcome message
-    print("Hello BeagleBone!");
-    print("Press Ctrl-C to exit");
+    print("Hello BeagleBone!")
+    print("Press Ctrl-C to exit")
     
     # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING);
+    rc.set_state(rc.RUNNING)
 
     # keep running until state changes to rc.EXITING
     while rc.get_state() != rc.EXITING:
@@ -42,6 +42,6 @@ except (KeyboardInterrupt, SystemExit):
 finally:
 
     # say bye
-    print("\nBye Beaglebone!");
+    print("\nBye Beaglebone!")
             
 # exiting program will automatically clean up cape
