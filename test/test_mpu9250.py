@@ -21,8 +21,9 @@ def test1():
             temp = mpu9250.read_imu_temp()
 
             print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
-                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
-                                                               gx, gy, gz, temp),
+                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}')
+                  .format(ax, ay, az,
+                          gx, gy, gz, temp),
                   end='')
 
             time.sleep(1)
@@ -36,10 +37,9 @@ def test1():
 
             data = mpu9250.read()
             print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
-                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
-                   '{2:6.1f}').format(data['accel'],
-                                      data['gyro'],
-                                      data['temp']),
+                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |')
+                  .format(data['accel'],
+                          data['gyro']),
                   end='')
 
             time.sleep(1)
@@ -58,9 +58,10 @@ def test1():
 
             print(('\r{:6.2f} {:6.2f} {:6.2f} |' +
                    '{:6.1f} {:6.1f} {:6.1f} |'
-                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}').format(ax, ay, az,
-                                                               gx, gy, gz,
-                                                               mx, my, mz, temp),
+                   '{:6.1f} {:6.1f} {:6.1f} | {:6.1f}')
+                  .format(ax, ay, az,
+                          gx, gy, gz,
+                          mx, my, mz, temp),
                   end='')
 
             time.sleep(1)
@@ -72,11 +73,10 @@ def test1():
             data = mpu9250.read()
             print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
                    '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
-                   '{2[0]:6.1f} {2[1]:6.1f} {2[2]:6.1f} |'
-                   '{3:6.1f}').format(data['accel'],
-                                      data['gyro'],
-                                      data['mag'],
-                                      data['temp']),
+                   '{2[0]:6.1f} {2[1]:6.1f} {2[2]:6.1f} |')
+                  .format(data['accel'],
+                          data['gyro'],
+                          data['mag']),
                   end='')
 
             time.sleep(1)
@@ -102,10 +102,9 @@ def test2():
 
             data = mpu9250.read()
             print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
-                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
-                   '{2:6.1f}').format(data['accel'],
-                                      data['gyro'],
-                                      data['temp']),
+                   '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |')
+                  .format(data['accel'],
+                          data['gyro']),
                   end='')
 
         # with dmp, with magnetometer
@@ -118,11 +117,10 @@ def test2():
             data = mpu9250.read()
             print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
                    '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
-                   '{2[0]:6.1f} {2[1]:6.1f} {2[2]:6.1f} |'
-                   '{3:6.1f}').format(data['accel'],
-                                      data['gyro'],
-                                      data['mag'],
-                                      data['temp']),
+                   '{2[0]:6.1f} {2[1]:6.1f} {2[2]:6.1f} |')
+                  .format(data['accel'],
+                          data['gyro'],
+                          data['mag']),
                   end='')
 
     except (KeyboardInterrupt, SystemExit):

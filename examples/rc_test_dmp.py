@@ -19,11 +19,12 @@ Options are:
 -m          enable magnetometer
 -s rate     Set sample rate in HZ (default 100)
             Sample rate must be a divisor of 200
--c          Show raw compass angle
--a          Print Accelerometer Data
--g          Print Gyro Data
--t          Print TaitBryan Angles
--q          Print Quaternion Vector
+-c          Print compass angle
+-a          Print accelerometer data
+-g          Print gyro data
+-t          Print Tait-Bryan angles
+-q          Print quaternion vector
+-f          Print fused data
 -o          Show a menu to select IMU orientation
 -h          print this help message""")
 
@@ -36,7 +37,7 @@ def main():
 
     # Parse command line
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hmcagtqos:", ["help"])
+        opts, args = getopt.getopt(sys.argv[1:], "hmpcagtqfos:", ["help"])
 
     except getopt.GetoptError as err:
         # print help information and exit:
@@ -52,6 +53,8 @@ def main():
     show_quat = False
     show_tb = False
     sample_rate = 100
+    enable_fusion = False
+    show_period = False
 
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -71,9 +74,18 @@ def main():
             show_quat = True
         elif o == "-t":
             show_tb = True
+        elif o == "-f":
+            enable_fusion = True
+        elif o == "-p":
+            show_period = True
         else:
             assert False, "Unhandled option"
 
+    if show_compass and not enable_magnetometer:
+        print('rc_test_dmp: -c can only be used with -m ')
+        usage()
+        sys.exit(2)
+            
     try:
 
         # set state to rc.RUNNING
@@ -82,6 +94,7 @@ def main():
         # magnetometer ?
         mpu9250.initialize(enable_dmp = True,
                            dmp_sample_rate = sample_rate,
+                           enable_fusion = enable_fusion,
                            enable_magnetometer = enable_magnetometer)
         
         # message
@@ -99,7 +112,9 @@ def main():
             print("                 Quaternion |", end='')
         if show_tb:
             print("    Tait Bryan (rad) |", end='')
-        print(' Temp (C)')
+        if show_period:
+            print(" Ts (ms)", end='')
+        print()
         
         # keep running
         while rc.get_state() != rc.EXITING:
@@ -107,8 +122,11 @@ def main():
             # running
             if rc.get_state() == rc.RUNNING:
                 
+                t0 = time.perf_counter()
                 data = mpu9250.read()
-                temp = mpu9250.read_imu_temp()
+                t1 = time.perf_counter()
+                dt = t1 - t0
+                t0 = t1
 
                 print('\r', end='')
                 if show_accel:
@@ -128,7 +146,8 @@ def main():
                 if show_tb:
                     print('{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
                           .format(data['tb']), end='')
-                print('   {:6.1f}'.format(temp), end='')
+                if show_period:
+                    print(' {:7.2f}'.format(1000*dt), end='')
                         
                 # no need to sleep
 

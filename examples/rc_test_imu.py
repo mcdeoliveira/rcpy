@@ -68,7 +68,9 @@ def main():
             # running
             if rc.get_state() == rc.RUNNING:
                 
+                temp = mpu9250.read_imu_temp()
                 data = mpu9250.read()
+                
                 if enable_magnetometer:
                     print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
                            '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
@@ -76,14 +78,14 @@ def main():
                            '   {3:6.1f}').format(data['accel'],
                                                  data['gyro'],
                                                  data['mag'],
-                                                 data['temp']),
+                                                 temp),
                           end='')
                 else:
                     print(('\r{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
                            '{1[0]:6.1f} {1[1]:6.1f} {1[2]:6.1f} |'
                            '   {2:6.1f}').format(data['accel'],
                                                  data['gyro'],
-                                                 data['temp']),
+                                                 temp),
                           end='')
                         
             # sleep some

@@ -84,6 +84,7 @@ static struct PyModuleDef module = {
 /* auxiliary function */
 
 static int imu_enable_dmp = 0;       // enable dmp
+static int imu_enable_fusion = 0;    // enable fusion
 static rc_imu_config_t imu_conf;     // imu configuration
 static rc_imu_data_t imu_data;       // imu data
 
@@ -134,13 +135,14 @@ PyObject *mpu9250_initialize(PyObject *self,
     "dmp_sample_rate",        /* int */
     "show_warnings",          /* int */
     "enable_dmp",             /* int */
+    "enable_fusion",          /* int */
     NULL
   };
   
   PyObject *ret;
 
   /* Parse parameters */
-  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "|iiiiiifiiii", kwlist,
+  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "|iiiiiifiiiii", kwlist,
 				    &imu_conf.accel_fsr,              /* rc_accel_fsr_t (int) */
 				    &imu_conf.gyro_fsr,               /* rc_gyro_fsr_t (int) */
 				    &imu_conf.accel_dlpf,             /* rc_accel_dlpf_t (int) */
@@ -151,7 +153,8 @@ PyObject *mpu9250_initialize(PyObject *self,
 				    &imu_conf.dmp_interrupt_priority, /* int */
 				    &imu_conf.dmp_sample_rate,        /* int */
 				    &imu_conf.show_warnings,          /* int */ 
-				    &imu_enable_dmp                   /* int */ )) {
+				    &imu_enable_dmp,                  /* int */
+				    &imu_enable_fusion                /* int */ )) {
     PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
     return NULL;
   }
@@ -327,34 +330,65 @@ PyObject *mpu9250_read(PyObject *self)
   /* Build the output tuple */
   PyObject *ret;
 
-  if (imu_conf.enable_magnetometer)
+  if (imu_conf.enable_magnetometer) {
 
-    ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)s(fff)sf}",
-			"accel",
-			imu_data.accel[0],
-			imu_data.accel[1],
-			imu_data.accel[2],
-			"gyro",
-			imu_data.gyro[0],
-			imu_data.gyro[1],
-			imu_data.gyro[2],
-			"mag",
-			imu_data.mag[0],
-			imu_data.mag[1],
-			imu_data.mag[2],
-			"quat",
-			imu_data.fused_quat[0],
-			imu_data.fused_quat[1],
-			imu_data.fused_quat[2],
-			imu_data.fused_quat[3],
-			"tb",
-			imu_data.fused_TaitBryan[TB_PITCH_X],
-			imu_data.fused_TaitBryan[TB_ROLL_Y],
-			imu_data.fused_TaitBryan[TB_YAW_Z],
-			"head",
-			imu_data.compass_heading);
+    if (imu_enable_fusion) {
+
+      ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)s(fff)sf}",
+			  "accel",
+			  imu_data.accel[0],
+			  imu_data.accel[1],
+			  imu_data.accel[2],
+			  "gyro",
+			  imu_data.gyro[0],
+			  imu_data.gyro[1],
+			  imu_data.gyro[2],
+			  "mag",
+			  imu_data.mag[0],
+			  imu_data.mag[1],
+			  imu_data.mag[2],
+			  "quat",
+			  imu_data.fused_quat[0],
+			  imu_data.fused_quat[1],
+			  imu_data.fused_quat[2],
+			  imu_data.fused_quat[3],
+			  "tb",
+			  imu_data.fused_TaitBryan[TB_PITCH_X],
+			  imu_data.fused_TaitBryan[TB_ROLL_Y],
+			  imu_data.fused_TaitBryan[TB_YAW_Z],
+			  "head",
+			  imu_data.compass_heading);
+      
+    } else {
+
+      ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)s(fff)sf}",
+			  "accel",
+			  imu_data.accel[0],
+			  imu_data.accel[1],
+			  imu_data.accel[2],
+			  "gyro",
+			  imu_data.gyro[0],
+			  imu_data.gyro[1],
+			  imu_data.gyro[2],
+			  "mag",
+			  imu_data.mag[0],
+			  imu_data.mag[1],
+			  imu_data.mag[2],
+			  "quat",
+			  imu_data.dmp_quat[0],
+			  imu_data.dmp_quat[1],
+			  imu_data.dmp_quat[2],
+			  imu_data.dmp_quat[3],
+			  "tb",
+			  imu_data.dmp_TaitBryan[TB_PITCH_X],
+			  imu_data.dmp_TaitBryan[TB_ROLL_Y],
+			  imu_data.dmp_TaitBryan[TB_YAW_Z],
+			  "head",
+			  imu_data.compass_heading_raw);
+
+    }
   
-  else
+  } else {
 
     ret = Py_BuildValue("{s(fff)s(fff)s(ffff)s(fff)}",
 			"accel",
@@ -374,6 +408,8 @@ PyObject *mpu9250_read(PyObject *self)
 			imu_data.dmp_TaitBryan[TB_PITCH_X],
 			imu_data.dmp_TaitBryan[TB_ROLL_Y],
 			imu_data.dmp_TaitBryan[TB_YAW_Z]);
+    
+  }
 
   /* release mutex */
   if (imu_enable_dmp) {
