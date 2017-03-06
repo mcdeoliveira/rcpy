@@ -71,6 +71,11 @@ PyObject *rcpy_initialize(PyObject *self)
     return NULL;
   }
 
+  /* disable default signal handler */
+  rc_disable_signal_handler();
+
+  /* a python signal handler will be installed by rc.__init__ */
+  
   /* return None */
   return Py_BuildValue("");
 }

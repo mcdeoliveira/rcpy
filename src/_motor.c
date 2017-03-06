@@ -71,6 +71,7 @@ PyMODINIT_FUNC PyInit_motor(void)
 
   /* initialize cape */
   if (rc_get_state() == UNINITIALIZED) {
+    printf("* * * motor: WILL CALL INIT * * *\n");
     if(rc_initialize())
       return NULL;
   }

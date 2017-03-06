@@ -86,36 +86,36 @@ def main():
         usage()
         sys.exit(2)
             
+    # set state to rc.RUNNING
+    rc.set_state(rc.RUNNING)
+
+    # magnetometer ?
+    mpu9250.initialize(enable_dmp = True,
+                       dmp_sample_rate = sample_rate,
+                       enable_fusion = enable_fusion,
+                       enable_magnetometer = enable_magnetometer)
+
+    # message
+    print("Press Ctrl-C to exit")
+
+    # header
+    if show_accel:
+        print("   Accel XYZ (m/s^2) |", end='')
+    if show_gyro:
+        print("    Gyro XYZ (deg/s) |", end='')
+    if show_compass:
+        print("     Mag Field XYZ (uT) |", end='')
+        print("Head(rad)|", end='')
+    if show_quat:
+        print("                 Quaternion |", end='')
+    if show_tb:
+        print("    Tait Bryan (rad) |", end='')
+    if show_period:
+        print(" Ts (ms)", end='')
+    print()
+        
     try:
 
-        # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING)
-
-        # magnetometer ?
-        mpu9250.initialize(enable_dmp = True,
-                           dmp_sample_rate = sample_rate,
-                           enable_fusion = enable_fusion,
-                           enable_magnetometer = enable_magnetometer)
-        
-        # message
-        print("Press Ctrl-C to exit")
-
-        # header
-        if show_accel:
-            print("   Accel XYZ (m/s^2) |", end='')
-        if show_gyro:
-            print("    Gyro XYZ (deg/s) |", end='')
-        if show_compass:
-            print("     Mag Field XYZ (uT) |", end='')
-            print("Head(rad)|", end='')
-        if show_quat:
-            print("                 Quaternion |", end='')
-        if show_tb:
-            print("    Tait Bryan (rad) |", end='')
-        if show_period:
-            print(" Ts (ms)", end='')
-        print()
-        
         # keep running
         while rc.get_state() != rc.EXITING:
 
@@ -151,14 +151,10 @@ def main():
                         
                 # no need to sleep
 
-    except (KeyboardInterrupt, SystemExit):
-        # handle what to do when Ctrl-C was pressed
-        pass
-        
     finally:
 
         # say bye
-        print("\nInterrupted.")
+        print("\nBye Beaglebone!")
             
 # exiting program will automatically clean up cape
 

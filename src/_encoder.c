@@ -53,6 +53,7 @@ PyMODINIT_FUNC PyInit_encoder(void)
 
   /* initialize cape */
   if (rc_get_state() == UNINITIALIZED) {
+    printf("* * * encoder: WILL CALL INIT * * *\n");
     if(rc_initialize())
       return NULL;
   }

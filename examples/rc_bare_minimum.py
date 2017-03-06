@@ -11,15 +11,15 @@ import time
 # This automatically initizalizes the robotics cape
 import rc 
 
-try:
-
-    # welcome message
-    print("Hello BeagleBone!")
-    print("Press Ctrl-C to exit")
+# welcome message
+print("Hello BeagleBone!")
+print("Press Ctrl-C to exit")
     
-    # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING)
+# set state to rc.RUNNING
+rc.set_state(rc.RUNNING)
 
+try:
+    
     # keep running until state changes to rc.EXITING
     while rc.get_state() != rc.EXITING:
 
@@ -35,10 +35,6 @@ try:
         # sleep some
         time.sleep(1)
 
-except (KeyboardInterrupt, SystemExit):
-    # handle what to do when Ctrl-C was pressed
-    pass
-        
 finally:
 
     # say bye

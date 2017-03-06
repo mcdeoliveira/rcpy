@@ -106,6 +106,7 @@ PyMODINIT_FUNC PyInit_mpu9250(void)
   
   /* initialize cape */
   if (rc_get_state() == UNINITIALIZED) {
+    printf("* * * mpu9250: WILL CALL INIT * * *\n");
     if(rc_initialize())
       return NULL;
   }

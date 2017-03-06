@@ -64,32 +64,32 @@ def main():
         else:
             assert False, "Unhandled option"
 
+    # set state to rc.RUNNING
+    rc.set_state(rc.RUNNING)
+
+    # set motor duty (only one option at a time)
+    if brk:
+        print('Breaking motor {}'.format(channel))
+        motor.set_brake(channel)
+        sweep = False
+    elif free:
+        print('Setting motor {} free'.format(channel))
+        motor.set_free_spin(channel)
+        sweep = False
+    elif duty != 0:
+        if not sweep:
+            print('Setting motor {} to {} duty'.format(channel, duty))
+            motor.set(channel, duty)
+        else:
+            print('Sweeping motor {} to {} duty'.format(channel, duty))
+    else:
+        sweep = False
+
+    # message
+    print("Press Ctrl-C to exit")
+        
     try:
 
-        # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING)
-
-        # set motor duty (only one option at a time)
-        if brk:
-            print('Breaking motor {}'.format(channel))
-            motor.set_brake(channel)
-            sweep = False
-        elif free:
-            print('Setting motor {} free'.format(channel))
-            motor.set_free_spin(channel)
-            sweep = False
-        elif duty != 0:
-            if not sweep:
-                print('Setting motor {} to {} duty'.format(channel, duty))
-                motor.set(channel, duty)
-            else:
-                print('Sweeping motor {} to {} duty'.format(channel, duty))
-        else:
-            sweep = False
-
-        # message
-        print("Press Ctrl-C to exit")
-        
         # sweep
         if sweep:
 
@@ -136,7 +136,7 @@ def main():
     finally:
 
         # say bye
-        print("\nInterrupted.")
+        print("\nBye Beaglebone!")
             
 # exiting program will automatically clean up cape
 

@@ -22,13 +22,14 @@ class Motor(block.Block):
         
     def __init__(self, *vars, **kwargs):
 
+        self.gain = kwargs.pop('gain', 1/100)
         self.motor = kwargs.pop('motor', 2)
 
         # call super
         super().__init__(*vars, **kwargs)
 
-        mtr.set(self.motor, 0)
-        mtr.free_spin(self.motor)
+        # disable motor
+        self.set_enabled(False)
 
     def set_enabled(self, enabled = True):
 
@@ -39,14 +40,14 @@ class Motor(block.Block):
 
             # write 0 to motor
             mtr.set(self.motor, 0)
-            mtr.free_spin(self.motor)
+            mtr.set_free_spin(self.motor)
 
     def write(self, *values):
 
         #print('> write to motor')
         if self.enabled:
 
-            mtr.set(self.motor, values[0]/100)
+            mtr.set(self.motor, self.gain * values[0])
 
 if __name__ == "__main__":
 

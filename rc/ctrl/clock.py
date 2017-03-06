@@ -25,7 +25,7 @@ class Clock(clk.Clock):
 
         # Do not initialize if already initialized
         if not self.__dict__ == {}:
-            warnings.warn('> Clock is already initialized. Skipping call to __init')
+            warnings.warn('> Clock is already initialized. Skipping call to __init__')
             return
 
         # call super
@@ -58,7 +58,7 @@ class Clock(clk.Clock):
     def read(self):
 
         #print('> read')
-        if self.enabled:
+        if self.enabled and rc.get_state() == rc.RUNNING:
 
             # Read imu (blocking call)
             self.imu = mpu9250.read()

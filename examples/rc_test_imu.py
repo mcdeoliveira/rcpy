@@ -43,24 +43,24 @@ def main():
         else:
             assert False, "Unhandled option"
 
+    # set state to rc.RUNNING
+    rc.set_state(rc.RUNNING)
+
+    # no magnetometer
+    mpu9250.initialize(enable_magnetometer = enable_magnetometer)
+
+    # message
+    print("try 'python rc_test_imu -h' to see other options")
+    print("Press Ctrl-C to exit")
+
+    # header
+    print("   Accel XYZ (m/s^2) |"
+          "    Gyro XYZ (deg/s) |", end='')
+    if enable_magnetometer:
+        print("  Mag Field XYZ (uT) |", end='')
+    print(' Temp (C)')
+
     try:
-
-        # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING)
-
-        # no magnetometer
-        mpu9250.initialize(enable_magnetometer = enable_magnetometer)
-        
-        # message
-        print("try 'python rc_test_imu -h' to see other options")
-        print("Press Ctrl-C to exit")
-
-        # header
-        print("   Accel XYZ (m/s^2) |"
-              "    Gyro XYZ (deg/s) |", end='')
-        if enable_magnetometer:
-            print("  Mag Field XYZ (uT) |", end='')
-        print(' Temp (C)')
 
         # keep running
         while rc.get_state() != rc.EXITING:
@@ -91,14 +91,10 @@ def main():
             # sleep some
             time.sleep(.5)
 
-    except (KeyboardInterrupt, SystemExit):
-        # handle what to do when Ctrl-C was pressed
-        pass
-        
     finally:
 
         # say bye
-        print("\nInterrupted.")
+        print("\nBye Beaglebone!")
             
 # exiting program will automatically clean up cape
 

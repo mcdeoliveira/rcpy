@@ -1,3 +1,5 @@
+import time
+
 import ctrl
 
 class Controller(ctrl.Controller):
@@ -23,6 +25,9 @@ class Controller(ctrl.Controller):
                                      type = 'source',
                                      outputs = ['clock'],
                                      period = self.period)
+
+        # sleep for a while
+        time.sleep(.5)
         
         # set period
         self.clock.set_period(self.period)

@@ -12,23 +12,24 @@ import time
 import rc 
 import rc.mpu9250 as mpu9250 
 
+# welcome message
+print("Hello BeagleBone!")
+print("Press Ctrl-C to exit")
+
+# enable dmp
+sample_rate = 4
+mpu9250.initialize(enable_dmp = True,
+                   dmp_sample_rate = sample_rate)
+
+# set state to rc.RUNNING
+rc.set_state(rc.RUNNING)
+
+# keep running until state changes to rc.EXITING
+i = 0
+spin = '-\|/'
+
 try:
 
-    # welcome message
-    print("Hello BeagleBone!")
-    print("Press Ctrl-C to exit")
-
-    # enable dmp
-    sample_rate = 4
-    mpu9250.initialize(enable_dmp = True,
-                       dmp_sample_rate = sample_rate)
-    
-    # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING)
-
-    # keep running until state changes to rc.EXITING
-    i = 0
-    spin = '-\|/'
     while rc.get_state() != rc.EXITING:
 
         # read to synchronize with imu
@@ -47,10 +48,6 @@ try:
     
         # there is no need to sleep
 
-except (KeyboardInterrupt, SystemExit):
-    # handle what to do when Ctrl-C was pressed
-    pass
-        
 finally:
 
     # say bye

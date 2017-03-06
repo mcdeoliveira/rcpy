@@ -48,19 +48,19 @@ def main():
         else:
             assert False, "Unhandled option"
 
+    # set state to rc.RUNNING
+    rc.set_state(rc.RUNNING)
+
+    # message
+    print("Press Ctrl-C to exit")
+
+    # header
+    if channel == 0:
+        print('     E1 |     E2 |     E3 |     E4')
+    else:
+        print('     E{}'.format(channel))
+
     try:
-
-        # set state to rc.RUNNING
-        rc.set_state(rc.RUNNING)
-
-        # message
-        print("Press Ctrl-C to exit")
-
-        # header
-        if channel == 0:
-            print('     E1 |     E2 |     E3 |     E4')
-        else:
-            print('     E{}'.format(channel))
 
         # keep running
         while rc.get_state() != rc.EXITING:
@@ -88,14 +88,10 @@ def main():
             # sleep some
             time.sleep(.5)
 
-    except (KeyboardInterrupt, SystemExit):
-        # handle what to do when Ctrl-C was pressed
-        pass
-        
     finally:
 
         # say bye
-        print("\nInterrupted.")
+        print("\nBye Beaglebone!")
             
 # exiting program will automatically clean up cape
 
