@@ -79,7 +79,8 @@ class Inclinometer(Raw):
                 if (theta - self.theta > self.threshold):
                     self.turns -= 1
             self.theta = theta
-                    
+
+            # units (turns) and (1/s)
             self.buffer = (self.turns + theta, gx / 360)
         
         #print('< read')
