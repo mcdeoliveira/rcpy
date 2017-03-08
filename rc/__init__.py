@@ -15,6 +15,8 @@ def handler(signum, frame):
     atexit.unregister(cleanup)
 
     warnings.warn('> Robotics cape exited cleanly')
+
+    raise KeyboardInterrupt()
     
 # make sure it is disabled when exiting cleanly
 import atexit; atexit.register(cleanup)

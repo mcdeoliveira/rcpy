@@ -20,14 +20,15 @@ rc.set_state(rc.RUNNING)
 
 try:
     
-    # keep running until state changes to rc.EXITING
-    while rc.get_state() != rc.EXITING:
+    # keep running forever
+    while True:
 
-        # handle other states
+        # running?
         if rc.get_state() == rc.RUNNING:
             # do things
             pass
     
+        # paused?
         elif rc.get_state() == rc.PAUSED:
             # do other things
             pass
@@ -35,6 +36,10 @@ try:
         # sleep some
         time.sleep(1)
 
+except KeyboardInterrupt:
+    # Catch Ctrl-C
+    pass
+        
 finally:
 
     # say bye

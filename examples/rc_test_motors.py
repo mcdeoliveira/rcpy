@@ -129,7 +129,7 @@ def main():
                 # sleep some
                 time.sleep(1)
             
-    except (KeyboardInterrupt, SystemExit):
+    except KeyboardInterrupt:
         # handle what to do when Ctrl-C was pressed
         pass
         

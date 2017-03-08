@@ -24,29 +24,35 @@ mpu9250.initialize(enable_dmp = True,
 # set state to rc.RUNNING
 rc.set_state(rc.RUNNING)
 
-# keep running until state changes to rc.EXITING
+# spinning wheel
 i = 0
 spin = '-\|/'
 
 try:
 
-    while rc.get_state() != rc.EXITING:
+    # keep running forever
+    while True:
 
         # read to synchronize with imu
         data = mpu9250.read()
         
-        # handle other states
+        # running?
         if rc.get_state() == rc.RUNNING:
 
             # do things
             print('\r{}'.format(spin[i % len(spin)]), end='')
             i = i + 1
-    
+
+        # paused?
         elif rc.get_state() == rc.PAUSED:
             # do other things
             pass
     
         # there is no need to sleep
+
+except KeyboardInterrupt:
+    # Catch Ctrl-C
+    pass
 
 finally:
 

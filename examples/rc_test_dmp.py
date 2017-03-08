@@ -117,7 +117,7 @@ def main():
     try:
 
         # keep running
-        while rc.get_state() != rc.EXITING:
+        while True:
 
             # running
             if rc.get_state() == rc.RUNNING:
@@ -151,6 +151,10 @@ def main():
                         
                 # no need to sleep
 
+    except KeyboardInterrupt:
+        # Catch Ctrl-C
+        pass
+    
     finally:
 
         # say bye

@@ -48,10 +48,11 @@ thread2 = threading.Thread(target = thread_function, args = ("#2",))
 thread1.start()
 thread2.start()
 
-# go do other things until state changes to rc.EXITING
+# go do other things
 try:
 
-    while rc.get_state() != rc.EXITING:
+    # keep running forever
+    while True:
 
         # print some
         print('Hi from main loop!')
@@ -59,6 +60,10 @@ try:
         # sleep some
         time.sleep(1)
         
+except KeyboardInterrupt:
+    # Catch Ctrl-C
+    pass
+
 finally:
 
     # say bye

@@ -63,7 +63,7 @@ def main():
     try:
 
         # keep running
-        while rc.get_state() != rc.EXITING:
+        while True:
 
             # running
             if rc.get_state() == rc.RUNNING:
@@ -88,6 +88,10 @@ def main():
             # sleep some
             time.sleep(.5)
 
+    except KeyboardInterrupt:
+        # Catch Ctrl-C
+        pass
+    
     finally:
 
         # say bye
