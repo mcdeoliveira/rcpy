@@ -43,10 +43,11 @@ mpu9250.initialize(enable_dmp = True,
 rc.set_state(rc.RUNNING)
 
 # fire up threads
-thread1 = threading.Thread(target = thread_function, args = ("#1",))
-thread2 = threading.Thread(target = thread_function, args = ("#2",))
-thread1.start()
-thread2.start()
+threads = []
+threads.append(threading.Thread(target = thread_function, args = ("#1",)))
+threads.append(threading.Thread(target = thread_function, args = ("#2",)))
+for t in threads:
+    t.start()
 
 # go do other things
 try:
@@ -66,6 +67,10 @@ except KeyboardInterrupt:
 
 finally:
 
+    # wait for threads to finish
+    for t in threads:
+        t.join()
+    
     # say bye
     print("\nBye Beaglebone!")
             
