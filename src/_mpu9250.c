@@ -9,8 +9,11 @@ static char module_docstring[] =
 static PyObject *mpu9250Error;
 
 // initialization
-static PyObject *mpu9250_initialize(PyObject *self, PyObject *args, PyObject *kwargs);
+static PyObject *mpu9250_initialize(PyObject *self,
+				    PyObject *args,
+				    PyObject *kwargs);
 static PyObject *mpu9250_power_off(PyObject *self);
+static PyObject *mpu9250_get(PyObject *self);
 
 // one-shot sampling mode functions
 static PyObject *mpu9250_read_accel_data(PyObject *self);
@@ -20,12 +23,6 @@ static PyObject *mpu9250_read_imu_temp(PyObject *self);
 
 // read dmp
 static PyObject *mpu9250_read(PyObject *self);
-
-/* // interrupt-driven sampling mode functions */
-/* static PyObject *mpu9250_set_interrupt(PyObject *self, PyObject *args); */
-/* static PyObject *mpu9250_stop_imu_interrupt_func(PyObject *self, PyObject *args); */
-/* static PyObject *mpu9250_was_last_imu_read_successful(PyObject *self, PyObject *args); */
-/* static PyObject *mpu9250_nanos_since_last_imu_interrupt(PyObject *self, PyObject *args); */
 
 /* // other */
 /* static PyObject *mpu9250_calibrate_gyro_routine(PyObject *self, PyObject *args); */
@@ -43,6 +40,11 @@ static PyMethodDef module_methods[] = {
    (PyCFunction)mpu9250_power_off,
    METH_NOARGS,
    "power off imu"}
+  ,
+  {"get",
+   (PyCFunction)mpu9250_get,
+   METH_NOARGS,
+   "get imu conf"}
   ,
   {"read_accel_data",
    (PyCFunction)mpu9250_read_accel_data,
@@ -199,6 +201,41 @@ PyObject *mpu9250_power_off(PyObject *self)
   PyObject *ret = 
     Py_BuildValue("");
 
+  return ret;
+}
+
+static
+PyObject *mpu9250_get(PyObject *self)
+{
+
+  /* Build the output tuple */
+  PyObject *ret = 
+    Py_BuildValue("{sisisisisisisfsisisisisi}",
+		  "accel_fsr",
+		  imu_conf.accel_fsr,
+		  "gyro_fsr",
+		  imu_conf.gyro_fsr,
+		  "accel_dlpf",
+		  imu_conf.accel_dlpf,
+		  "gyro_dlpf",
+		  imu_conf.gyro_dlpf,
+		  "enable_magnetometer",
+		  imu_conf.enable_magnetometer,
+		  "orientation",
+		  imu_conf.orientation,
+		  "compass_time_constant",
+		  imu_conf.compass_time_constant,
+		  "dmp_interrupt_priority",
+		  imu_conf.dmp_interrupt_priority,
+		  "dmp_sample_rate",
+		  imu_conf.dmp_sample_rate,
+		  "show_warnings",
+		  imu_conf.show_warnings,
+		  "enable_dmp",
+		  imu_enable_dmp,
+		  "enable_fusion",
+		  imu_enable_fusion);
+  
   return ret;
 }
 

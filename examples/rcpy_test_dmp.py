@@ -8,13 +8,13 @@ if __name__ == "__main__":
 import time
 import getopt
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
-import rc.mpu9250 as mpu9250
+import rcpy 
+import rcpy.mpu9250 as mpu9250
 
 def usage():
-    print("""usage: python rc_test_dmp [options] ...
+    print("""usage: python rcpy_test_dmp [options] ...
 Options are:
 -m          enable magnetometer
 -s rate     Set sample rate in HZ (default 100)
@@ -41,7 +41,7 @@ def main():
 
     except getopt.GetoptError as err:
         # print help information and exit:
-        print('rc_test_dmp: illegal option {}'.format(sys.argv[1:]))
+        print('rcpy_test_dmp: illegal option {}'.format(sys.argv[1:]))
         usage()
         sys.exit(2)
 
@@ -82,12 +82,12 @@ def main():
             assert False, "Unhandled option"
 
     if show_compass and not enable_magnetometer:
-        print('rc_test_dmp: -c can only be used with -m ')
+        print('rcpy_test_dmp: -c can only be used with -m ')
         usage()
         sys.exit(2)
             
-    # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING)
+    # set state to rcpy.RUNNING
+    rcpy.set_state(rcpy.RUNNING)
 
     # magnetometer ?
     mpu9250.initialize(enable_dmp = True,
@@ -120,7 +120,7 @@ def main():
         while True:
 
             # running
-            if rc.get_state() == rc.RUNNING:
+            if rcpy.get_state() == rcpy.RUNNING:
                 
                 t0 = time.perf_counter()
                 data = mpu9250.read()

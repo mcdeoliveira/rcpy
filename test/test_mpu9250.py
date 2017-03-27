@@ -1,7 +1,7 @@
 import pytest
 
 import time
-import rc.mpu9250 as mpu9250
+import rcpy.mpu9250 as mpu9250
 
 def test1():
 

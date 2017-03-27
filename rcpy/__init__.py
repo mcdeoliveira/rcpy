@@ -1,6 +1,6 @@
 import warnings
 import signal
-from rc.rcpy import *
+from rcpy.rcpy import *
 
 def handler(signum, frame):
     warnings.warn('Signal handler called with signal {}'.format(signum))
@@ -8,7 +8,7 @@ def handler(signum, frame):
     for fun, pars in cleanup_functions.items():
         fun(*pars)
         
-    # call rc cleanup
+    # call rcpy cleanup
     cleanup()
     
     # no need to cleanup later

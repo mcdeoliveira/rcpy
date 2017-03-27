@@ -1,7 +1,7 @@
 import pytest
 
 import time
-import rc.gpio as gpio
+import rcpy.gpio as gpio
 
 def test1():
 

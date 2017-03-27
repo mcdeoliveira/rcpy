@@ -1,7 +1,7 @@
 import pytest
 
 import time
-import rc.encoder as encoder
+import rcpy.encoder as encoder
 
 def test1():
 

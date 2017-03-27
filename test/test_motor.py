@@ -1,7 +1,7 @@
 import pytest
 
 import time
-import rc.motor as motor
+import rcpy.motor as motor
 
 def test1():
 

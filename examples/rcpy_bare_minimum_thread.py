@@ -8,22 +8,22 @@ if __name__ == "__main__":
 import time
 import threading
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
-import rc.mpu9250 as mpu9250 
+import rcpy 
+import rcpy.mpu9250 as mpu9250 
 
 # function to run on a thread
 def thread_function(name):
 
     # make sure the thread will terminate
-    while rc.get_state() != rc.EXITING:
+    while rcpy.get_state() != rcpy.EXITING:
 
         # read to synchronize with imu
         data = mpu9250.read()
         
         # handle other states
-        if rc.get_state() == rc.RUNNING:
+        if rcpy.get_state() == rcpy.RUNNING:
 
             # do things
             print('Hi from thread {}!'.format(name))
@@ -39,8 +39,8 @@ sample_rate = 8
 mpu9250.initialize(enable_dmp = True,
                    dmp_sample_rate = sample_rate)
 
-# set state to rc.RUNNING
-rc.set_state(rc.RUNNING)
+# set state to rcpy.RUNNING
+rcpy.set_state(rcpy.RUNNING)
 
 # fire up threads
 threads = []

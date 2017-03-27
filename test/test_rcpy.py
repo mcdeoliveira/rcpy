@@ -1,29 +1,29 @@
 import pytest
 
 import time
-import rc
+import rcpy
 
 def test1():
 
     # initialize
-    rc.initialize()
-    assert rc.get_state() == rc.IDLE
+    rcpy.initialize()
+    assert rcpy.get_state() == rcpy.IDLE
 
     # clean up
-    rc.cleanup()
-    assert rc.get_state() == rc.EXITING
+    rcpy.cleanup()
+    assert rcpy.get_state() == rcpy.EXITING
 
     # initialize again
-    rc.initialize()
-    assert rc.get_state() == rc.IDLE
+    rcpy.initialize()
+    assert rcpy.get_state() == rcpy.IDLE
 
     # set state
-    rc.set_state(rc.PAUSED)
-    assert rc.get_state() == rc.PAUSED
+    rcpy.set_state(rcpy.PAUSED)
+    assert rcpy.get_state() == rcpy.PAUSED
 
     # set state
-    rc.set_state(rc.RUNNING)
-    assert rc.get_state() == rc.RUNNING
+    rcpy.set_state(rcpy.RUNNING)
+    assert rcpy.get_state() == rcpy.RUNNING
 
 if __name__ == '__main__':
 

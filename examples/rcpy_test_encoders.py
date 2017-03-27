@@ -8,13 +8,13 @@ if __name__ == "__main__":
 import time
 import getopt
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
-import rc.encoder as encoder
+import rcpy 
+import rcpy.encoder as encoder
 
 def usage():
-    print("""usage: python rc_test_encoders [options] ...
+    print("""usage: python rcpy_test_encoders [options] ...
 Options are:
 -e encoder  specify a single encoder from 1-4, 0 for all motors
 -h          print this help message""")
@@ -32,7 +32,7 @@ def main():
 
     except getopt.GetoptError as err:
         # print help information and exit:
-        print('rc_test_encoders: illegal option {}'.format(sys.argv[1:]))
+        print('rcpy_test_encoders: illegal option {}'.format(sys.argv[1:]))
         usage()
         sys.exit(2)
 
@@ -48,8 +48,8 @@ def main():
         else:
             assert False, "Unhandled option"
 
-    # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING)
+    # set state to rcpy.RUNNING
+    rcpy.set_state(rcpy.RUNNING)
 
     # message
     print("Press Ctrl-C to exit")
@@ -66,7 +66,7 @@ def main():
         while True:
 
             # running
-            if rc.get_state() == rc.RUNNING:
+            if rcpy.get_state() == rcpy.RUNNING:
 
                 if channel == 0:
 

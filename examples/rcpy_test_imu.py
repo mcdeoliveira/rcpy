@@ -8,13 +8,13 @@ if __name__ == "__main__":
 import time
 import getopt
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
-import rc.mpu9250 as mpu9250
+import rcpy 
+import rcpy.mpu9250 as mpu9250
 
 def usage():
-    print("""usage: python rc_test_imu [options] ...
+    print("""usage: python rcpy_test_imu [options] ...
 Options are:
 -m          enable magnetometer
 -h          print this help message""")
@@ -27,7 +27,7 @@ def main():
 
     except getopt.GetoptError as err:
         # print help information and exit:
-        print('rc_test_imu: illegal option {}'.format(sys.argv[1:]))
+        print('rcpy_test_imu: illegal option {}'.format(sys.argv[1:]))
         usage()
         sys.exit(2)
 
@@ -43,14 +43,14 @@ def main():
         else:
             assert False, "Unhandled option"
 
-    # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING)
+    # set state to rcpy.RUNNING
+    rcpy.set_state(rcpy.RUNNING)
 
     # no magnetometer
     mpu9250.initialize(enable_magnetometer = enable_magnetometer)
 
     # message
-    print("try 'python rc_test_imu -h' to see other options")
+    print("try 'python rcpy_test_imu -h' to see other options")
     print("Press Ctrl-C to exit")
 
     # header
@@ -66,7 +66,7 @@ def main():
         while True:
 
             # running
-            if rc.get_state() == rc.RUNNING:
+            if rcpy.get_state() == rcpy.RUNNING:
                 
                 temp = mpu9250.read_imu_temp()
                 data = mpu9250.read()

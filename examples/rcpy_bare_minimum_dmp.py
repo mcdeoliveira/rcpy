@@ -7,10 +7,10 @@ if __name__ == "__main__":
 # import python libraries
 import time
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
-import rc.mpu9250 as mpu9250 
+import rcpy 
+import rcpy.mpu9250 as mpu9250 
 
 # welcome message
 print("Hello BeagleBone!")
@@ -21,8 +21,8 @@ sample_rate = 4
 mpu9250.initialize(enable_dmp = True,
                    dmp_sample_rate = sample_rate)
 
-# set state to rc.RUNNING
-rc.set_state(rc.RUNNING)
+# set state to rcpy.RUNNING
+rcpy.set_state(rcpy.RUNNING)
 
 # spinning wheel
 i = 0
@@ -37,14 +37,14 @@ try:
         data = mpu9250.read()
         
         # running?
-        if rc.get_state() == rc.RUNNING:
+        if rcpy.get_state() == rcpy.RUNNING:
 
             # do things
             print('\r{}'.format(spin[i % len(spin)]), end='')
             i = i + 1
 
         # paused?
-        elif rc.get_state() == rc.PAUSED:
+        elif rcpy.get_state() == rcpy.PAUSED:
             # do other things
             pass
     

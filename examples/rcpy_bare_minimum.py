@@ -7,16 +7,16 @@ if __name__ == "__main__":
 # import python libraries
 import time
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
+import rcpy 
 
 # welcome message
 print("Hello BeagleBone!")
 print("Press Ctrl-C to exit")
     
-# set state to rc.RUNNING
-rc.set_state(rc.RUNNING)
+# set state to rcpy.RUNNING
+rcpy.set_state(rcpy.RUNNING)
 
 try:
     
@@ -24,12 +24,12 @@ try:
     while True:
 
         # running?
-        if rc.get_state() == rc.RUNNING:
+        if rcpy.get_state() == rcpy.RUNNING:
             # do things
             pass
     
         # paused?
-        elif rc.get_state() == rc.PAUSED:
+        elif rcpy.get_state() == rcpy.PAUSED:
             # do other things
             pass
     

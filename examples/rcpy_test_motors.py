@@ -8,13 +8,13 @@ if __name__ == "__main__":
 import time
 import getopt
 
-# import rc library
+# import rcpy library
 # This automatically initizalizes the robotics cape
-import rc 
-import rc.motor as motor
+import rcpy 
+import rcpy.motor as motor
 
 def usage():
-    print("""usage: python rc_test_motors [options] ...
+    print("""usage: python rcpy_test_motors [options] ...
 Options are:
 -d duty     define a duty cycle from -1.0 to 1.0
 -m motor    specify a single motor from 1-4, 0 for all motors
@@ -36,7 +36,7 @@ def main():
 
     except getopt.GetoptError as err:
         # print help information and exit:
-        print('rc_test_motors: illegal option {}'.format(sys.argv[1:]))
+        print('rcpy_test_motors: illegal option {}'.format(sys.argv[1:]))
         usage()
         sys.exit(2)
 
@@ -64,8 +64,8 @@ def main():
         else:
             assert False, "Unhandled option"
 
-    # set state to rc.RUNNING
-    rc.set_state(rc.RUNNING)
+    # set state to rcpy.RUNNING
+    rcpy.set_state(rcpy.RUNNING)
 
     # set motor duty (only one option at a time)
     if brk:
@@ -98,10 +98,10 @@ def main():
             delta = duty/20
             
             # keep running
-            while rc.get_state() != rc.EXITING:
+            while rcpy.get_state() != rcpy.EXITING:
 
                 # running
-                if rc.get_state() == rc.RUNNING:
+                if rcpy.get_state() == rcpy.RUNNING:
 
                     # increment duty
                     d = d + direction * delta
@@ -111,7 +111,7 @@ def main():
                     if d > duty or d < -duty:
                         direction = direction * -1
                         
-                elif rc.get_state() == rc.PAUSED:
+                elif rcpy.get_state() == rcpy.PAUSED:
 
                     # set motors to free spin
                     motor.set_free_spin(channel)
@@ -124,7 +124,7 @@ def main():
         else:
 
             # keep running
-            while rc.get_state() != rc.EXITING:
+            while rcpy.get_state() != rcpy.EXITING:
                 
                 # sleep some
                 time.sleep(1)
