@@ -11,6 +11,9 @@ def test1():
 
         # no magnetometer
         mpu9250.initialize(enable_magnetometer = False)
+
+        conf = mpu9250.get()
+        assert conf == {'orientation': 136, 'accel_dlpf': 2, 'gyro_dlpf': 2, 'compass_time_constant': 5.0, 'enable_fusion': False, 'enable_dmp': False, 'enable_magnetometer': False, 'accel_fsr': 1, 'dmp_sample_rate': 100, 'show_warnings': False, 'gyro_fsr': 2, 'dmp_interrupt_priority': 98}
         
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |   Temp (C)')
 
@@ -47,6 +50,9 @@ def test1():
         # with magnetometer
         mpu9250.initialize(enable_magnetometer = True)
             
+        conf = mpu9250.get()
+        assert conf == {'orientation': 136, 'accel_dlpf': 2, 'gyro_dlpf': 2, 'compass_time_constant': 5.0, 'enable_fusion': False, 'enable_dmp': False, 'enable_magnetometer': True, 'accel_fsr': 1, 'dmp_sample_rate': 100, 'show_warnings': False, 'gyro_fsr': 2, 'dmp_interrupt_priority': 98}
+        
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
 
         for i in range(N):
@@ -96,6 +102,9 @@ def test2():
         # with dmp, no magnetometer
         mpu9250.initialize(enable_magnetometer = False, enable_dmp = True)
         
+        conf = mpu9250.get()
+        assert conf == {'orientation': 136, 'accel_dlpf': 2, 'gyro_dlpf': 2, 'compass_time_constant': 5.0, 'enable_fusion': False, 'enable_dmp': True, 'enable_magnetometer': False, 'accel_fsr': 1, 'dmp_sample_rate': 100, 'show_warnings': False, 'gyro_fsr': 2, 'dmp_interrupt_priority': 98}
+        
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |   Temp (C)')
 
         for i in range(N):
@@ -110,6 +119,9 @@ def test2():
         # with dmp, with magnetometer
         mpu9250.initialize(enable_magnetometer = True, enable_dmp = True)
             
+        conf = mpu9250.get()
+        assert conf == {'orientation': 136, 'accel_dlpf': 2, 'gyro_dlpf': 2, 'compass_time_constant': 5.0, 'enable_fusion': False, 'enable_dmp': True, 'enable_magnetometer': True, 'accel_fsr': 1, 'dmp_sample_rate': 100, 'show_warnings': False, 'gyro_fsr': 2, 'dmp_interrupt_priority': 98}
+        
         print('\n   Accel XYZ(m/s^2)  |   Gyro XYZ (rad/s)  |  Mag Field XYZ(uT)  | Temp (C)')
 
         for i in range(N):

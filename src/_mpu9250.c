@@ -210,7 +210,7 @@ PyObject *mpu9250_get(PyObject *self)
 
   /* Build the output tuple */
   PyObject *ret = 
-    Py_BuildValue("{sisisisisisisfsisisisisi}",
+    Py_BuildValue("{sisisisisisfsisisOsOsOsO}",
 		  "accel_fsr",
 		  imu_conf.accel_fsr,
 		  "gyro_fsr",
@@ -219,8 +219,6 @@ PyObject *mpu9250_get(PyObject *self)
 		  imu_conf.accel_dlpf,
 		  "gyro_dlpf",
 		  imu_conf.gyro_dlpf,
-		  "enable_magnetometer",
-		  imu_conf.enable_magnetometer,
 		  "orientation",
 		  imu_conf.orientation,
 		  "compass_time_constant",
@@ -229,12 +227,14 @@ PyObject *mpu9250_get(PyObject *self)
 		  imu_conf.dmp_interrupt_priority,
 		  "dmp_sample_rate",
 		  imu_conf.dmp_sample_rate,
+		  "enable_magnetometer",
+		  imu_conf.enable_magnetometer ? Py_True : Py_False,
 		  "show_warnings",
-		  imu_conf.show_warnings,
+		  imu_conf.show_warnings ? Py_True : Py_False,
 		  "enable_dmp",
-		  imu_enable_dmp,
+		  imu_enable_dmp ? Py_True : Py_False,
 		  "enable_fusion",
-		  imu_enable_fusion);
+		  imu_enable_fusion ? Py_True : Py_False);
   
   return ret;
 }
