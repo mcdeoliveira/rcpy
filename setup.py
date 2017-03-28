@@ -1,4 +1,5 @@
-from distutils.core import setup, Extension
+#from distutils.core import setup, Extension
+from setuptools import setup, Extension, find_packages
 import platform
 
 LIBS = ['roboticscape']
@@ -26,5 +27,20 @@ motor = Extension("rcpy.motor",
                   libraries = LIBS)
 
 setup(
-    ext_modules=[rcpy, mpu9250, encoder, gpio, motor]
+    
+    name="rcpy",
+    version="0.1a",
+    packages=find_packages(),
+
+    # extensions
+    ext_modules=[rcpy, mpu9250, encoder, gpio, motor],
+
+    # metadata
+    author="Mauricio C. de Oliveira",
+    author_email="mauricio@ucsd.edu",
+    description="Python interface for Robotics Cape",
+    license="MIT",
+    keywords="Robotics Cape beaglebone black",
+    url="https://github.com/mcdeoliveira/rcpy"
+    
 )
