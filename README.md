@@ -1,6 +1,6 @@
 # rcpy: Python bindings for roboticscape
 
-** Release 0.1a **
+**Release 0.1a**
 
 This is a Python library with bindings for some of the functionality of the [Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
 
