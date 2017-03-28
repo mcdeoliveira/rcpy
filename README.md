@@ -2,6 +2,8 @@
 
 This is a Python library with bindings for some of the functionality of the [Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
 
+We only support Python 3, although there is nothing that I can see that would prevent it from compiling under Python 2 as well.
+
 Not all functions are supported. Currently supported functions are:
 
 1. MPU9250
