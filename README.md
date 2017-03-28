@@ -37,4 +37,4 @@ Run setup.py install:
 
 ## Author:
 
-[Mauricio C. de Oliveira](https://control.ucsd.edu/mauricio)
+[Mauricio C. de Oliveira](http://control.ucsd.edu/mauricio)
