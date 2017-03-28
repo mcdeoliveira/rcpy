@@ -17,7 +17,7 @@ You might also be interested in the [ctrl package](https://github.com/mcdeolivei
 ## Installation
 
 As of today you will need a modified version of the current Robotics
-Cape library. You can clone it from the fork:
+Cape library. You can clone it from my fork:
 
     git clone https://github.com/mcdeoliveira/Robotics_Cape_Installer
 
