@@ -31,7 +31,11 @@ Clone this repository:
 
     git clone https://github.com/mcdeoliveira/rcpy
 
-Run setup.py install:
+If you have not installed python3 yet type
+
+    sudo apt install python3 python3-setuptools python3-dev
+
+Finally run setup.py install:
 
     python3 setup.py install
 
