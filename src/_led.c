@@ -97,7 +97,7 @@ PyObject *led_get(PyObject *self,
   }
   
   /* set led */
-  int state = rc_set_led(led, state);
+  int state = rc_get_led(led);
   if (state < 0) {
     PyErr_SetString(ledError, "Failed");
     return NULL;
