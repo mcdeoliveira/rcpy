@@ -19,7 +19,7 @@ class __blink(threading.Thread):
     def __init__(self, led, hz):
 
         # call super
-        super().__init()
+        super().__init__()
         
         self.state = ON
         self.led = led
