@@ -75,7 +75,7 @@ PyObject *led_set(PyObject *self,
   /* parse arguments */
   int led, state;
   if (!PyArg_ParseTuple(args, "Ii", &led, &state)) {
-    PyErr_SetString(ledError, "Invalid argument");
+    PyErr_SetString(ledError, "Invalid arguments");
     return NULL;
   }
 

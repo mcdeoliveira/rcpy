@@ -1,14 +1,21 @@
 import pytest
 
 import time
-import rcpy.LED as LED
+import rcpy.LED as led
 
 def test1():
 
-    LED.set(LED.GREEN, LED.ON)
-    LED.set(LED.GREEN, LED.OFF)
-    LED.set(LED.RED, LED.ON)
-    LED.set(LED.RED, LED.OFF)
+    led.set(led.GREEN, led.ON)
+    assert led.get(led.GREEN) == led.ON
+    
+    led.set(led.GREEN, led.OFF)
+    assert led.get(led.GREEN) == led.OFF
+    
+    led.set(led.RED, led.ON)
+    assert led.get(led.RED) == led.ON
+    
+    led.set(led.RED, led.OFF)
+    assert led.get(led.RED) == led.OFF
 
 if __name__ == '__main__':
 
