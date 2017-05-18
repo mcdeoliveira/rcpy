@@ -131,7 +131,7 @@ PyObject *led_blink(PyObject *self,
   }
 
   /* blink led */
-  if (!rc_blink_led(led, hz, period)) {
+  if (rc_blink_led(led, hz, period) < 0) {
     PyErr_SetString(ledError, "Failed");
     return NULL;
   }
