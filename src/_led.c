@@ -80,7 +80,7 @@ PyObject *led_set(PyObject *self,
   }
 
   /* set led */
-  if (!rc_set_led(led, state)) {
+  if (rc_set_led(led, state) < 0) {
     PyErr_SetString(ledError, "Failed");
     return NULL;
   }
