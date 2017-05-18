@@ -17,6 +17,7 @@ OFF = 0
 class blinkThread(threading.Thread):
     
     def __init__(self, led, hz):
+        super().__init__(self)
         self.led = led
         self.T = 1/hz
         self.state = OFF
