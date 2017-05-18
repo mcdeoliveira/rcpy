@@ -1,4 +1,4 @@
-import rcpy.led as LED
+from rcpy.led import *
 
 # definitions
 
