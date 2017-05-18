@@ -14,12 +14,26 @@ RED = 1
 ON  = 1
 OFF = 0
 
-def __blink(led, hz):
-    state = led.ON
-    while True:
-        set(led, state)
-        state = not state
-        time.sleep(1/hz)
+class __blink(threading.Thread):
+
+    def __init__(self, led, hz):
+
+        # call super
+        super().__init()
+        
+        self.state = ON
+        self.led = led
+        self.T = 1/hz
+        
+    def run(self):
+        self.run = True
+        while self.run:
+            set(led, state)
+            state = not state
+            time.sleep(1/hz)
+
+    def stop(self):
+        self.run = False
 
 def blink(led, hz, period):
 
@@ -27,7 +41,6 @@ def blink(led, hz, period):
         _blink(led, hz, period)
     
     elif period <= 0:
-        thread = threading.Thread(target = __blink,
-                                  args = (led, hz))
+        thread = __blink(led, hz)
         thread.start()
         return thread
