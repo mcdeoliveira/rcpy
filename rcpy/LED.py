@@ -28,7 +28,7 @@ class __blink(threading.Thread):
     def run(self):
         self.run = True
         while self.run:
-            set(self.led, state)
+            set(self.led, self.state)
             self.state = not self.state
             time.sleep(self.T)
 
