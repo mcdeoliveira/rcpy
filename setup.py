@@ -32,7 +32,7 @@ led = Extension("rcpy.led",
 setup(
     
     name="rcpy",
-    version="0.1a",
+    version="0.2a",
     packages=find_packages(),
 
     # extensions

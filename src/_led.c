@@ -38,7 +38,7 @@ static struct PyModuleDef module = {
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
 	       or -1 if the module keeps state in global variables. */
-   module_methods
+  module_methods
 };
 
 /* python functions */
@@ -46,7 +46,7 @@ static struct PyModuleDef module = {
 PyMODINIT_FUNC PyInit_led(void)
 {
   PyObject *m;
-
+  
   /* create module */
   m = PyModule_Create(&module);
   if (m == NULL)
