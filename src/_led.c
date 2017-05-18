@@ -57,6 +57,13 @@ PyMODINIT_FUNC PyInit_led(void)
   Py_INCREF(ledError);
   PyModule_AddObject(m, "error", ledError);
 
+  /* initialize cape */
+  if (rc_get_state() == UNINITIALIZED) {
+    // printf("* * * led: WILL CALL INIT * * *\n");
+    if(rc_initialize())
+      return NULL;
+  }
+  
   return m;
 }
 
