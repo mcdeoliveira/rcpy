@@ -14,17 +14,17 @@ static PyObject *led_get(PyObject *self, PyObject *args);
 static PyObject *led_blink(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-  {"led_set",
+  {"set",
    (PyCFunction)led_set,
    METH_VARARGS,
    "set led"}
   ,
-  {"led_get",
+  {"get",
    (PyCFunction)led_get,
    METH_VARARGS,
    "get led"}
   ,
-  {"led_blink",
+  {"blink",
    (PyCFunction)led_blink,
    METH_VARARGS,
    "blink led"}
