@@ -1,4 +1,4 @@
-import rc.gpio as GPIO
+import rcpy.gpio as GPIO
 
 # definitions
 
