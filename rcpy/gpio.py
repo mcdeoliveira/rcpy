@@ -1,5 +1,3 @@
-import io
-
 from rcpy._gpio_mmap import *
 
 # definitions
@@ -53,6 +51,10 @@ BATT_LED_3 = 61      #  P8.26
 BATT_LED_4 = 26      #  P8.14
 
 SYSFS_GPIO_DIR = '/sys/class/gpio'
+POOL_TIMEOUT = 100
+
+import io
+import select
 
 def read(pin):
     
@@ -60,9 +62,13 @@ def read(pin):
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
     
     with open(filename, 'rb') as f:
-        # go to the end
-        #f.seek(io.SEEK_END)
-        # then read
-        value = f.read()
-        print('value = {}'.format(value))
-        
+
+        # create poller
+        poller = select.poll()
+        poller.register(f, select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
+
+        # wait for input
+        poller.poll(POLL_TIMEOUT)
+
+        # return read value
+        return gpio.get(pin)
