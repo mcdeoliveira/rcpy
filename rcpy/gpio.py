@@ -71,4 +71,4 @@ def read(pin):
         poller.poll(POLL_TIMEOUT)
 
         # return read value
-        return gpio.get(pin)
+        return get(pin)
