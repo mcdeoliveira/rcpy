@@ -122,13 +122,13 @@ class Input:
                 return value
                     
     def high(self, debounce = 0):
-        if high_or_low(self, debounce) == HIGH:
+        if self.high_or_low(debounce) == HIGH:
             return True
         else:
             return False
 
     def low(self, debounce = 0):
-        if high_or_low(self, debounce) == LOW:
+        if self.high_or_low(debounce) == LOW:
             return True
         else:
             return False
