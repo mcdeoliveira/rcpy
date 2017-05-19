@@ -135,8 +135,8 @@ class Input:
 
 class InputEvent(threading.Thread):
 
-    EVENT_LOW = 1
-    EVENT_HIGH = 2
+    LOW = 1
+    HIGH = 2
     
     class InputEventInterrupt(Exception):
         pass
@@ -149,9 +149,9 @@ class InputEvent(threading.Thread):
         self.event = event
 
     def action(self, event, *vargs, **kwargs):
-        if event == EVENT_HIGH:
+        if event == InputEvent.HIGH:
             print('InputEvent HIGH detected')
-        elif event == EVENT_LOW:
+        elif event == InputEvent.LOW:
             print('InputEvent LOW detected')
         else:
             raise Exception('Unkown InputEvent {}'.format(event))
