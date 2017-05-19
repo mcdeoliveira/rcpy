@@ -28,12 +28,16 @@ class ModeButtonEvent(button.ButtonEvent):
         print("<MODE> pressed, stepping blinking rate")
         # increment rate
         index += 1
-        #red.set_rate(rates[index % len(rates)])
-        #green.set_rate(rates[index % len(rates)])
+        red.set_rate(rates[index % len(rates)])
+        green.set_rate(rates[index % len(rates)])
         
 mode_event = ModeButtonEvent(button.mode, button.Button.PRESSED)
 mode_event.start()
-    
+
+mode_event.join()
+
+return
+
 # welcome message
 print("Green and red LEDs should be flashing")
 print("Press button <MODE> to change the blink rate")
