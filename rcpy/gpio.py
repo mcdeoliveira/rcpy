@@ -67,8 +67,16 @@ def read(pin):
         poller = select.poll()
         poller.register(f, select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
 
-        # wait for input
-        poller.poll(POLL_TIMEOUT)
+        while True:
 
-        # return read value
-        return get(pin)
+            # wait for events
+            events = poller.poll(POLL_TIMEOUT)
+            
+            for fd, flag in events:
+                
+                # Handle inputs
+                if flag & (select.POLLIN | select.POLLPRI):
+                    # return read value
+                    return get(pin)
+                #elif flag & select.POLLHUP:
+                #elif flag & select.POLLERR:
