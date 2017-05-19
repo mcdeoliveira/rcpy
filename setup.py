@@ -25,9 +25,9 @@ motor = Extension("rcpy.motor",
                   sources = ["src/_motor.c"],
                   libraries = LIBS)
 
-led = Extension("rcpy._led",
-                sources = ["src/_led.c"],
-                libraries = LIBS)
+_led = Extension("rcpy._led",
+                 sources = ["src/_led.c"],
+                 libraries = LIBS)
 
 _buttons = Extension("rcpy._buttons",
                      sources = ["src/_buttons.c"],
