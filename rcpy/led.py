@@ -59,7 +59,7 @@ class Blink(threading.Thread):
         self.condition.release()
 
         # turn off
-        time.sleep(self.period)
+        time.sleep(2*self.period)
         self.led.off()
 
 class LED:
