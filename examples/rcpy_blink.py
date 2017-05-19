@@ -24,7 +24,7 @@ rcpy.set_state(rcpy.RUNNING)
 # mode pressed?
 class ModeButtonEvent(button.ButtonEvent):
     
-    def action(self, event):
+    def action(self, event, *vargs, **kwargs):
         print("<MODE> pressed, stepping blinking rate")
         # increment rate
         index += 1
