@@ -68,7 +68,7 @@ def read(pin):
         
         # create poller
         poller = select.poll()
-        poller.register(f, select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
+        poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         while True:
 
