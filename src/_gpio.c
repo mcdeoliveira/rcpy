@@ -62,7 +62,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef module = {
   PyModuleDef_HEAD_INIT,
-  "gpio",   /* name of module */
+  "_gpio",   /* name of module */
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
 	       or -1 if the module keeps state in global variables. */
@@ -105,7 +105,7 @@ int gpio_initialize_gpio(void) {
 
 /* python functions */
 
-PyMODINIT_FUNC PyInit_gpio(void)
+PyMODINIT_FUNC PyInit__gpio(void)
 {
   PyObject *m;
 

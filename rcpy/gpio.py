@@ -1,6 +1,9 @@
-import rcpy.gpio as GPIO
+from rcpy._gpio import *
 
 # definitions
+
+ON = 1
+OFF = 0
 
 # direction
 IN  = 0
@@ -46,3 +49,4 @@ BATT_LED_2 = 65      #  P8.18
 BATT_LED_2_BLUE = 11 #  different on BB Blue
 BATT_LED_3 = 61      #  P8.26
 BATT_LED_4 = 26      #  P8.14
+
