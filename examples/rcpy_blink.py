@@ -35,7 +35,7 @@ def step():
 
 # run step function on a thread
 step_thread = threading.Thread(target=step)
-step_thread.start()
+#step_thread.start()
 
 # welcome message
 print("Green and red LEDs should be flashing")
