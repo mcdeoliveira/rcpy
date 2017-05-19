@@ -35,8 +35,8 @@ class ButtonEvent(threading.Thread):
                 self.run = False
 
     def stop(self):
-        
-        raise ButtonEvent.ButtonEventInterrupt()
+
+        self.run = False
 
 class Button():
 
