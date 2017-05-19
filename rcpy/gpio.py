@@ -63,6 +63,9 @@ def read(pin):
     
     with open(filename, 'rb') as f:
 
+        # read first
+        f.read()
+        
         # create poller
         poller = select.poll()
         poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
