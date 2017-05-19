@@ -27,7 +27,7 @@ static PyMethodDef module_methods[] = {
 };
 
 static struct PyModuleDef module = {
-  PyModubuttonef_HEAD_INIT,
+  PyModuleDef_HEAD_INIT,
   "_button",   /* name of module */
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
