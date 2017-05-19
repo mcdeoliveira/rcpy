@@ -43,7 +43,7 @@ class LED:
         self.condition.release()
         
             
-    def blink(frequency):
+    def blink(period):
 
         self.run = True
         while rcpy.get_state() != rcpy.EXITING and self.run:
@@ -52,7 +52,7 @@ class LED:
             self.condition.acquire()
             
             # Setup timer
-            self.timer = threading.Timer(self.period, self._blink)
+            self.timer = threading.Timer(period, self._blink)
             self.timer.start()
 
             # Wait 
