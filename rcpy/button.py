@@ -20,7 +20,7 @@ class ButtonEvent(threading.Thread):
         self.event = event
 
     def action(self, *vargs, **kwargs):
-        pass
+        print('ACTION!')
         
     def run(self):
         self.run = True
@@ -30,12 +30,12 @@ class ButtonEvent(threading.Thread):
                 if self.button.pressed_or_released() & self.event:
                     # fire callback
                     callback()
-            except ButtonEventInterrupt:
+            except ButtonEvent.ButtonEventInterrupt:
                 self.run = False
 
     def stop(self):
         
-        raise ButtonEventInterrupt()
+        raise ButtonEvent.ButtonEventInterrupt()
 
 class Button():
 
