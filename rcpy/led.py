@@ -12,7 +12,10 @@ class Blink(threading.Thread):
         self.condition = threading.Condition()
         self.led = led
         self.period = period
-    
+
+    def set_period(self, period):
+        self.period = period
+        
     def _blink(self):
 
         # Acquire lock

@@ -7,8 +7,16 @@ import rcpy.button as button
 import rcpy.led as led
 
 # configure LEDs
-rates = (1, 5, 10)
+rates = (1, 0.5, 0.1)
 index = 0
+
+# blink leds
+led.red.on()
+led.green.off()
+blink_red = led.Blink(led.red, rates[index % len(rates)])
+blink_green = led.Blink(led.green, rates[index % len(rates)])
+blink_red.start()
+blink_green.start()
 
 # set state to rcpy.RUNNING
 rcpy.set_state(rcpy.RUNNING)
@@ -37,6 +45,7 @@ try:
     while rcpy.get_state() != rcpy.EXITING:
 
         print("Waiting for <PAUSE> button...")
+        
         # this is a blocking call!
         if button.pause.pressed():
 
@@ -76,8 +85,13 @@ finally:
 
     print("Exiting...")
 
-    # wait for step_thread to end
+    # stop threads
+    blink_red.stop()
+    blink_green.stop()
     mode_event.stop()
+    
+    blink_red.join()
+    blink_green.join()
     mode_event.join()
     
     # say bye
