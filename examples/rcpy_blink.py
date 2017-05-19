@@ -25,6 +25,8 @@ index = 0
 
 red = led.blink(led.RED, rates[index % len(rates)])
 green = led.blink(led.RED, rates[index % len(rates)])
+red.stop()
+green.stop()
 
 # initialize state
 red.set_state(led.ON)
