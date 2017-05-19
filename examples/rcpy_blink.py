@@ -26,7 +26,7 @@ rcpy.set_state(rcpy.RUNNING)
 
 # function to step rate
 def step():
-    while rcpy.set_state(rcpy.RUNNING):
+    while rcpy.get_state() != rcpy.EXITING:
         if button.pressed(button.MODE):
             # increment rate
             index += 1
@@ -45,9 +45,9 @@ print("Hold button <PAUSE> for 1.5 s to exit")
 
 try:
     
-    # wait for PAUSE button
-    while rcpy.get_state() == rcpy.RUNNING:
+    while rcpy.get_state() != rcpy.EXITING:
 
+        # wait for PAUSE button
         # this is a blocking call!
         if button.pressed(button.PAUSE):
 
