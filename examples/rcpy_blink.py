@@ -28,6 +28,7 @@ rcpy.set_state(rcpy.RUNNING)
 def step():
     while rcpy.get_state() != rcpy.EXITING:
         if button.pressed(button.MODE):
+            print("<MODE> pressed, stepping blinking rate")
             # increment rate
             index += 1
             red.set_rate(rates[index % len(rates)])
@@ -47,22 +48,25 @@ try:
     
     while rcpy.get_state() != rcpy.EXITING:
 
-        # wait for PAUSE button
+        print("Waiting for <PAUSE> button...")
         # this is a blocking call!
         if button.pressed(button.PAUSE):
 
             # this is a blocking call with a timeout!
             if button.released(button.PAUSE, 1.5):
                 # released too soon!
+                print("<PAUSE> pressed")
 
                 # toggle start
                 if blinking:
+                    print("Stopped blinking")
                     # stop leds
                     red.stop()
                     green.stop()
                     blinking = False
 
                 else:
+                    print("Started blinking")
                     # start leds
                     red = led.blink(led.RED, rates[index % len(rates)], led.ON)
                     green = led.blink(led.RED, rates[index % len(rates)], led.OFF)
@@ -70,6 +74,7 @@ try:
 
             else:
                 # timeout or did not release
+                print("<PAUSE> held, exiting...")
                 # exit
                 break
 
