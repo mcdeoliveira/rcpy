@@ -84,6 +84,8 @@ except KeyboardInterrupt:
         
 finally:
 
+    print("Exiting...")
+
     # wait for step_thread to end
     step_thread.join()
     
