@@ -31,7 +31,7 @@ class ModeButtonEvent(button.ButtonEvent):
         red.set_rate(rates[index % len(rates)])
         green.set_rate(rates[index % len(rates)])
         
-mode_event = ModeButtonEvent(button.mode, button.Button.PRESSED)
+mode_event = ModeButtonEvent(button.mode, button.PRESSED)
 mode_event.start()
 
 mode_event.join()

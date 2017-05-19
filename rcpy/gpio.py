@@ -146,7 +146,10 @@ class InputEvent(threading.Thread):
         self.event = event
 
     def action(self, event, *vargs, **kwargs):
-        pass
+        if event == HIGH:
+            print('InputEvent HIGH detected')
+        else:
+            print('InputEvent LOW detected')
         
     def run(self):
         self.run = True

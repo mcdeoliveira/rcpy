@@ -5,15 +5,14 @@ import threading
 import time
 
 DEBOUNCE = 3
-
+PRESSED = gpio.LOW
+RELEASED = gpio.HIGH
+    
 class ButtonEvent(gpio.InputEvent):
     pass
 
 class Button(gpio.Input):
 
-    PRESSED = gpio.LOW
-    RELEASED = gpio.HIGH
-    
     def is_pressed(self, debounce = DEBOUNCE):
         return self.is_low(debounce)
 
