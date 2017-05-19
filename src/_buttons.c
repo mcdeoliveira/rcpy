@@ -73,6 +73,7 @@ PyObject *button_pressed(PyObject *self,
     return NULL;
   }
 
+  int pressed = 0;
   if (button == 0) {
     /* pause button */
 
@@ -85,6 +86,9 @@ PyObject *button_pressed(PyObject *self,
 
     // releases mutex
     pthread_mutex_unlock( &rc_buttons_pause_pressed_mutex );
+    
+    if (rc_get_state() != EXITING)
+      pressed = 1;
     
   } else if (button == 1) {
     /* mode button */
@@ -99,13 +103,16 @@ PyObject *button_pressed(PyObject *self,
     // releases mutex
     pthread_mutex_unlock( &rc_buttons_mode_pressed_mutex );
 
+    if (rc_get_state() != EXITING)
+      pressed = 1;
+
   } else {
-    PyErr_SetString(buttonError, "Failed");
+    PyErr_SetString(buttonError, "Unknown button");
     return NULL;
   }
     
   /* Build the output tuple */
-  PyObject *ret = Py_BuildValue("");
+  PyObject *ret = Py_BuildValue("O", pressed ? Py_True : Py_False);
 
   return ret;
 }
@@ -122,6 +129,7 @@ PyObject *button_released(PyObject *self,
     return NULL;
   }
 
+  int released = 0;
   if (button == 0) {
     /* pause button */
 
@@ -134,6 +142,9 @@ PyObject *button_released(PyObject *self,
 
     // releases mutex
     pthread_mutex_unlock( &rc_buttons_pause_released_mutex );
+    
+    if (rc_get_state() != EXITING)
+      released = 1;
     
   } else if (button == 1) {
     /* mode button */
@@ -148,14 +159,16 @@ PyObject *button_released(PyObject *self,
     // releases mutex
     pthread_mutex_unlock( &rc_buttons_mode_released_mutex );
 
+    if (rc_get_state() != EXITING)
+      released = 1;
+    
   } else {
-    PyErr_SetString(buttonError, "Failed");
+    PyErr_SetString(buttonError, "Unknown button");
     return NULL;
   }
     
   /* Build the output tuple */
-  PyObject *ret = Py_BuildValue("");
+  PyObject *ret = Py_BuildValue("O", released ? Py_True : Py_False);
 
   return ret;
 }
-
