@@ -4,8 +4,8 @@ import rcpy.gpio as gpio
 import threading
 import time
 
-DEBOUCE = 3
-DEBOUCE_INTERVAL = 0.0005
+DEBOUNCE = 3
+DEBOUNCE_INTERVAL = 0.0005
 
 class ButtonEvent(threading.Thread):
 
@@ -34,7 +34,8 @@ class ButtonEvent(threading.Thread):
                 self.run = False
 
     def stop(self):
-        raise ButtonEventInterrupt
+        
+        raise ButtonEventInterrupt()
 
 class Button():
 
