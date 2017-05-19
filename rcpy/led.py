@@ -5,12 +5,13 @@ import threading
 
 class Blink(threading.Thread):
 
-    def __init__(self, led):
+    def __init__(self, led, period):
 
         super().__init__()
         
         self.condition = threading.Condition()
         self.led = led
+        self.period = period
     
     def _blink(self):
 
@@ -35,7 +36,7 @@ class Blink(threading.Thread):
             self.condition.acquire()
             
             # Setup timer
-            self.timer = threading.Timer(period, self._blink)
+            self.timer = threading.Timer(self.period, self._blink)
             self.timer.start()
 
             # Wait 
@@ -82,7 +83,7 @@ class LED:
             self.on()
 
     def blink(self, period):
-        thread = Blink(self.led)
+        thread = Blink(self, period)
         thread.start()
         return thread
 
