@@ -1,9 +1,8 @@
 #include <Python.h>
 
-#include <poll.h>
-
 #include <rc_usefulincludes.h>
 #include <roboticscape.h>
+#include <rc_buttons.h>
 
 static char module_docstring[] =
   "This module provides an interface for gpio_mmap.";
