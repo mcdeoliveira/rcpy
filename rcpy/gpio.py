@@ -1,3 +1,4 @@
+import rcpy
 from rcpy._gpio_mmap import *
 
 # definitions
