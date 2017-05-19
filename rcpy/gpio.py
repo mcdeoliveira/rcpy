@@ -135,6 +135,9 @@ class Input:
 
 class InputEvent(threading.Thread):
 
+    EVENT_LOW = 1
+    EVENT_HIGH = 2
+    
     class InputEventInterrupt(Exception):
         pass
     
@@ -146,17 +149,19 @@ class InputEvent(threading.Thread):
         self.event = event
 
     def action(self, event, *vargs, **kwargs):
-        if event == HIGH:
+        if event == EVENT_HIGH:
             print('InputEvent HIGH detected')
-        else:
+        elif event == EVENT_LOW:
             print('InputEvent LOW detected')
-        
+        else:
+            raise Exception('Unkown InputEvent {}'.format(event))
+            
     def run(self):
         self.run = True
         while rcpy.get_state() != rcpy.EXITING and self.run:
 
             try:
-                evnt = self.input.high_or_low()
+                evnt = 1 << self.input.high_or_low()
                 if evnt & self.event:
                     # fire callback
                     self.action(evnt)

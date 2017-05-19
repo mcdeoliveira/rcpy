@@ -9,7 +9,9 @@ PRESSED = gpio.LOW
 RELEASED = gpio.HIGH
     
 class ButtonEvent(gpio.InputEvent):
-    pass
+
+    EVENT_PRESSED = InputEvent.EVENT_LOW
+    EVENT_RELEASED = InputEvent.EVENT_HIGH
 
 class Button(gpio.Input):
 
