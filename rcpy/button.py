@@ -11,7 +11,8 @@ class Button():
     def is_pressed(self):
         return gpio.get(self.pin)
 
-    def pressed(self, callback)
+    def pressed(self, callback):
+        
     
 # definitions
 
