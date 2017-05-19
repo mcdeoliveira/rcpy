@@ -12,7 +12,7 @@ class LED:
         self.pin = pin
         if state == gpio.ON:
             self.on()
-        else
+        else:
             self.off()
 
     def on():
