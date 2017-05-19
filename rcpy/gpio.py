@@ -63,6 +63,6 @@ def read(pin):
         # go to the end
         f.seek(io.SEEK_END)
         # then read
-        value = f.read(1)
+        value = f.read()
         print('value = {}'.format(value))
         
