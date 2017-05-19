@@ -1,5 +1,7 @@
 #include <Python.h>
 
+#include <poll.h>
+
 #include <rc_usefulincludes.h>
 #include <roboticscape.h>
 
