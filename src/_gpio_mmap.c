@@ -74,7 +74,7 @@ PyObject *gpio_mmap_set_value(PyObject *self,
   }
 
   /* set gpio value */
-  if (!rc_gpio_set_value_mmap(gpio, value)) {
+  if (rc_gpio_set_value_mmap(gpio, value) < 0) {
     PyErr_SetString(gpio_mmapError, "Failed to set gpio value");
     return NULL;
   }
@@ -98,8 +98,12 @@ PyObject *gpio_mmap_get_value(PyObject *self,
   }
 
   /* get gpio_mmap value */
-  int value = rc_gpio_get_value_mmap(gpio);
-    
+  int value;
+  if ((value = rc_gpio_get_value_mmap(gpio)) < 0) {
+    PyErr_SetString(gpio_mmapError, "Failed to get gpio value");
+    return NULL;
+  }
+  
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("i", value);
 
