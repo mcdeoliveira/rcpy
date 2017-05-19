@@ -29,6 +29,10 @@ led = Extension("rcpy.led",
                 sources = ["src/_led.c"],
                 libraries = LIBS)
 
+_buttons = Extension("rcpy._buttons",
+                     sources = ["src/_buttons.c"],
+                     libraries = LIBS)
+
 setup(
     
     name="rcpy",
@@ -36,8 +40,9 @@ setup(
     packages=find_packages(),
 
     # extensions
-    ext_modules=[rcpy, mpu9250, encoder, gpio, motor, led],
-
+    ext_modules=[rcpy, mpu9250, encoder, gpio, motor, led,
+                 _buttons],
+    
     # metadata
     author="Mauricio C. de Oliveira",
     author_email="mauricio@ucsd.edu",
