@@ -12,13 +12,6 @@ import rcpy
 import rcpy.button as button
 import rcpy.led as led
 
-# welcome message
-print("Hello BeagleBone!")
-print("Green and red LEDs are flashing")
-print("Press button <MODE> to change the blink rate")
-print("Press button <PAUSE> to stop or restart blinking")
-print("Hold button <PAUSE> for 1.5 s to exit")
-  
 # configure LEDs
 rates = (1, 5, 10)
 index = 0
@@ -44,7 +37,14 @@ def step():
 step_thread = threading.Thread(target=step)
 step_thread.start()
 
+# welcome message
+print("Green and red LEDs should be flashing")
+print("Press button <MODE> to change the blink rate")
+print("Press button <PAUSE> to stop or restart blinking")
+print("Hold button <PAUSE> for 1.5 s to exit")
+
 try:
+    
     # wait for PAUSE button
     while rcpy.get_state() == rcpy.RUNNING:
 
@@ -75,7 +75,7 @@ try:
 
 except KeyboardInterrupt:
     # Catch Ctrl-C
-    pass
+    rcpy.set_state(rcpy.EXITING)
         
 finally:
 
