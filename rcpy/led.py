@@ -43,7 +43,7 @@ class LED:
         self.condition.release()
         
             
-    def blink(period):
+    def blink(self,period):
 
         self.run = True
         while rcpy.get_state() != rcpy.EXITING and self.run:
