@@ -1,4 +1,4 @@
-from rcpy._gpio import *
+from rcpy._gpio_mmap import *
 
 # definitions
 
