@@ -36,8 +36,6 @@ mode_event.start()
 
 mode_event.join()
 
-return
-
 # welcome message
 print("Green and red LEDs should be flashing")
 print("Press button <MODE> to change the blink rate")
