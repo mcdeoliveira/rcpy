@@ -59,7 +59,7 @@ def read(pin):
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
     
-    with open(filename, 'rb', buffering = 0) as f:
+    with open(filename, 'rb') as f:
         # go to the end
         f.seek(io.SEEK_END)
         # then read
