@@ -1,4 +1,4 @@
-import signal
+import threading
 
 from rcpy._buttons import pressed as _pressed
 from rcpy._buttons import released as _released
@@ -22,8 +22,7 @@ def pressed(button, timeout = 0):
 
     # set a timeout
     if timeout > 0:
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(timeout)
+        threading.Timer(timeout, timeout_handler)
 
     try:
         return _pressed(button)
@@ -35,8 +34,7 @@ def released(button, timeout = 0):
 
     # set a timeout
     if timeout > 0:
-        signal.signal(signal.SIGALRM, timeout_handler)
-        signal.alarm(timeout)
+        threading.Timer(timeout, timeout_handler)
         
     try:
         return _released(button)
