@@ -14,15 +14,15 @@ class LED:
         else:
             self.off()
 
-    def on():
+    def on(self):
         self.state = gpio.ON
         gpio.set(self.pin, gpio.ON)
 
-    def off():
+    def off(self):
         self.state = gpio.OFF
         gpio.set(self.pin, gpio.OFF)
 
-    def toggle():
+    def toggle(self):
         if self.state == gpio.ON:
             self.off()
         else:
