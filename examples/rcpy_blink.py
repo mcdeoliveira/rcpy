@@ -50,12 +50,14 @@ try:
 
         print("Waiting for <PAUSE> button...")
         # this is a blocking call!
-        if button.pressed(button.PAUSE):
+        if button.pressed(button.PAUSE, 2):
+
+            # pause pressed
+            print("<PAUSE> pressed")
 
             # this is a blocking call with a timeout!
             if button.released(button.PAUSE, 1.5):
                 # released too soon!
-                print("<PAUSE> pressed")
 
                 # toggle start
                 if blinking:
