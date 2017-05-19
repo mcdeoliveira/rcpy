@@ -69,9 +69,9 @@ class Button():
                 # check value
                 if value == event:
                     if value == gpio.LOW:
-                        return PRESSED
+                        return Button.PRESSED
                     else:
-                        return RELEASED
+                        return Button.RELEASED
                     
     def pressed(self):
         value = gpio.read(self.pin)
