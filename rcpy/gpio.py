@@ -1,3 +1,5 @@
+import io
+
 from rcpy._gpio_mmap import *
 
 # definitions
@@ -57,6 +59,10 @@ def read(pin):
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
     
-    with open(filename, 'rb', buffering = 0) as f: 
+    with open(filename, 'rb', buffering = 0) as f:
+        # go to the end
+        f.seek(io.SEEK_END)
+        # then read
         value = f.read(1)
         print('value = {}'.format(value))
+        
