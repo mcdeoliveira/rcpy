@@ -14,7 +14,7 @@ class TimeoutException(Exception):
     pass
 
 # timeout handler
-def timeout(signum, frame):
+def timeout_handler(signum, frame):
     raise TimeoutException()
 
 # pressed?
@@ -22,7 +22,7 @@ def pressed(button, timeout = 0):
 
     # set a timeout
     if timeout > 0:
-        signal.signal(signal.SIGALRM, timeout)
+        signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(timeout)
 
     try:
@@ -35,7 +35,7 @@ def released(button, timeout = 0):
 
     # set a timeout
     if timeout > 0:
-        signal.signal(signal.SIGALRM, timeout)
+        signal.signal(signal.SIGALRM, timeout_handler)
         signal.alarm(timeout)
         
     try:
