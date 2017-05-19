@@ -59,4 +59,4 @@ def read(pin):
     
     with open(filename, 'rb', buffering = 0) as f: 
         value = f.read(1)
-        print('value = {}'.format(value)
+        print('value = {}'.format(value))
