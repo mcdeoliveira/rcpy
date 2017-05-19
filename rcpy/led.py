@@ -58,6 +58,9 @@ class Blink(threading.Thread):
         # Release lock
         self.condition.release()
 
+        # turn off
+        self.led.off()
+
 class LED:
 
     def __init__(self, pin, state = gpio.OFF):
