@@ -51,7 +51,7 @@ BATT_LED_3 = 61      #  P8.26
 BATT_LED_4 = 26      #  P8.14
 
 SYSFS_GPIO_DIR = '/sys/class/gpio'
-POOL_TIMEOUT = 100
+POLL_TIMEOUT = 100
 
 import io
 import select
