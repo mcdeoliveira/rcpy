@@ -18,7 +18,7 @@ def timeout(signum, frame):
     raise TimeoutException()
 
 # pressed?
-def pressed(button, timeout):
+def pressed(button, timeout = 0):
 
     # set a timeout
     if timeout > 0:
@@ -31,7 +31,7 @@ def pressed(button, timeout):
         return False
 
 # released?
-def released(button, timeout):
+def released(button, timeout = 0):
 
     # set a timeout
     if timeout > 0:
