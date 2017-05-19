@@ -1,7 +1,7 @@
 import rcpy
 import rcpy.gpio as gpio
 
-import threading
+import threading, time
 
 class Blink(threading.Thread):
 
@@ -59,6 +59,7 @@ class Blink(threading.Thread):
         self.condition.release()
 
         # turn off
+        time.sleep(self.period)
         self.led.off()
 
 class LED:
