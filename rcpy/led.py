@@ -2,13 +2,12 @@ import rcpy
 import rcpy.gpio as gpio
 
 import threading
-import time
 
 class LED:
 
     def __init__(self, pin, state = gpio.OFF):
 
-        self.condition = Condition()
+        self.condition = threading.Condition()
         self.pin = pin
         if state == gpio.ON:
             self.on()
