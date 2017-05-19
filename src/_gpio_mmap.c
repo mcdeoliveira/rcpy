@@ -8,9 +8,6 @@ static char module_docstring[] =
 
 static PyObject *gpio_mmapError;
 
-// initialization
-static PyObject *gpio_mmap_initialize(PyObject *self, PyObject *args, PyObject *kwargs);
-
 // set and get functions
 static PyObject *gpio_mmap_set_value(PyObject *self, PyObject *args);
 static PyObject *gpio_mmap_get_value(PyObject *self, PyObject *args);
