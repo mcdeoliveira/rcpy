@@ -17,7 +17,6 @@ static PyObject *gpio_mmapError;
 // set and get functions
 static PyObject *gpio_mmap_set(PyObject *self, PyObject *args);
 static PyObject *gpio_mmap_get(PyObject *self, PyObject *args);
-static PyObject *gpio_mmap_read(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
   {"set",
@@ -29,11 +28,6 @@ static PyMethodDef module_methods[] = {
    (PyCFunction)gpio_mmap_get,
    METH_VARARGS,
    "get gpio value (nonblocking)"}
-  ,
-  {"read",
-   (PyCFunction)gpio_mmap_read,
-   METH_VARARGS,
-   "read gpio value (blocking)"}
   ,
   {NULL, NULL, 0, NULL}
 };
@@ -122,50 +116,3 @@ PyObject *gpio_mmap_get(PyObject *self,
   return ret;
 }
 
-static
-PyObject *gpio_mmap_read(PyObject *self,
-			 PyObject *args)
-{
-  
-  /* parse arguments */
-  int gpio;
-  if (!PyArg_ParseTuple(args, "I", &gpio)) {
-    PyErr_SetString(gpio_mmapError, "Invalid arguments");
-    return NULL;
-  }
-  
-  /* wait for gpio */
-  int value;
-  struct pollfd fdset[1];
-  char buf[POLL_BUF_LEN];
-  int gpio_fd = rc_gpio_fd_open(gpio);
-  fdset[0].fd = gpio_fd;
-  fdset[0].events = POLLPRI; // high-priority interrupt
-  // keep running until the program closes
-  if (rc_get_state() != EXITING) {
-    // system hangs here until FIFO interrupt
-    poll(fdset, 1, POLL_TIMEOUT);        
-    if (fdset[0].revents & POLLPRI) {
-      lseek(fdset[0].fd, 0, SEEK_SET);  
-      read(fdset[0].fd, buf, POLL_BUF_LEN);
-
-      // read gpio
-      value = rc_gpio_get_value_mmap(gpio);
-      
-    }
-    // purge any interrupts that may have stacked up
-    lseek(fdset[0].fd, 0, SEEK_SET);  
-    read(fdset[0].fd, buf, POLL_BUF_LEN);
-  }
-  rc_gpio_fd_close(gpio_fd);
-  
-  if (value < 0) {
-    PyErr_SetString(gpio_mmapError, "Failed to get gpio value");
-    return NULL;
-  }
-  
-  /* Build the output tuple */
-  PyObject *ret = Py_BuildValue("i", value);
-
-  return ret;
-}
