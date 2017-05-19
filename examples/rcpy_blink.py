@@ -51,33 +51,34 @@ red.start()
 green.start()
 blinking = True
 
-# wait for PAUSE button
-while rcpy.get_state() == rcpy.RUNNING:
-    
-    # this is a blocking call!
-    if button.pressed(button.PAUSE):
+try:
+    # wait for PAUSE button
+    while rcpy.get_state() == rcpy.RUNNING:
 
-        # this is a blocking call with a timeout!
-        if button.released(button.PAUSE, 1.5):
-            # released too soon!
-            
-            # toggle start
-            if blinking:
-                # stop leds
-                red.stop()
-                green.stop()
-                blinking = False
-                
+        # this is a blocking call!
+        if button.pressed(button.PAUSE):
+
+            # this is a blocking call with a timeout!
+            if button.released(button.PAUSE, 1.5):
+                # released too soon!
+
+                # toggle start
+                if blinking:
+                    # stop leds
+                    red.stop()
+                    green.stop()
+                    blinking = False
+
+                else:
+                    # start leds
+                    red.start()
+                    green.start()
+                    blinking = True
+
             else:
-                # start leds
-                red.start()
-                green.start()
-                blinking = True
-
-        else:
-            # timeout or did not release
-            # exit
-            break
+                # timeout or did not release
+                # exit
+                break
 
 except KeyboardInterrupt:
     # Catch Ctrl-C
