@@ -29,7 +29,7 @@ class ButtonEvent(threading.Thread):
             try:
                 if self.button.pressed_or_released() & self.event:
                     # fire callback
-                    callback()
+                    self.action()
             except ButtonEvent.ButtonEventInterrupt:
                 self.run = False
 
