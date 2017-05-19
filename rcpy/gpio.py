@@ -58,7 +58,7 @@ POLL_TIMEOUT = 100
 
 DEBOUNCE_INTERVAL = 0.0005
 
-import io
+import io, threading
 import select
 
 def read(pin):
