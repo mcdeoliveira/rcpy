@@ -23,14 +23,10 @@ print("Hold button <PAUSE> for 1.5 s to exit")
 rates = (1, 5, 10)
 index = 0
 
-red = led.blink(led.RED, rates[index % len(rates)])
-green = led.blink(led.RED, rates[index % len(rates)])
-red.stop()
-green.stop()
-
-# initialize state
-red.set_state(led.ON)
-green.set_state(led.OFF)
+# start leds
+red = led.blink(led.RED, rates[index % len(rates)], led.ON)
+green = led.blink(led.RED, rates[index % len(rates)], led.OFF)
+blinking = True
 
 # set state to rcpy.RUNNING
 rcpy.set_state(rcpy.RUNNING)
@@ -47,11 +43,6 @@ def step():
 # run step function on a thread
 step_thread = threading.Thread(target=step)
 step_thread.start()
-
-# start blinking
-red.start()
-green.start()
-blinking = True
 
 try:
     # wait for PAUSE button
@@ -73,8 +64,8 @@ try:
 
                 else:
                     # start leds
-                    red.start()
-                    green.start()
+                    red = led.blink(led.RED, rates[index % len(rates)], led.ON)
+                    green = led.blink(led.RED, rates[index % len(rates)], led.OFF)
                     blinking = True
 
             else:
