@@ -61,7 +61,7 @@ def read(pin):
     
     with open(filename, 'rb') as f:
         # go to the end
-        f.seek(io.SEEK_END)
+        #f.seek(io.SEEK_END)
         # then read
         value = f.read()
         print('value = {}'.format(value))
