@@ -2,6 +2,7 @@ import rcpy
 import rcpy.gpio as gpio
 
 import threading
+import time
 
 class Button():
 
@@ -9,45 +10,37 @@ class Button():
         self.pin = pin
     
     def is_pressed(self):
-        return gpio.get(self.pin)
+        return gpio.get(self.pin) == gpio.LOW
 
-    def pressed(self, callback):
-        
+    def is_released(self):
+        return gpio.get(self.pin) == gpio.HIGH
     
+    def pressed(self, callback):
+        value = gpio.read(self.pin)
+        # debounce
+        k = 0
+        while k < 3 and value == gpio.LOW:
+            time.sleep(0.0005)
+            value = gpio.get(self.pin)
+        if value == gpio.LOW:
+            return True
+        else:
+            return False
+
+    def released(self, callback):
+        value = gpio.read(self.pin)
+        # debounce
+        k = 0
+        while k < 3 and value == gpio.HIGH:
+            time.sleep(0.0005)
+            value = gpio.get(self.pin)
+        if value == gpio.HIGH:
+            return True
+        else:
+            return False
+        
 # definitions
 
 # BUTTONs
-PAUSE  = 0
-MODE = 1
-
-# class for timeout
-class TimeoutException(Exception):
-    pass
-
-# timeout handler
-def timeout_handler(signum, frame):
-    raise TimeoutException()
-
-# pressed?
-def pressed(button, timeout = 0):
-
-    # set a timeout
-    if timeout > 0:
-        threading.Timer(timeout, timeout_handler)
-
-    try:
-        return _pressed(button)
-    except TimeoutException:
-        return False
-
-# released?
-def released(button, timeout = 0):
-
-    # set a timeout
-    if timeout > 0:
-        threading.Timer(timeout, timeout_handler)
-        
-    try:
-        return _released(button)
-    except TimeoutException:
-        return False
+pause = Button(gpio.PAUSE_BTN)
+mode = Button(gpio.MODE_BTN)

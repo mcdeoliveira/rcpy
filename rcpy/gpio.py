@@ -5,6 +5,9 @@ from rcpy._gpio_mmap import *
 ON = 1
 OFF = 0
 
+HIGH = 1
+LOW = 0
+
 # direction
 IN  = 0
 OUT = 1
@@ -81,5 +84,5 @@ def read(pin):
                 if flag & (select.POLLIN | select.POLLPRI):
                     # return read value
                     return get(pin)
-                #elif flag & select.POLLHUP:
-                #elif flag & select.POLLERR:
+                elif flag & (select.POLLHUP | select.POLLERR):
+                    raise Exception('Could not read pin {}'.format(pin))
