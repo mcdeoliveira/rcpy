@@ -23,8 +23,8 @@ print("Hold button <PAUSE> for 1.5 s to exit")
 rates = (1, 5, 10)
 index = 0
 
-red = led.blink(led.RED, rate[index % len(rates)])
-green = led.blink(led.RED, rate[index % len(rates)])
+red = led.blink(led.RED, rates[index % len(rates)])
+green = led.blink(led.RED, rates[index % len(rates)])
 
 # initialize state
 red.set_state(led.ON)
@@ -39,8 +39,8 @@ def step():
         if button.pressed(button.MODE):
             # increment rate
             index += 1
-            red.set_rate(rate[index % len(rates)])
-            green.set_rate(rate[index % len(rates)])
+            red.set_rate(rates[index % len(rates)])
+            green.set_rate(rates[index % len(rates)])
 
 # run step function on a thread
 step_thread = threading.Thread(target=step)
