@@ -22,6 +22,8 @@ class Button():
         while k < 3 and value == gpio.LOW:
             time.sleep(0.0005)
             value = gpio.get(self.pin)
+            k += 1
+        # check value
         if value == gpio.LOW:
             return True
         else:
@@ -34,6 +36,8 @@ class Button():
         while k < 3 and value == gpio.HIGH:
             time.sleep(0.0005)
             value = gpio.get(self.pin)
+            k += 1
+        # check value
         if value == gpio.HIGH:
             return True
         else:
