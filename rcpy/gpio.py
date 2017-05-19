@@ -50,3 +50,13 @@ BATT_LED_2_BLUE = 11 #  different on BB Blue
 BATT_LED_3 = 61      #  P8.26
 BATT_LED_4 = 26      #  P8.14
 
+SYSFS_GPIO_DIR = '/sys/class/gpio'
+
+def read(pin):
+    
+    # open stream
+    filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
+    
+    with open(filename, 'rb', buffering = 0) as f: 
+        value = f.read(1)
+        print('value = {}'.format(value)
