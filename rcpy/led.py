@@ -1,3 +1,4 @@
+import rcpy
 from rcpy._led import set, get
 from rcpy._led import blink as _blink
 
