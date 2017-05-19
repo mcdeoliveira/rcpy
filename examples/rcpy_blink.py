@@ -77,7 +77,8 @@ finally:
     print("Exiting...")
 
     # wait for step_thread to end
-    step_thread.join()
+    mode_event.stop()
+    mode_event.join()
     
     # say bye
     print("\nBye Beaglebone!")
