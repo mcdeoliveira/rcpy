@@ -5,102 +5,29 @@ import threading
 import time
 
 DEBOUNCE = 3
-DEBOUNCE_INTERVAL = 0.0005
 
-class ButtonEvent(threading.Thread):
+class ButtonEvent(gpio.InputEvent):
+    pass
 
-    class ButtonEventInterrupt(Exception):
-        pass
+class Button(gpio.Input):
+
+    PRESSED = gpio.LOW
+    RELEASED = gpio.HIGH
     
-    def __init__(self, button, event):
+    def is_pressed(self, debounce = DEBOUNCE):
+        return self.is_low(debounce)
 
-        super().__init__()
-        
-        self.button = button
-        self.event = event
-
-    def action(self, event, *vargs, **kwargs):
-        print('Event = {}'.format(event))
-        
-    def run(self):
-        self.run = True
-        while rcpy.get_state() != rcpy.EXITING and self.run:
-
-            try:
-                evnt = self.button.pressed_or_released()
-                if evnt & self.event:
-                    # fire callback
-                    self.action(evnt)
-            except ButtonEvent.ButtonEventInterrupt:
-                self.run = False
-
-    def stop(self):
-
-        self.run = False
-
-class Button():
-
-    PRESSED = 1
-    RELEASED = 2
+    def is_released(self, debounce = DEBOUNCE):
+        return self.is_high(debounce)
     
-    def __init__(self, pin):
-        self.pin = pin
-    
-    def is_pressed(self):
-        return gpio.get(self.pin) == gpio.LOW
-
-    def is_released(self):
-        return gpio.get(self.pin) == gpio.HIGH
-
-    def pressed_or_released(self):
-        
-        # repeat until event is detected
-        while True:
-
-            # read event
-            event = gpio.read(self.pin)
-
-            # debounce
-            k = 0
-            value = event
-            while k < DEBOUNCE and value == event:
-                time.sleep(DEBOUNCE_INTERVAL)
-                value = gpio.get(self.pin)
-                k += 1
-                # check value
-                if value == event:
-                    if value == gpio.LOW:
-                        return Button.PRESSED
-                    else:
-                        return Button.RELEASED
+    def pressed_or_released(self, debounce = DEBOUNCE):
+        return self.high_or_low(debounce)
                     
-    def pressed(self):
-        value = gpio.read(self.pin)
-        # debounce
-        k = 0
-        while k < 3 and value == gpio.LOW:
-            time.sleep(0.0005)
-            value = gpio.get(self.pin)
-            k += 1
-        # check value
-        if value == gpio.LOW:
-            return True
-        else:
-            return False
+    def pressed(self, debounce = DEBOUNCE):
+        return self.low(debounce)
 
-    def released(self):
-        value = gpio.read(self.pin)
-        # debounce
-        k = 0
-        while k < 3 and value == gpio.HIGH:
-            time.sleep(0.0005)
-            value = gpio.get(self.pin)
-            k += 1
-        # check value
-        if value == gpio.HIGH:
-            return True
-        else:
-            return False
+    def released(self, debounce = DEBOUNCE):
+        return self.high(debounce)
         
 # definitions
 

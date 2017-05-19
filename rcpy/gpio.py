@@ -56,6 +56,8 @@ BATT_LED_4 = 26      #  P8.14
 SYSFS_GPIO_DIR = '/sys/class/gpio'
 POLL_TIMEOUT = 100
 
+DEBOUNCE_INTERVAL = 0.0005
+
 import io
 import select
 
@@ -86,3 +88,77 @@ def read(pin):
                     return get(pin)
                 elif flag & (select.POLLHUP | select.POLLERR):
                     raise Exception('Could not read pin {}'.format(pin))
+
+class Input:
+
+    def __init__(self, pin):
+        self.pin = pin
+    
+    def is_high(self):
+        return gpio.get(self.pin) == gpio.HIGH
+
+    def is_low(self):
+        return gpio.get(self.pin) == gpio.LOW
+
+    def high_or_low(self, debounce = 0):
+        
+        # repeat until event is detected
+        while True:
+
+            # read event
+            event = gpio.read(self.pin)
+            
+            # debounce
+            k = 0
+            value = event
+            while k < debounce and value == event:
+                time.sleep(DEBOUNCE_INTERVAL)
+                value = gpio.get(self.pin)
+                k += 1
+                
+            # check value
+            if value == event:
+                return value
+                    
+    def high(self, debounce = 0):
+        if high_or_low(self, debounce) == gpio.HIGH:
+            return True
+        else:
+            return False
+
+    def low(self, debounce = 0):
+        if high_or_low(self, debounce) == gpio.LOW:
+            return True
+        else:
+            return False
+
+class InputEvent(threading.Thread):
+
+    class InputEventInterrupt(Exception):
+        pass
+    
+    def __init__(self, input, event):
+
+        super().__init__()
+        
+        self.input = input
+        self.event = event
+
+    def action(self, event, *vargs, **kwargs):
+        pass
+        
+    def run(self):
+        self.run = True
+        while rcpy.get_state() != rcpy.EXITING and self.run:
+
+            try:
+                evnt = self.input.high_or_low()
+                if evnt & self.event:
+                    # fire callback
+                    self.action(evnt)
+            except InputEvent.InputEventInterrupt:
+                self.run = False
+
+    def stop(self):
+        self.run = False
+
