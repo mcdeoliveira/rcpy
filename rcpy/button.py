@@ -19,17 +19,18 @@ class ButtonEvent(threading.Thread):
         self.button = button
         self.event = event
 
-    def action(self, *vargs, **kwargs):
-        print('ACTION!')
+    def action(self, event, *vargs, **kwargs):
+        print('Event = {}'.format(event))
         
     def run(self):
         self.run = True
         while rcpy.get_state() != rcpy.EXITING and self.run:
 
             try:
-                if self.button.pressed_or_released() & self.event:
+                evnt = self.button.pressed_or_released()
+                if evnt & self.event:
                     # fire callback
-                    self.action()
+                    self.action(evnt)
             except ButtonEvent.ButtonEventInterrupt:
                 self.run = False
 
