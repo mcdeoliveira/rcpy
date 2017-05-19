@@ -34,7 +34,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef module = {
   PyModuleDef_HEAD_INIT,
-  "led",   /* name of module */
+  "_led",   /* name of module */
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
 	       or -1 if the module keeps state in global variables. */
@@ -43,7 +43,7 @@ static struct PyModuleDef module = {
 
 /* python functions */
 
-PyMODINIT_FUNC PyInit_led(void)
+PyMODINIT_FUNC PyInit__led(void)
 {
   PyObject *m;
   

@@ -1,7 +1,7 @@
 import pytest
 
 import time
-import rcpy.LED as led
+import rcpy.led as led
 
 def test1():
 

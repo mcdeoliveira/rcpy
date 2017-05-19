@@ -1,5 +1,5 @@
-from rcpy.led import set, get
-from rcpy.led import blink as _blink
+from rcpy._led import set, get
+from rcpy._led import blink as _blink
 
 import threading
 import time
