@@ -96,10 +96,10 @@ class Input:
         self.pin = pin
     
     def is_high(self):
-        return gpio.get(self.pin) == gpio.HIGH
+        return get(self.pin) == HIGH
 
     def is_low(self):
-        return gpio.get(self.pin) == gpio.LOW
+        return get(self.pin) == LOW
 
     def high_or_low(self, debounce = 0):
         
@@ -107,14 +107,14 @@ class Input:
         while True:
 
             # read event
-            event = gpio.read(self.pin)
+            event = read(self.pin)
             
             # debounce
             k = 0
             value = event
             while k < debounce and value == event:
                 time.sleep(DEBOUNCE_INTERVAL)
-                value = gpio.get(self.pin)
+                value = get(self.pin)
                 k += 1
                 
             # check value
@@ -122,13 +122,13 @@ class Input:
                 return value
                     
     def high(self, debounce = 0):
-        if high_or_low(self, debounce) == gpio.HIGH:
+        if high_or_low(self, debounce) == HIGH:
             return True
         else:
             return False
 
     def low(self, debounce = 0):
-        if high_or_low(self, debounce) == gpio.LOW:
+        if high_or_low(self, debounce) == LOW:
             return True
         else:
             return False
