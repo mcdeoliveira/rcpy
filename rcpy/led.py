@@ -1,53 +1,67 @@
 import rcpy
-from rcpy._led import set, get
-from rcpy._led import blink as _blink
+import rcpy.gpio as gpio
 
 import threading
 import time
 
-# definitions
+class LED:
 
-# LEDs
-GREEN  = 0
-RED = 1
+    def __init__(self, pin, state = gpio.OFF):
 
-# state
-ON  = 1
-OFF = 0
+        self.condition = Condition()
+        self.pin = pin
+        if state == gpio.ON:
+            self.on()
+        else
+            self.off()
 
-class __blink(threading.Thread):
+    def on():
+        self.state = gpio.ON
+        gpio.set(self.pin, gpio.ON)
 
-    def __init__(self, led, hz, state = ON):
+    def off():
+        self.state = gpio.OFF
+        gpio.set(self.pin, gpio.OFF)
 
-        # call super
-        super().__init__()
+    def toggle():
+        if self.state == gpio.ON:
+            self.off()
+        else:
+            self.on()
+
+    def _blink(self):
+
+        # Acquire lock
+        self.condition.acquire()
+
+        # Toggle
+        self.toggle()
         
-        self.state = state
-        self.led = led
-        self.T = 1/hz
+        # Notify lock
+        self.condition.notify_all()
 
-    def set_state(self, state):
-        self.state = state
-
-    def set_rate(self, hz):
-        self.T = 1/hz
+        # Release lock
+        self.condition.release()
         
-    def run(self):
+            
+    def blink(frequency):
+
         self.run = True
-        while rcpy.get_state() == rcpy.RUNNING and self.run:
-            set(self.led, self.state)
-            self.state = not self.state
-            time.sleep(self.T)
+        while rcpy.get_state() != rcpy.EXITING and self.run:
 
-    def stop(self):
-        self.run = False
+            # Acquire condition
+            self.condition.acquire()
+            
+            # Setup timer
+            self.timer = threading.Timer(self.period, self._blink)
+            self.timer.start()
 
-def blink(led, hz, period = 0, state = ON):
+            # Wait 
+            self.condition.wait()
 
-    if period > 0:
-        _blink(led, hz, period)
-    
-    elif period <= 0:
-        thread = __blink(led, hz, state)
-        thread.start()
-        return thread
+            # and release
+            self.condition.release()
+
+# define leds
+red = LED(gpio.RED_LED)
+green = LED(gpio.GRN_LED)

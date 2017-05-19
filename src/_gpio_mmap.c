@@ -13,12 +13,12 @@ static PyObject *gpio_mmap_set_value(PyObject *self, PyObject *args);
 static PyObject *gpio_mmap_get_value(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-  {"set_value",
+  {"set",
    (PyCFunction)gpio_mmap_set_value,
    METH_VARARGS,
    "set gpio_mmap value"}
   ,
-  {"get_value",
+  {"get",
    (PyCFunction)gpio_mmap_get_value,
    METH_VARARGS,
    "get gpio_mmap value"}
