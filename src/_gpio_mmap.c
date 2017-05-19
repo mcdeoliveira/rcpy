@@ -2,7 +2,9 @@
 
 #include <rc_usefulincludes.h>
 #include <roboticscape.h>
-#include <rc_buttons.h>
+
+// THIS IS DEFINED IN rc_buttons.h WHICH IS NOT ACCESSIBLE
+#define POLL_BUF_LEN 1024
 
 static char module_docstring[] =
   "This module provides an interface for gpio_mmap.";
