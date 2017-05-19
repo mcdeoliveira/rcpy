@@ -3,6 +3,8 @@
 #include <rc_usefulincludes.h>
 #include <roboticscape.h>
 
+#include <stdio.h>
+
 // THIS IS DEFINED IN rc_buttons.h AND rc_defs.h WHICH ARE NOT ACCESSIBLE
 #define POLL_TIMEOUT 100 /* 0.1 seconds */
 #define POLL_BUF_LEN 1024
