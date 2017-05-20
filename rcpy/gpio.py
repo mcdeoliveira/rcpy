@@ -62,7 +62,7 @@ DEBOUNCE_INTERVAL = 0.0005
 import io, threading, time
 import select
 
-def read(pin, timeout = POLL_TIMEOUT):
+def read(pin, timeout = None):
     
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
@@ -79,16 +79,23 @@ def read(pin, timeout = POLL_TIMEOUT):
         while rcpy.get_state() != rcpy.EXITING:
 
             # wait for events
-            print('will poll timeout = {}'.format(timeout))
-            events = poller.poll(timeout)
-            print('events = {}'.format(events))
-            
+            if timeout:
+                # fail after timeout
+                events = poller.poll(timeout)
+                if not events:
+                    return None
+
+            else:
+                # timeout = None, never fails
+                events = poller.poll(POLL_TIMEOUT)
+                
             for fd, flag in events:
                 
                 # Handle inputs
                 if flag & (select.POLLIN | select.POLLPRI):
                     # return read value
                     return get(pin)
+                
                 elif flag & (select.POLLHUP | select.POLLERR):
                     raise Exception('Could not read pin {}'.format(pin))
 
@@ -103,7 +110,7 @@ class Input:
     def is_low(self):
         return get(self.pin) == LOW
 
-    def high_or_low(self, debounce = 0, timeout = POLL_TIMEOUT):
+    def high_or_low(self, debounce = 0, timeout = None):
         
         # repeat until event is detected
         while rcpy.get_state() != rcpy.EXITING:
@@ -123,13 +130,13 @@ class Input:
             if value == event:
                 return value
                     
-    def high(self, debounce = 0, timeout = POLL_TIMEOUT):
+    def high(self, debounce = 0, timeout = None):
         if self.high_or_low(debounce, timeout) == HIGH:
             return True
         else:
             return False
 
-    def low(self, debounce = 0, timeout = POLL_TIMEOUT):
+    def low(self, debounce = 0, timeout = None):
         if self.high_or_low(debounce, timeout) == LOW:
             return True
         else:
