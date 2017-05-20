@@ -49,7 +49,7 @@ mode_event.start()
 print("Green and red LEDs should be flashing")
 print("Press button <MODE> to change the blink rate")
 print("Press button <PAUSE> to stop or restart blinking")
-print("Hold button <PAUSE> for 1.5 s to exit")
+print("Hold button <PAUSE> for 2 s to exit")
 
 try:
     
@@ -61,9 +61,9 @@ try:
             # pause pressed
 
             # this is a blocking call with a timeout!
-            if button.pause.released(timeout = 1500):
-                # released too soon!
+            if button.pause.released(timeout = 2000):
 
+                # released too soon!
                 print("<PAUSE> pressed, toggle blinking")
                 
                 # toggle blinking
