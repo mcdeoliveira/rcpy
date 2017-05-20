@@ -73,7 +73,7 @@ def read(pin, timeout = None):
         f.read()
         
         # create poller
-        poller = select.poll(timeout)
+        poller = select.poll.poll(timeout)
         poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         while True:
