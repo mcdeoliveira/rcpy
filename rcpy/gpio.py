@@ -62,7 +62,7 @@ DEBOUNCE_INTERVAL = 0.0005
 import io, threading, time
 import select
 
-def read(pin):
+def read(pin, timeout = None):
     
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
@@ -73,7 +73,7 @@ def read(pin):
         f.read()
         
         # create poller
-        poller = select.poll()
+        poller = select.poll(timeout)
         poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         while True:
@@ -101,13 +101,13 @@ class Input:
     def is_low(self):
         return get(self.pin) == LOW
 
-    def high_or_low(self, debounce = 0):
+    def high_or_low(self, debounce = 0, timeout = None):
         
         # repeat until event is detected
         while True:
 
             # read event
-            event = read(self.pin)
+            event = read(self.pin, timeout)
             
             # debounce
             k = 0
@@ -121,14 +121,14 @@ class Input:
             if value == event:
                 return value
                     
-    def high(self, debounce = 0):
-        if self.high_or_low(debounce) == HIGH:
+    def high(self, debounce = 0, timeout = None):
+        if self.high_or_low(debounce, timeout) == HIGH:
             return True
         else:
             return False
 
-    def low(self, debounce = 0):
-        if self.high_or_low(debounce) == LOW:
+    def low(self, debounce = 0, timeout = None):
+        if self.high_or_low(debounce, timeout) == LOW:
             return True
         else:
             return False
@@ -153,11 +153,8 @@ class InputEvent(threading.Thread):
         self.kwargs = kwargs
 
     def action(self, event, *vargs, **kwargs):
-        if event == InputEvent.HIGH:
-            print('InputEvent HIGH detected')
-        elif event == InputEvent.LOW:
-            print('InputEvent LOW detected')
-        else:
+        # valid event?
+        if event != InputEvent.HIGH and event != InputEvent.LOW:
             raise Exception('Unkown InputEvent {}'.format(event))
         # call target
         if self.target:

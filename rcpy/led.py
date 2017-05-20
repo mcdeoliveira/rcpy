@@ -12,9 +12,13 @@ class Blink(threading.Thread):
         self.condition = threading.Condition()
         self.led = led
         self.period = period
+        self._suspend = False
 
     def set_period(self, period):
         self.period = period
+
+    def toggle(self):
+        self._suspend = not self._suspend
         
     def _blink(self):
 
@@ -22,7 +26,8 @@ class Blink(threading.Thread):
         self.condition.acquire()
 
         # Toggle
-        self.led.toggle()
+        if not self._suspend:
+            self.led.toggle()
         
         # Notify lock
         self.condition.notify_all()

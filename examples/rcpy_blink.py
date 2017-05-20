@@ -63,30 +63,20 @@ try:
             # pause pressed
             print("<PAUSE> pressed")
 
-            # # this is a blocking call with a timeout!
-            # if button.released(button.PAUSE, 1.5):
-            #     # released too soon!
+            # this is a blocking call with a timeout!
+            if button.pause.released(1.5):
+                # released too soon!
 
-            #     # toggle start
-            #     if blinking:
-            #         print("Stopped blinking")
-            #         # stop leds
-            #         red.stop()
-            #         green.stop()
-            #         blinking = False
+                # toggle blinking
+                blink_red.toggle()
+                blink_green.toggle()
 
-            #     else:
-            #         print("Started blinking")
-            #         # start leds
-            #         red = led.blink(led.RED, rates[index % len(rates)], led.ON)
-            #         green = led.blink(led.RED, rates[index % len(rates)], led.OFF)
-            #         blinking = True
-
-            # else:
-            #     # timeout or did not release
-            #     print("<PAUSE> held, exiting...")
-            #     # exit
-            #     break
+            else:
+                # timeout or did not release
+                print("<PAUSE> held, exiting...")
+                
+                # exit
+                break
 
 except KeyboardInterrupt:
     # Catch Ctrl-C
