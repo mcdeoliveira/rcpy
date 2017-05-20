@@ -76,7 +76,7 @@ try:
                 print("<PAUSE> held, exiting...")
                 
                 # exit
-                break
+                rcpy.set_state(rcpy.EXITING)
 
 except KeyboardInterrupt:
     # Catch Ctrl-C
@@ -85,7 +85,6 @@ except KeyboardInterrupt:
 finally:
 
     print("Exiting...")
-    #rcpy.set_state(rcpy.EXITING)
     mode_event.stop()
     blink_red.stop()
     blink_green.stop()
