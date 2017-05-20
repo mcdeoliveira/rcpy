@@ -67,7 +67,7 @@ def read(pin, timeout = POLL_TIMEOUT):
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
     
-    with open(filename, 'rb') as f:
+    with open(filename, 'rb', buffering = 0) as f:
 
         # read first
         f.read()
