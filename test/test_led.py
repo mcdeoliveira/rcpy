@@ -5,17 +5,17 @@ import rcpy.led as led
 
 def test1():
 
-    led.set(led.GREEN, led.ON)
-    assert led.get(led.GREEN) == led.ON
+    led.green.on()
+    assert led.green.get_state() == led.ON
     
-    led.set(led.GREEN, led.OFF)
-    assert led.get(led.GREEN) == led.OFF
+    led.green.off()
+    assert led.green.get_state() == led.OFF
     
-    led.set(led.RED, led.ON)
-    assert led.get(led.RED) == led.ON
+    led.red.on()
+    assert led.red.get_state() == led.ON
     
-    led.set(led.RED, led.OFF)
-    assert led.get(led.RED) == led.OFF
+    led.red.off()
+    assert led.red.get_state() == led.OFF
 
 if __name__ == '__main__':
 
