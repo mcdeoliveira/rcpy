@@ -23,7 +23,7 @@ blink_green.start()
 rcpy.set_state(rcpy.RUNNING)
 
 # mode pressed?
-def mode_pressed(event, blink_red, blink_green, rates):
+def mode_pressed(input, event, blink_red, blink_green, rates):
 
     # increment rate
     global index
@@ -60,7 +60,7 @@ try:
         if button.pause.pressed():
 
             # pause pressed
-
+            
             try:
             
                 # this is a blocking call with a timeout!

@@ -164,10 +164,10 @@ class InputEvent(threading.Thread):
         self.timeout = timeout
         self.debounce = 0
 
-    def action(self, event, *vargs, **kwargs):
+    def action(self, event):
         if self.target:
             # call target
-            self.target(event, *self.vargs, **self.kwargs)
+            self.target(self.input, event, *self.vargs, **self.kwargs)
         else:
             # just check for valid event
             if event != InputEvent.HIGH and event != InputEvent.LOW:
