@@ -85,12 +85,8 @@ except KeyboardInterrupt:
 finally:
 
     print("Exiting...")
+    rcpy.set_state(rcpy.EXITING)
 
-    # stop threads
-    blink_red.stop()
-    blink_green.stop()
-    mode_event.stop()
-    
     # say bye
     print("\nBye Beaglebone!")
             
