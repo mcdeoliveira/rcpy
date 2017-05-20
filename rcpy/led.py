@@ -83,9 +83,12 @@ class LED:
         else:
             self.off()
 
-    def get_state(self):
-        return self.state
-        
+    def is_on(self):
+        return self.state == ON
+
+    def is_off(self):
+        return self.state == OFF
+            
     def on(self):
         self.state = ON
         gpio.set(self.pin, ON)
