@@ -80,6 +80,7 @@ def read(pin, timeout = POLL_TIMEOUT):
 
             # wait for events
             events = poller.poll(timeout)
+            print('events = {}'.format(events))
             
             for fd, flag in events:
                 
