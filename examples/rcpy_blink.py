@@ -26,6 +26,7 @@ def mode_pressed(event, blink_red, blink_green, index, rates):
     print("<MODE> pressed, stepping blinking rate")
     # increment rate
     index += 1
+    print('index = {}'.format(index))
     blink_red.set_period(rates[index % len(rates)])
     blink_green.set_period(rates[index % len(rates)])
         
