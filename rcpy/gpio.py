@@ -2,7 +2,6 @@ import rcpy
 from rcpy._gpio_mmap import *
 
 # definitions
-
 HIGH = 1
 LOW = 0
 
