@@ -174,6 +174,7 @@ class InputEvent(threading.Thread):
         self.target = target
         self.vargs = vargs
         self.kwargs = kwargs
+        self.timeout = timeout
 
     def action(self, event, *vargs, **kwargs):
         # valid event?
@@ -188,10 +189,9 @@ class InputEvent(threading.Thread):
         while rcpy.get_state() != rcpy.EXITING and self.run:
 
             try:
-                evnt = self.input.high_or_low(timeout)
+                evnt = self.input.high_or_low(self.timeout)
                 if evnt is not None:
-                    evnt = 1 << evnt
-                    if evnt & self.event:
+                    if (1 << evnt) & self.event:
                         # fire callback
                         self.action(evnt)
             except InputEvent.InputEventInterrupt:
