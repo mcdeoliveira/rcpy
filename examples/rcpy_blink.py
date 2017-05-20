@@ -60,19 +60,21 @@ try:
 
             # pause pressed
 
-            # this is a blocking call with a timeout!
-            if button.pause.released(timeout = 2000):
+            try:
+            
+                # this is a blocking call with a timeout!
+                if button.pause.released(timeout = 2000):
 
-                # released too soon!
-                print("<PAUSE> pressed, toggle blinking")
-                
-                # toggle blinking
-                blink_red.toggle()
-                blink_green.toggle()
+                    # released too soon!
+                    print("<PAUSE> pressed, toggle blinking")
+                    
+                    # toggle blinking
+                    blink_red.toggle()
+                    blink_green.toggle()
 
-            else:
+            except gpio.InputTimeout:
                 
-                # timeout or did not release
+                # timeout 
                 print("<PAUSE> held, exiting...")
                 
                 # exit
