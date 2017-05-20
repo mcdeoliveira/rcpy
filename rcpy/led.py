@@ -4,7 +4,7 @@ import rcpy.gpio as gpio
 import threading, time
 
 ON = gpio.LOW
-OFF = gpio.HI
+OFF = gpio.HIGH
 
 class Blink(threading.Thread):
 
