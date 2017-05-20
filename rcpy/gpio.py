@@ -192,7 +192,8 @@ class InputEvent(threading.Thread):
             try:
                 evnt = self.input.high_or_low(self.debounce, self.timeout)
                 if evnt is not None:
-                    if (1 << evnt) & self.event:
+                    evnt = 1 << evnt
+                    if evnt & self.event:
                         # fire callback
                         self.action(evnt)
             except InputEvent.InputEventInterrupt:
