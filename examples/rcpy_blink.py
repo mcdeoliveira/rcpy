@@ -22,7 +22,7 @@ blink_green.start()
 rcpy.set_state(rcpy.RUNNING)
 
 # mode pressed?
-def mode_pressed(event):
+def mode_pressed(event, index, rates):
     print("<MODE> pressed, stepping blinking rate")
     # increment rate
     index += 1
@@ -31,7 +31,8 @@ def mode_pressed(event):
         
 mode_event = button.ButtonEvent(button.mode,
                                 button.ButtonEvent.PRESSED,
-                                target = mode_pressed)
+                                target = mode_pressed,
+                                vargs = (index, rates))
 mode_event.start()
 
 # welcome message
