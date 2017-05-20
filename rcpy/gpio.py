@@ -91,7 +91,7 @@ def read(pin, timeout = None):
                 # timeout = None, never fails
                 events = poller.poll(POLL_TIMEOUT)
 
-            print('events = {}'.format(event))
+            print('events = {}'.format(events))
                 
             for fd, flag in events:
                 
