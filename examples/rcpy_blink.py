@@ -29,9 +29,9 @@ def mode_pressed(event):
     red.set_rate(rates[index % len(rates)])
     green.set_rate(rates[index % len(rates)])
         
-mode_event = ButtonEvent(button.mode,
-                         button.ButtonEvent.PRESSED,
-                         target = mode_pressed)
+mode_event = button.ButtonEvent(button.mode,
+                                button.ButtonEvent.PRESSED,
+                                target = mode_pressed)
 mode_event.start()
 
 # welcome message
