@@ -22,19 +22,17 @@ blink_green.start()
 rcpy.set_state(rcpy.RUNNING)
 
 # mode pressed?
-class ModeButtonEvent(button.ButtonEvent):
-    
-    def action(self, event, *vargs, **kwargs):
-        print("<MODE> pressed, stepping blinking rate")
-        # increment rate
-        index += 1
-        red.set_rate(rates[index % len(rates)])
-        green.set_rate(rates[index % len(rates)])
+def mode_pressed(event):
+    print("<MODE> pressed, stepping blinking rate")
+    # increment rate
+    index += 1
+    red.set_rate(rates[index % len(rates)])
+    green.set_rate(rates[index % len(rates)])
         
-mode_event = ModeButtonEvent(button.mode, button.ButtonEvent.PRESSED)
+mode_event = ModeButtonEvent(button.mode,
+                             button.ButtonEvent.PRESSED,
+                             target = mode_pressed)
 mode_event.start()
-
-mode_event.join()
 
 # welcome message
 print("Green and red LEDs should be flashing")

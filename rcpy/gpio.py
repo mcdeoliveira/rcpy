@@ -141,12 +141,16 @@ class InputEvent(threading.Thread):
     class InputEventInterrupt(Exception):
         pass
     
-    def __init__(self, input, event):
+    def __init__(self, input, event,
+                 target = None, vargs = (), kwargs = {}):
 
         super().__init__()
         
         self.input = input
         self.event = event
+        self.target = target
+        self.vargs = vargs
+        self.kwargs = kwargs
 
     def action(self, event, *vargs, **kwargs):
         if event == InputEvent.HIGH:
@@ -155,6 +159,9 @@ class InputEvent(threading.Thread):
             print('InputEvent LOW detected')
         else:
             raise Exception('Unkown InputEvent {}'.format(event))
+        # call target
+        if self.target:
+            self.target(event, *self.vargs, **self.kwargs)
             
     def run(self):
         self.run = True
