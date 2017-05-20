@@ -79,7 +79,7 @@ def read(pin, timeout = POLL_TIMEOUT):
         while rcpy.get_state() != rcpy.EXITING:
 
             # wait for events
-            print('will poll')
+            print('will poll timeout = {}'.format(timeout))
             events = poller.poll(timeout)
             print('events = {}'.format(events))
             
