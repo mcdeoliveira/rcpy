@@ -123,6 +123,10 @@ class Input:
 
             # read event
             event = read(self.pin, timeout)
+
+            # failed 
+            if event is None:
+                return None
             
             # debounce
             k = 0
