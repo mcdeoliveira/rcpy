@@ -84,6 +84,7 @@ def read(pin, timeout = None):
                 # fail after timeout
                 print('can fail')
                 events = poller.poll(timeout)
+                print('len(events) = {}'.format(len(events)))
                 if len(events) == 0:
                     print('None events')
                     return None
