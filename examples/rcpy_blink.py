@@ -64,7 +64,7 @@ try:
             print("<PAUSE> pressed")
 
             # this is a blocking call with a timeout!
-            if button.pause.released(1.5):
+            if button.pause.released(1500):
                 # released too soon!
 
                 # toggle blinking

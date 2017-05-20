@@ -62,7 +62,7 @@ DEBOUNCE_INTERVAL = 0.0005
 import io, threading, time
 import select
 
-def read(pin, timeout = None):
+def read(pin, timeout = POLL_TIMEOUT):
     
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
@@ -73,13 +73,13 @@ def read(pin, timeout = None):
         f.read()
         
         # create poller
-        poller = select.poll.poll(timeout)
+        poller = select.poll()
         poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         while True:
 
             # wait for events
-            events = poller.poll(POLL_TIMEOUT)
+            events = poller.poll(timeout)
             
             for fd, flag in events:
                 
