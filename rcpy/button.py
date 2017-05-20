@@ -13,6 +13,12 @@ class ButtonEvent(gpio.InputEvent):
     PRESSED = gpio.InputEvent.LOW
     RELEASED = gpio.InputEvent.HIGH
 
+    def __init__(self, input, event, debounce = DEBOUNCE, timeout = None, 
+                 target = None, vargs = (), kwargs = {}):
+
+        super().__init__(input, event, debounce, timeout,
+                         target, vargs, kwargs)
+    
 class Button(gpio.Input):
 
     def is_pressed(self, debounce = DEBOUNCE, timeout = None):
