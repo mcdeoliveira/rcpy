@@ -15,20 +15,20 @@ class ButtonEvent(gpio.InputEvent):
 
 class Button(gpio.Input):
 
-    def is_pressed(self, debounce = DEBOUNCE, timeout = None):
-        return self.is_low(debounce)
+    def is_pressed(self, debounce = DEBOUNCE, timeout = gpio.POLL_TIMEOUT):
+        return self.is_low(debounce, timeout)
 
-    def is_released(self, debounce = DEBOUNCE, timeout = None):
-        return self.is_high(debounce)
+    def is_released(self, debounce = DEBOUNCE, timeout = gpio.POLL_TIMEOUT):
+        return self.is_high(debounce, timeout)
     
-    def pressed_or_released(self, debounce = DEBOUNCE, timeout = None):
-        return self.high_or_low(debounce)
+    def pressed_or_released(self, debounce = DEBOUNCE, timeout = gpio.POLL_TIMEOUT):
+        return self.high_or_low(debounce, timeout)
                     
-    def pressed(self, debounce = DEBOUNCE, timeout = None):
-        return self.low(debounce)
+    def pressed(self, debounce = DEBOUNCE, timeout = gpio.POLL_TIMEOUT):
+        return self.low(debounce, timeout)
 
-    def released(self, debounce = DEBOUNCE, timeout = None):
-        return self.high(debounce)
+    def released(self, debounce = DEBOUNCE, timeout = gpio.POLL_TIMEOUT):
+        return self.high(debounce, timeout)
         
 # definitions
 

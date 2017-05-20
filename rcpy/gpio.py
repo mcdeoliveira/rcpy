@@ -103,7 +103,7 @@ class Input:
     def is_low(self):
         return get(self.pin) == LOW
 
-    def high_or_low(self, debounce = 0, timeout = None):
+    def high_or_low(self, debounce = 0, timeout = POLL_TIMEOUT):
         
         # repeat until event is detected
         while rcpy.get_state() != rcpy.EXITING:
@@ -123,13 +123,13 @@ class Input:
             if value == event:
                 return value
                     
-    def high(self, debounce = 0, timeout = None):
+    def high(self, debounce = 0, timeout = POLL_TIMEOUT):
         if self.high_or_low(debounce, timeout) == HIGH:
             return True
         else:
             return False
 
-    def low(self, debounce = 0, timeout = None):
+    def low(self, debounce = 0, timeout = POLL_TIMEOUT):
         if self.high_or_low(debounce, timeout) == LOW:
             return True
         else:
