@@ -141,16 +141,20 @@ class Input:
                 return value
                     
     def high(self, debounce = 0, timeout = None):
-        if self.high_or_low(debounce, timeout) == HIGH:
+        event = self.high_or_low(debounce, timeout)
+        if event == HIGH:
             return True
-        else:
+        elif event == LOW:
             return False
+        return event
 
     def low(self, debounce = 0, timeout = None):
-        if self.high_or_low(debounce, timeout) == LOW:
+        event = self.high_or_low(debounce, timeout)
+        if event == LOW:
             return True
-        else:
+        elif event == HIGH:
             return False
+        return event
 
 class InputEvent(threading.Thread):
 
