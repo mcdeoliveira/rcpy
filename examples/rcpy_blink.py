@@ -26,8 +26,8 @@ def mode_pressed(event, index, rates):
     print("<MODE> pressed, stepping blinking rate")
     # increment rate
     index += 1
-    red.set_rate(rates[index % len(rates)])
-    green.set_rate(rates[index % len(rates)])
+    button.red.set_rate(rates[index % len(rates)])
+    button.green.set_rate(rates[index % len(rates)])
         
 mode_event = button.ButtonEvent(button.mode,
                                 button.ButtonEvent.PRESSED,
