@@ -82,6 +82,7 @@ def read(pin, timeout = None):
             print('will poll, timeout = {}'.format(timeout))
             if timeout:
                 # fail after timeout
+                print('can fail')
                 events = poller.poll(timeout)
                 if len(events) == 0:
                     print('None events')
