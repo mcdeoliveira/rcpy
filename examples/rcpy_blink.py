@@ -3,6 +3,7 @@ import threading
     
 # import rcpy libraries
 import rcpy 
+import rcpy.gpio as gpio
 import rcpy.button as button
 import rcpy.led as led
 
