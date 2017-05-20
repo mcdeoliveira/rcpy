@@ -3,9 +3,6 @@ from rcpy._gpio_mmap import *
 
 # definitions
 
-ON = 1
-OFF = 0
-
 HIGH = 1
 LOW = 0
 
@@ -79,22 +76,16 @@ def read(pin, timeout = None):
         while rcpy.get_state() != rcpy.EXITING:
 
             # wait for events
-            # print('will poll, timeout = {}'.format(timeout))
             if timeout:
-                # fail after timeout
-                # print('can fail')
+                # can fail if timeout is given
                 events = poller.poll(timeout)
-                # print('len(events) = {}'.format(len(events)))
                 if len(events) == 0:
-                    # print('None events')
                     return None
 
             else:
                 # timeout = None, never fails
                 events = poller.poll(POLL_TIMEOUT)
 
-            # print('events = {}'.format(events))
-                
             for fd, flag in events:
                 
                 # Handle inputs

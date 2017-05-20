@@ -3,6 +3,9 @@ import rcpy.gpio as gpio
 
 import threading, time
 
+ON = gpio.LOW
+OFF = gpio.HI
+
 class Blink(threading.Thread):
 
     def __init__(self, led, period):
@@ -72,24 +75,27 @@ class Blink(threading.Thread):
 
 class LED:
 
-    def __init__(self, pin, state = gpio.OFF):
+    def __init__(self, pin, state = OFF):
 
         self.pin = pin
-        if state == gpio.ON:
+        if state == ON:
             self.on()
         else:
             self.off()
 
+    def get_state(self):
+        return self.state
+        
     def on(self):
-        self.state = gpio.ON
-        gpio.set(self.pin, gpio.ON)
+        self.state = ON
+        gpio.set(self.pin, ON)
 
     def off(self):
-        self.state = gpio.OFF
-        gpio.set(self.pin, gpio.OFF)
+        self.state = OFF
+        gpio.set(self.pin, OFF)
 
     def toggle(self):
-        if self.state == gpio.ON:
+        if self.state == ON:
             self.off()
         else:
             self.on()
