@@ -76,7 +76,7 @@ def read(pin, timeout = POLL_TIMEOUT):
         poller = select.poll()
         poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
 
-        while True:
+        while rcpy.get_state() != rcpy.EXITING:
 
             # wait for events
             events = poller.poll(timeout)
