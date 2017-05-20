@@ -55,23 +55,23 @@ try:
     
     while rcpy.get_state() != rcpy.EXITING:
 
-        print("Waiting for <PAUSE> button...")
-        
         # this is a blocking call!
         if button.pause.pressed():
 
             # pause pressed
-            print("<PAUSE> pressed")
 
             # this is a blocking call with a timeout!
             if button.pause.released(1500):
                 # released too soon!
 
+                print("<PAUSE> pressed, toggle blinking")
+                
                 # toggle blinking
                 blink_red.toggle()
                 blink_green.toggle()
 
             else:
+                
                 # timeout or did not release
                 print("<PAUSE> held, exiting...")
                 
@@ -90,10 +90,6 @@ finally:
     blink_red.stop()
     blink_green.stop()
     mode_event.stop()
-    
-    blink_red.join()
-    blink_green.join()
-    mode_event.join()
     
     # say bye
     print("\nBye Beaglebone!")
