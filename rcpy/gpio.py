@@ -164,7 +164,7 @@ class InputEvent(threading.Thread):
     class InputEventInterrupt(Exception):
         pass
     
-    def __init__(self, input, event,
+    def __init__(self, input, event, timeout = None,
                  target = None, vargs = (), kwargs = {}):
 
         super().__init__()
@@ -188,10 +188,12 @@ class InputEvent(threading.Thread):
         while rcpy.get_state() != rcpy.EXITING and self.run:
 
             try:
-                evnt = 1 << self.input.high_or_low()
-                if evnt & self.event:
-                    # fire callback
-                    self.action(evnt)
+                evnt = self.input.high_or_low(timeout)
+                if evnt is not None:
+                    evnt = 1 << evnt
+                    if evnt & self.event:
+                        # fire callback
+                        self.action(evnt)
             except InputEvent.InputEventInterrupt:
                 self.run = False
 
