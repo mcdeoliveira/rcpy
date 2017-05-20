@@ -7,7 +7,7 @@ import rcpy.button as button
 import rcpy.led as led
 
 # configure LEDs
-rates = (1, 0.5, 0.1)
+rates = (0.5, 0.25, 0.1)
 index = 0
 
 # blink leds
@@ -33,6 +33,10 @@ def mode_pressed(event, blink_red, blink_green, rates):
     # change blink period
     blink_red.set_period(rates[index % len(rates)])
     blink_green.set_period(rates[index % len(rates)])
+    
+    # reinitialize leds
+    led.red.on()
+    led.green.off()
 
 # create and start ButtonEvent
 mode_event = button.ButtonEvent(button.mode,
