@@ -104,7 +104,7 @@ class Input:
     def high_or_low(self, debounce = 0, timeout = None):
         
         # repeat until event is detected
-        while True:
+        while rcpy.get_state() != rcpy.EXITING:
 
             # read event
             event = read(self.pin, timeout)
