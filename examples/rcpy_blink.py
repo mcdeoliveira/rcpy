@@ -85,7 +85,7 @@ except KeyboardInterrupt:
 finally:
 
     print("Exiting...")
-    rcpy.set_state(rcpy.EXITING)
+    #rcpy.set_state(rcpy.EXITING)
 
     # say bye
     print("\nBye Beaglebone!")
