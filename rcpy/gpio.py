@@ -53,10 +53,13 @@ BATT_LED_4 = 26      #  P8.14
 SYSFS_GPIO_DIR = '/sys/class/gpio'
 POLL_TIMEOUT = 100
 
-DEBOUNCE_INTERVAL = 0.0005
+DEBOUNCE_INTERVAL = 0.5
 
 import io, threading, time
 import select
+
+class InputTimeout(Exception):
+    pass
 
 def read(pin, timeout = None):
     
@@ -79,8 +82,8 @@ def read(pin, timeout = None):
                 # can fail if timeout is given
                 events = poller.poll(timeout)
                 if len(events) == 0:
-                    return None
-
+                    raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
+                
             else:
                 # timeout = None, never fails
                 events = poller.poll(POLL_TIMEOUT)
@@ -114,15 +117,11 @@ class Input:
             # read event
             event = read(self.pin, timeout)
 
-            # failed 
-            if event is None:
-                return None
-            
             # debounce
             k = 0
             value = event
             while k < debounce and value == event:
-                time.sleep(DEBOUNCE_INTERVAL)
+                time.sleep(DEBOUNCE_INTERVAL/1000)
                 value = get(self.pin)
                 k += 1
                 
@@ -134,17 +133,15 @@ class Input:
         event = self.high_or_low(debounce, timeout)
         if event == HIGH:
             return True
-        elif event == LOW:
+        else:
             return False
-        return event
 
     def low(self, debounce = 0, timeout = None):
         event = self.high_or_low(debounce, timeout)
         if event == LOW:
             return True
-        elif event == HIGH:
+        else:
             return False
-        return event
 
 class InputEvent(threading.Thread):
 
@@ -168,12 +165,13 @@ class InputEvent(threading.Thread):
         self.debounce = 0
 
     def action(self, event, *vargs, **kwargs):
-        # valid event?
-        if event != InputEvent.HIGH and event != InputEvent.LOW:
-            raise Exception('Unkown InputEvent {}'.format(event))
-        # call target
         if self.target:
+            # call target
             self.target(event, *self.vargs, **self.kwargs)
+        else:
+            # just check for valid event
+            if event != InputEvent.HIGH and event != InputEvent.LOW:
+                raise Exception('Unkown InputEvent {}'.format(event))
             
     def run(self):
         self.run = True
@@ -186,7 +184,8 @@ class InputEvent(threading.Thread):
                     if evnt & self.event:
                         # fire callback
                         self.action(evnt)
-            except InputEvent.InputEventInterrupt:
+                        
+            except InputTimeout:
                 self.run = False
 
     def stop(self):
