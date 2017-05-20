@@ -86,7 +86,10 @@ finally:
 
     print("Exiting...")
     #rcpy.set_state(rcpy.EXITING)
-
+    mode_event.stop()
+    blink_red.stop()
+    blink_green.stop()
+    
     # say bye
     print("\nBye Beaglebone!")
             
