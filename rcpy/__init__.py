@@ -41,3 +41,7 @@ def add_cleanup(fun, pars):
 warnings.warn('> Installing signal handlers')
 signal.signal(signal.SIGINT, handler)
 signal.signal(signal.SIGTERM, handler)
+
+# exit function
+def exit():
+    set_state(EXITING)

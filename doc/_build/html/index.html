@@ -1,0 +1,1146 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Python 3 bindings for Robotics Cape &#8212; rcpy 0.2a documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.2a',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="python-3-bindings-for-robotics-cape">
+<h1>Python 3 bindings for Robotics Cape<a class="headerlink" href="#python-3-bindings-for-robotics-cape" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>This package supports the hardware on the <a class="reference external" href="http://www.strawsondesign.com/">Robotics Cape</a> running on a <a class="reference external" href="https://beagleboard.org/black">Beaglebone Black</a> or a <a class="reference external" href="https://beagleboard.org/blue">Beaglebone Blue</a>.</p>
+<div class="section" id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>See <a class="reference external" href="http://github.com/mcdeoliveira/rcpy#installation">http://github.com/mcdeoliveira/rcpy#installation</a> for installation instructions.</p>
+</div>
+</div>
+<div class="section" id="module-rcpy">
+<span id="module-rcpy"></span><span id="rcpy"></span><h2>Module <cite>rcpy</cite><a class="headerlink" href="#module-rcpy" title="Permalink to this headline">¶</a></h2>
+<p>This module is responsible to loading and initializing all hardware
+devices associated with the Robotics Cape or Beagelbone Blue. Just type:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rcpy</span>
+</pre></div>
+</div>
+<p>to load the module. After loading the Robotics Cape is left at the
+state <a class="reference internal" href="#rcpy.PAUSED" title="rcpy.PAUSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.PAUSED</span></code></a>. It will also automatically cleanup after
+you exit your program. You can add additional function to be called by
+the cleanup routine using <a class="reference internal" href="#rcpy.add_cleanup" title="rcpy.add_cleanup"><code class="xref py py-func docutils literal"><span class="pre">rcpy.add_cleanup()</span></code></a>.</p>
+<div class="section" id="constants">
+<h3>Constants<a class="headerlink" href="#constants" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="rcpy.IDLE">
+<code class="descclassname">rcpy.</code><code class="descname">IDLE</code><a class="headerlink" href="#rcpy.IDLE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="rcpy.RUNNING">
+<code class="descclassname">rcpy.</code><code class="descname">RUNNING</code><a class="headerlink" href="#rcpy.RUNNING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="rcpy.PAUSED">
+<code class="descclassname">rcpy.</code><code class="descname">PAUSED</code><a class="headerlink" href="#rcpy.PAUSED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="data">
+<dt id="rcpy.EXITING">
+<code class="descclassname">rcpy.</code><code class="descname">EXITING</code><a class="headerlink" href="#rcpy.EXITING" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="low-level-functions">
+<h3>Low-level functions<a class="headerlink" href="#low-level-functions" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="rcpy.get_state">
+<code class="descclassname">rcpy.</code><code class="descname">get_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.get_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current state, one of <a class="reference internal" href="#rcpy.IDLE" title="rcpy.IDLE"><code class="xref py py-data docutils literal"><span class="pre">rcpy.IDLE</span></code></a>, <a class="reference internal" href="#rcpy.RUNNING" title="rcpy.RUNNING"><code class="xref py py-data docutils literal"><span class="pre">rcpy.RUNNING</span></code></a>, <a class="reference internal" href="#rcpy.PAUSED" title="rcpy.PAUSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.PAUSED</span></code></a>, <a class="reference internal" href="#rcpy.EXITING" title="rcpy.EXITING"><code class="xref py py-data docutils literal"><span class="pre">rcpy.EXITING</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rcpy.set_state">
+<code class="descclassname">rcpy.</code><code class="descname">set_state</code><span class="sig-paren">(</span><em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the current state, <cite>state</cite> is one of <a class="reference internal" href="#rcpy.IDLE" title="rcpy.IDLE"><code class="xref py py-data docutils literal"><span class="pre">rcpy.IDLE</span></code></a>, <a class="reference internal" href="#rcpy.RUNNING" title="rcpy.RUNNING"><code class="xref py py-data docutils literal"><span class="pre">rcpy.RUNNING</span></code></a>, <a class="reference internal" href="#rcpy.PAUSED" title="rcpy.PAUSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.PAUSED</span></code></a>, <a class="reference internal" href="#rcpy.EXITING" title="rcpy.EXITING"><code class="xref py py-data docutils literal"><span class="pre">rcpy.EXITING</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rcpy.exit">
+<code class="descclassname">rcpy.</code><code class="descname">exit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.exit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state to <a class="reference internal" href="#rcpy.EXITING" title="rcpy.EXITING"><code class="xref py py-data docutils literal"><span class="pre">rcpy.EXITING</span></code></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rcpy.add_cleanup">
+<code class="descclassname">rcpy.</code><code class="descname">add_cleanup</code><span class="sig-paren">(</span><em>fun</em>, <em>pars</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.add_cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fun</strong> – function to call at cleanup</li>
+<li><strong>pars</strong> – list of positional parameters to pass to function <cite>fun</cite></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Add function <cite>fun</cite> and parameters <cite>pars</cite> to the list of cleanup functions.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-rcpy.gpio">
+<span id="module-rcpy-gpio"></span><span id="rcpy-gpio"></span><h2>Module <cite>rcpy.gpio</cite><a class="headerlink" href="#module-rcpy.gpio" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an interface to the GPIO pins used by the
+Robotics Cape. There are low level functions which closely mirror the
+ones available in the C library and also Classes that provide a higher
+level interface.</p>
+<p>For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rcpy.gpio</span> <span class="k">as</span> <span class="nn">gpio</span>
+<span class="n">pause_button</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">Input</span><span class="p">(</span><span class="n">gpio</span><span class="o">.</span><span class="n">PAUSE_BTN</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>imports the module and create an <a class="reference internal" href="#rcpy.gpio.Input" title="rcpy.gpio.Input"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.Input</span></code></a> object
+corresponding to the <em>PAUSE</em> button on the Robotics Cape. The
+command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">pause_button</span><span class="o">.</span><span class="n">low</span><span class="p">():</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got &lt;PAUSE&gt;!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>waits forever until the <em>PAUSE</em> button on the Robotics Cape is pressed
+and:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">pause_button</span><span class="o">.</span><span class="n">low</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got &lt;PAUSE&gt;!&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputTimeout</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Timed out!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>waits for at most 2000 ms, i.e. 2 s, before giving up.</p>
+<p>This module also provides the class <a class="reference internal" href="#rcpy.gpio.InputEvent" title="rcpy.gpio.InputEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.InputEvent</span></code></a> to
+handle input events. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyInputEvent</span><span class="p">(</span><span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got &lt;PAUSE&gt;!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>defines a class that can be used to print <code class="samp docutils literal"><span class="pre">Got</span> <span class="pre">&lt;PAUSE&gt;!</span></code> every
+time an input event happens. To connect this class with the particular
+event that the <em>PAUSE</em> button is pressed instantiate:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pause_event</span> <span class="o">=</span> <span class="n">MyInputEvent</span><span class="p">(</span><span class="n">pause_button</span><span class="p">,</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">LOW</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which will cause the method <cite>action</cite> of the <cite>MyInputEvent</cite> class be
+called every time the state of the <cite>pause_button</cite> becomes
+<a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a>. The event handler must be started by
+calling:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pause_event</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>and it can be stop by:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pause_event</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Alternatively one could have created an input event handler by passing
+a function to the argument <cite>target</cite> of
+<a class="reference internal" href="#rcpy.gpio.InputEvent" title="rcpy.gpio.InputEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.InputEvent</span></code></a> as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pause_action</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">LOW</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;PAUSE&gt; went LOW&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event</span> <span class="o">==</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">HIGH</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;PAUSE&gt; went HIGH&#39;</span><span class="p">)</span>
+
+<span class="n">pause_event</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="p">(</span><span class="n">pause_button</span><span class="p">,</span>
+                              <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">LOW</span> <span class="o">|</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">HIGH</span><span class="p">,</span>
+                              <span class="n">target</span> <span class="o">=</span> <span class="n">pause_action</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Note that the function <cite>pause_action</cite> will be called when
+<cite>pause_button</cite> becomes either <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a> or
+<a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a> because the event passed to the the
+constructor <a class="reference internal" href="#rcpy.gpio.InputEvent" title="rcpy.gpio.InputEvent"><code class="xref py py-class docutils literal"><span class="pre">InputEvent</span></code></a> is:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">LOW</span> <span class="o">|</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">HIGH</span>
+</pre></div>
+</div>
+<p>which is joined by the logical or operator <cite>|</cite>. The function
+<cite>pause_action</cite> decides on the type of event by checking the variable
+<cite>event</cite>. This event handler should be started and stopped using
+<a class="reference internal" href="#rcpy.gpio.InputEvent.start" title="rcpy.gpio.InputEvent.start"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.gpio.InputEvent.start()</span></code></a> and
+<a class="reference internal" href="#rcpy.gpio.InputEvent.stop" title="rcpy.gpio.InputEvent.stop"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.gpio.InputEvent.stop()</span></code></a> as before.</p>
+<p>Additional positional or keyword arguments can be passed as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pause_action_with_parameter</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got &lt;PAUSE&gt; with </span><span class="si">{}</span><span class="s1">!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span>
+
+<span class="n">pause_event</span> <span class="o">=</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="p">(</span><span class="n">pause_button</span><span class="p">,</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputEvent</span><span class="o">.</span><span class="n">LOW</span><span class="p">,</span>
+                              <span class="n">target</span> <span class="o">=</span> <span class="n">pause_action_with_parameter</span><span class="p">,</span>
+                              <span class="n">vargs</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;some parameter&#39;</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>See also <a class="reference internal" href="#rcpy.button.Button" title="rcpy.button.Button"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.Button</span></code></a> for a better interface for
+working with the Robotics Cape buttons.</p>
+<div class="section" id="id1">
+<h3>Constants<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="rcpy.gpio.HIGH">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">HIGH</code><a class="headerlink" href="#rcpy.gpio.HIGH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logic high level; equals <cite>1</cite>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.gpio.LOW">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">LOW</code><a class="headerlink" href="#rcpy.gpio.LOW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Logic low level; equals <cite>0</cite>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.gpio.POLL_TIMEOUT">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">POLL_TIMEOUT</code><a class="headerlink" href="#rcpy.gpio.POLL_TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd><p>Timeout in ms to be used when polling GPIO input (Default 100ms)</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.gpio.DEBOUNCE_INTERVAL">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">DEBOUNCE_INTERVAL</code><a class="headerlink" href="#rcpy.gpio.DEBOUNCE_INTERVAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interval in ms to be used for debouncing (Default 0.5ms)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="rcpy.gpio.InputTimeout">
+<em class="property">class </em><code class="descclassname">rcpy.gpio.</code><code class="descname">InputTimeout</code><a class="headerlink" href="#rcpy.gpio.InputTimeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exception representing an input timeout event.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="rcpy.gpio.Input">
+<em class="property">class </em><code class="descclassname">rcpy.gpio.</code><code class="descname">Input</code><span class="sig-paren">(</span><em>pin</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.Input" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pin</strong> (<em>int</em>) – GPIO pin</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#rcpy.gpio.Input" title="rcpy.gpio.Input"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.Input</span></code></a> represents one of the GPIO input pins in the Robotics Cape or Beaglebone Blue.</p>
+<dl class="method">
+<dt id="rcpy.gpio.Input.is_high">
+<code class="descname">is_high</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.Input.is_high" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="samp docutils literal"><span class="pre">True</span></code> if pin is equal to <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a> and <code class="samp docutils literal"><span class="pre">False</span></code> if pin is <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.Input.is_low">
+<code class="descname">is_low</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.Input.is_low" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="samp docutils literal"><span class="pre">True</span></code> if pin is equal to <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a> and <code class="samp docutils literal"><span class="pre">False</span></code> if pin is <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.Input.high_or_low">
+<code class="descname">high_or_low</code><span class="sig-paren">(</span><em>debounce = 0</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.Input.high_or_low" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default 0)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the input changing</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the new state as <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a> or <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for pin to change state.</p>
+<p>If <cite>timeout</cite> is not <code class="samp docutils literal"><span class="pre">None</span></code> wait at most <cite>timeout</cite> ms.</p>
+<p>If <cite>timeout</cite> is negative wait forever. This call cannot be interrupted.</p>
+<p>If <cite>timeout</cite> is <code class="samp docutils literal"><span class="pre">None</span></code> wait forever by repeatedly polling in <a class="reference internal" href="#rcpy.gpio.POLL_TIMEOUT" title="rcpy.gpio.POLL_TIMEOUT"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.POLL_TIMEOUT</span></code></a> ms. This call can only be interrupted by calling <a class="reference internal" href="#rcpy.exit" title="rcpy.exit"><code class="xref py py-func docutils literal"><span class="pre">rcpy.exit()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.Input.high">
+<code class="descname">high</code><span class="sig-paren">(</span><em>debounce = 0</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.Input.high" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default 0)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the input changing</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="samp docutils literal"><span class="pre">True</span></code> if the new state is <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a> and <code class="samp docutils literal"><span class="pre">False</span></code> if the new state is <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for pin to change state.</p>
+<p>If <cite>timeout</cite> is not <code class="samp docutils literal"><span class="pre">None</span></code> wait at most <cite>timeout</cite> ms.</p>
+<p>If <cite>timeout</cite> is negative wait forever. This call cannot be interrupted.</p>
+<p>If <cite>timeout</cite> is <code class="samp docutils literal"><span class="pre">None</span></code> wait forever by repeatedly polling in <a class="reference internal" href="#rcpy.gpio.POLL_TIMEOUT" title="rcpy.gpio.POLL_TIMEOUT"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.POLL_TIMEOUT</span></code></a> ms. This call can only be interrupted by calling <a class="reference internal" href="#rcpy.exit" title="rcpy.exit"><code class="xref py py-func docutils literal"><span class="pre">rcpy.exit()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.Input.low">
+<code class="descname">low</code><span class="sig-paren">(</span><em>debounce = 0</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.Input.low" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default 0)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the input changing</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="samp docutils literal"><span class="pre">True</span></code> if the new state is <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a> and <code class="samp docutils literal"><span class="pre">False</span></code> if the new state is <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for pin to change state.</p>
+<p>If <cite>timeout</cite> is not <code class="samp docutils literal"><span class="pre">None</span></code> wait at most <cite>timeout</cite> ms.</p>
+<p>If <cite>timeout</cite> is negative wait forever. This call cannot be interrupted.</p>
+<p>If <cite>timeout</cite> is <code class="samp docutils literal"><span class="pre">None</span></code> wait forever by repeatedly polling in <a class="reference internal" href="#rcpy.gpio.POLL_TIMEOUT" title="rcpy.gpio.POLL_TIMEOUT"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.POLL_TIMEOUT</span></code></a> ms. This call can only be interrupted by calling <a class="reference internal" href="#rcpy.exit" title="rcpy.exit"><code class="xref py py-func docutils literal"><span class="pre">rcpy.exit()</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rcpy.gpio.InputEvent">
+<em class="property">class </em><code class="descclassname">rcpy.gpio.</code><code class="descname">InputEvent</code><span class="sig-paren">(</span><em>input</em>, <em>event</em>, <em>debounce = 0</em>, <em>timeout = None</em>, <em>target = None</em>, <em>vargs = ()</em>, <em>kwargs = {}</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.InputEvent" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Bases:</th><td class="field-body">threading.Thread</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#rcpy.gpio.InputEvent" title="rcpy.gpio.InputEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.InputEvent</span></code></a> is an event handler for GPIO input events.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input</strong> (<em>int</em>) – instance of <a class="reference internal" href="#rcpy.gpio.Input" title="rcpy.gpio.Input"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.Input</span></code></a></li>
+<li><strong>event</strong> (<em>int</em>) – either <a class="reference internal" href="#rcpy.gpio.InputEvent.HIGH" title="rcpy.gpio.InputEvent.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.InputEvent.HIGH</span></code></a> or <a class="reference internal" href="#rcpy.gpio.InputEvent.LOW" title="rcpy.gpio.InputEvent.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.InputEvent.LOW</span></code></a></li>
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default 0)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+<li><strong>target</strong> (<em>int</em>) – callback function to run in case input changes (default None)</li>
+<li><strong>vargs</strong> (<em>int</em>) – positional arguments for function <cite>target</cite> (default ())</li>
+<li><strong>kwargs</strong> (<em>int</em>) – keyword arguments for function <cite>target</cite> (default {})</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="data">
+<dt id="rcpy.gpio.InputEvent.LOW">
+<code class="descname">LOW</code><a class="headerlink" href="#rcpy.gpio.InputEvent.LOW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event representing change to a low logic level.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.gpio.InputEvent.HIGH">
+<code class="descname">HIGH</code><a class="headerlink" href="#rcpy.gpio.InputEvent.HIGH" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event representing change to a high logic level.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.InputEvent.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>event</em>, <em>*vargs</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.InputEvent.action" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> – either <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a> or <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a></li>
+<li><strong>vargs</strong> – variable positional arguments</li>
+<li><strong>kwargs</strong> – variable keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Action to perform when event is detected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.InputEvent.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.InputEvent.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the input event handler thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.gpio.InputEvent.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.InputEvent.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to stop the input event handler thread. Once it has stopped it cannot be restarted.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="id2">
+<h3>Low-level functions<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="rcpy.gpio.set">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">set</code><span class="sig-paren">(</span><em>pin</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.set" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pin</strong> (<em>int</em>) – GPIO pin</li>
+<li><strong>value</strong> (<em>int</em>) – value to set the pin (<a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a> or <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>rcpy.gpio.error</strong> – if it cannot write to <cite>pin</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Set GPIO <cite>pin</cite> to the new <cite>value</cite>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rcpy.gpio.get">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">get</code><span class="sig-paren">(</span><em>pin</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.get" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pin</strong> (<em>int</em>) – GPIO pin</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><strong>rcpy.gpio.error</strong> – if it cannot read from <cite>pin</cite></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the current value of the GPIO <cite>pin</cite></td>
+</tr>
+</tbody>
+</table>
+<p>This is a non-blocking call.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="rcpy.gpio.read">
+<code class="descclassname">rcpy.gpio.</code><code class="descname">read</code><span class="sig-paren">(</span><em>pin</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.gpio.read" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>pin</strong> (<em>int</em>) – GPIO pin</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first simple">
+<li><strong>rcpy.gpio.error</strong> – if it cannot read from <cite>pin</cite></li>
+<li><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the input changing</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the new value of the GPIO <cite>pin</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for value of the GPIO <cite>pin</cite> to change. This is a blocking call.</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-rcpy.button">
+<span id="module-rcpy-button"></span><span id="rcpy-button"></span><h2>Module <cite>rcpy.button</cite><a class="headerlink" href="#module-rcpy.button" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an interface to the <em>PAUSE</em> and <em>MODE</em> buttons in
+the Robotics Cape. The command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rcpy.button</span> <span class="k">as</span> <span class="nn">button</span>
+</pre></div>
+</div>
+<p>imports the module. The <a class="reference internal" href="#rcpy-button"><span class="std std-ref">Module rcpy.button</span></a> provides
+objects corresponding to the <em>PAUSE</em> and <em>MODE</em> buttons on the
+Robotics Cape. Those are <a class="reference internal" href="#rcpy.button.pause" title="rcpy.button.pause"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.pause</span></code></a> and
+<a class="reference internal" href="#rcpy.button.mode" title="rcpy.button.mode"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.mode</span></code></a>. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">button</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">pressed</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;MODE&gt; pressed!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>waits forever until the <em>MODE</em> button on the Robotics Cape is pressed and:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">button</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">released</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;MODE&gt; released!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>waits forever until the <em>MODE</em> button on the Robotics Cape is
+released. Note that nothing will print if you first have to press the
+button before releasing because <a class="reference internal" href="#rcpy.button.Button.released" title="rcpy.button.Button.released"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.button.Button.released()</span></code></a>
+returns <code class="samp docutils literal"><span class="pre">False</span></code> after the first input event, which in this case
+was <em>pressed</em>. As with <a class="reference internal" href="#rcpy-gpio"><span class="std std-ref">Module rcpy.gpio</span></a>, it is possible to use
+<a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.InputTimeout</span></code></a> as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rcpy.gpio</span> <span class="k">as</span> <span class="nn">gpio</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">button</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">pressed</span><span class="p">(</span><span class="n">timeout</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;MODE&gt; pressed!&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">gpio</span><span class="o">.</span><span class="n">InputTimeout</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Timed out!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>which waits for at most 2000 ms, i.e. 2 s, before giving up.</p>
+<p>This module also provides the class <a class="reference internal" href="#rcpy.button.ButtonEvent" title="rcpy.button.ButtonEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.ButtonEvent</span></code></a> to
+handle input events. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyButtonEvent</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">action</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got &lt;PAUSE&gt;!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>defines a class that can be used to print <code class="samp docutils literal"><span class="pre">Got</span> <span class="pre">&lt;PAUSE&gt;!</span></code> every
+time the <em>PAUSE</em> button is pressed. To instantiate and start the event
+handler use:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pause_event</span> <span class="o">=</span> <span class="n">MyButtonEvent</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">pause</span><span class="p">,</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="o">.</span><span class="n">PRESSED</span><span class="p">)</span>
+<span class="n">pause_event</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The event handler can be stop by calling:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pause_event</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Alternatively one could have created an input event handler by passing
+a function to the argument <cite>target</cite> of
+<a class="reference internal" href="#rcpy.button.ButtonEvent" title="rcpy.button.ButtonEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.ButtonEvent</span></code></a> as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pause_action</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">event</span> <span class="o">==</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="o">.</span><span class="n">PRESSED</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;PAUSE&gt; pressed!&#39;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">event</span> <span class="o">==</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="o">.</span><span class="n">RELEASED</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&lt;PAUSE&gt; released!&#39;</span><span class="p">)</span>
+
+<span class="n">pause_event</span> <span class="o">=</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">pause</span><span class="p">,</span>
+                                 <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="o">.</span><span class="n">PRESSED</span> <span class="o">|</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="o">.</span><span class="n">RELEASED</span><span class="p">,</span>
+                                 <span class="n">target</span> <span class="o">=</span> <span class="n">pause_action</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This event handler should be started and stopped using
+<a class="reference internal" href="#rcpy.button.ButtonEvent.start" title="rcpy.button.ButtonEvent.start"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.button.ButtonEvent.start()</span></code></a> and
+<a class="reference internal" href="#rcpy.button.ButtonEvent.stop" title="rcpy.button.ButtonEvent.stop"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.button.ButtonEvent.stop()</span></code></a> as in
+<a class="reference internal" href="#rcpy-gpio"><span class="std std-ref">Module rcpy.gpio</span></a>. Additional positional or keyword arguments can be
+passed as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">pause_action_with_parameter</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">parameter</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got &lt;PAUSE&gt; with </span><span class="si">{}</span><span class="s1">!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">parameter</span><span class="p">))</span>
+
+<span class="n">pause_event</span> <span class="o">=</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="p">(</span><span class="n">button</span><span class="o">.</span><span class="n">pause</span><span class="p">,</span> <span class="n">button</span><span class="o">.</span><span class="n">ButtonEvent</span><span class="o">.</span><span class="n">PRESSED</span><span class="p">,</span>
+                                 <span class="n">target</span> <span class="o">=</span> <span class="n">pause_action_with_parameter</span><span class="p">,</span>
+                                 <span class="n">vargs</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;some parameter&#39;</span><span class="p">,))</span>
+</pre></div>
+</div>
+<p>The main difference between <a class="reference internal" href="#rcpy-button"><span class="std std-ref">Module rcpy.button</span></a> and <a class="reference internal" href="#rcpy-gpio"><span class="std std-ref">Module rcpy.gpio</span></a> is
+that <a class="reference internal" href="#rcpy-button"><span class="std std-ref">Module rcpy.button</span></a> defines the constants
+<a class="reference internal" href="#rcpy.button.PRESSED" title="rcpy.button.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.PRESSED</span></code></a> and <a class="reference internal" href="#rcpy.button.RELEASED" title="rcpy.button.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.RELEASED</span></code></a>,
+the events <a class="reference internal" href="#rcpy.button.ButtonEvent.PRESSED" title="rcpy.button.ButtonEvent.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.ButtonEvent.PRESSED</span></code></a> and
+<a class="reference internal" href="#rcpy.button.ButtonEvent.RELEASED" title="rcpy.button.ButtonEvent.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.ButtonEvent.RELEASED</span></code></a>, and its classes handle
+debouncing by default.</p>
+<div class="section" id="id3">
+<h3>Constants<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="rcpy.button.PRESSED">
+<code class="descclassname">rcpy.button.</code><code class="descname">PRESSED</code><a class="headerlink" href="#rcpy.button.PRESSED" title="Permalink to this definition">¶</a></dt>
+<dd><p>State of a pressed button; equal to <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.button.RELEASED">
+<code class="descclassname">rcpy.button.</code><code class="descname">RELEASED</code><a class="headerlink" href="#rcpy.button.RELEASED" title="Permalink to this definition">¶</a></dt>
+<dd><p>State of a released button; equal to <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.button.pause">
+<code class="descclassname">rcpy.button.</code><code class="descname">pause</code><a class="headerlink" href="#rcpy.button.pause" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#rcpy.button.Button" title="rcpy.button.Button"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.Button</span></code></a> representing the Robotics Cape <em>PAUSE</em> button.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.button.mode">
+<code class="descclassname">rcpy.button.</code><code class="descname">mode</code><a class="headerlink" href="#rcpy.button.mode" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#rcpy.button.Button" title="rcpy.button.Button"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.Button</span></code></a> representing the Robotics Cape <em>MODE</em> button.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.button.DEBOUNCE">
+<code class="descclassname">rcpy.button.</code><code class="descname">DEBOUNCE</code><a class="headerlink" href="#rcpy.button.DEBOUNCE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of times to test for deboucing (Default 3)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id4">
+<h3>Classes<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="rcpy.button.Button">
+<em class="property">class </em><code class="descclassname">rcpy.button.</code><code class="descname">Button</code><a class="headerlink" href="#rcpy.button.Button" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Bases:</th><td class="field-body"><a class="reference internal" href="#rcpy.gpio.Input" title="rcpy.gpio.Input"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.Input</span></code></a></td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#rcpy.button.Button" title="rcpy.button.Button"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.Button</span></code></a> represents buttons in the Robotics Cape or Beaglebone Blue.</p>
+<dl class="method">
+<dt id="rcpy.button.Button.is_pressed">
+<code class="descname">is_pressed</code><span class="sig-paren">(</span><em>debounce = rcpy.button.DEBOUNCE</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.Button.is_pressed" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="samp docutils literal"><span class="pre">True</span></code> if button state is equal to <code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.PRESSED</span></code> and <code class="samp docutils literal"><span class="pre">False</span></code> if pin is <code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.RELEASED</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.Button.is_released">
+<code class="descname">is_released</code><span class="sig-paren">(</span><em>debounce = rcpy.button.DEBOUNCE</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.Button.is_released" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="samp docutils literal"><span class="pre">True</span></code> if button state is equal to <code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.RELEASED</span></code> and <code class="samp docutils literal"><span class="pre">False</span></code> if pin is <code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.PRESSED</span></code></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.Button.pressed_or_released">
+<code class="descname">pressed_or_released</code><span class="sig-paren">(</span><em>debounce = rcpy.button.DEBOUNCE</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.Button.pressed_or_released" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default <cite>rcpy.button.DEBOUNCE</cite>)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the button state changing</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the new state as <a class="reference internal" href="#rcpy.button.PRESSED" title="rcpy.button.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.PRESSED</span></code></a> or <a class="reference internal" href="#rcpy.button.RELEASED" title="rcpy.button.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.RELEASED</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for button state to change.</p>
+<p>If <cite>timeout</cite> is not <code class="samp docutils literal"><span class="pre">None</span></code> wait at most <cite>timeout</cite> ms.</p>
+<p>If <cite>timeout</cite> is negative wait forever. This call cannot be interrupted.</p>
+<p>If <cite>timeout</cite> is <code class="samp docutils literal"><span class="pre">None</span></code> wait forever by repeatedly polling in <a class="reference internal" href="#rcpy.gpio.POLL_TIMEOUT" title="rcpy.gpio.POLL_TIMEOUT"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.POLL_TIMEOUT</span></code></a> ms. This call can only be interrupted by calling <a class="reference internal" href="#rcpy.exit" title="rcpy.exit"><code class="xref py py-func docutils literal"><span class="pre">rcpy.exit()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.Button.pressed">
+<code class="descname">pressed</code><span class="sig-paren">(</span><em>debounce = rcpy.button.DEBOUNCE</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.Button.pressed" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default <cite>rcpy.button.DEBOUNCE</cite>)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the button state changing.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="samp docutils literal"><span class="pre">True</span></code> if the new state is <a class="reference internal" href="#rcpy.button.PRESSED" title="rcpy.button.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.PRESSED</span></code></a> and <code class="samp docutils literal"><span class="pre">False</span></code> if the new state is <a class="reference internal" href="#rcpy.button.RELEASED" title="rcpy.button.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.RELEASED</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for button state to change.</p>
+<p>If <cite>timeout</cite> is not <code class="samp docutils literal"><span class="pre">None</span></code> wait at most <cite>timeout</cite> ms.</p>
+<p>If <cite>timeout</cite> is negative wait forever. This call cannot be interrupted.</p>
+<p>If <cite>timeout</cite> is <code class="samp docutils literal"><span class="pre">None</span></code> wait forever by repeatedly polling in <a class="reference internal" href="#rcpy.gpio.POLL_TIMEOUT" title="rcpy.gpio.POLL_TIMEOUT"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.POLL_TIMEOUT</span></code></a> ms. This call can only be interrupted by calling <a class="reference internal" href="#rcpy.exit" title="rcpy.exit"><code class="xref py py-func docutils literal"><span class="pre">rcpy.exit()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.Button.released">
+<code class="descname">released</code><span class="sig-paren">(</span><em>debounce = rcpy.button.DEBOUNCE</em>, <em>timeout = None</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.Button.released" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default <cite>rcpy.button.DEBOUNCE</cite>)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default None)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputTimeout" title="rcpy.gpio.InputTimeout"><strong>rcpy.gpio.InputTimeout</strong></a> – if more than <cite>timeout</cite> ms have elapsed without the button state changing.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="samp docutils literal"><span class="pre">True</span></code> if the new state is <a class="reference internal" href="#rcpy.button.RELEASED" title="rcpy.button.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.RELEASED</span></code></a> and <code class="samp docutils literal"><span class="pre">False</span></code> if the new state is <a class="reference internal" href="#rcpy.button.PRESSED" title="rcpy.button.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.PRESSED</span></code></a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Wait for button state to change.</p>
+<p>If <cite>timeout</cite> is not <code class="samp docutils literal"><span class="pre">None</span></code> wait at most <cite>timeout</cite> ms.</p>
+<p>If <cite>timeout</cite> is negative wait forever. This call cannot be interrupted.</p>
+<p>If <cite>timeout</cite> is <code class="samp docutils literal"><span class="pre">None</span></code> wait forever by repeatedly polling in <a class="reference internal" href="#rcpy.gpio.POLL_TIMEOUT" title="rcpy.gpio.POLL_TIMEOUT"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.POLL_TIMEOUT</span></code></a> ms. This call can only be interrupted by calling <a class="reference internal" href="#rcpy.exit" title="rcpy.exit"><code class="xref py py-func docutils literal"><span class="pre">rcpy.exit()</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rcpy.button.ButtonEvent">
+<em class="property">class </em><code class="descclassname">rcpy.button.</code><code class="descname">ButtonEvent</code><span class="sig-paren">(</span><em>input</em>, <em>event</em>, <em>debounce = rcpy.button.DEBOUNCE</em>, <em>timeout = None</em>, <em>target = None</em>, <em>vargs = ()</em>, <em>kwargs = {}</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.ButtonEvent" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Bases:</th><td class="field-body"><p class="first"><a class="reference internal" href="#rcpy.gpio.InputEvent" title="rcpy.gpio.InputEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.InputEvent</span></code></a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>input</strong> (<em>int</em>) – instance of <a class="reference internal" href="#rcpy.gpio.Input" title="rcpy.gpio.Input"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.Input</span></code></a></li>
+<li><strong>event</strong> (<em>int</em>) – either <a class="reference internal" href="#rcpy.button.ButtonEvent.PRESSED" title="rcpy.button.ButtonEvent.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.ButtonEvent.PRESSED</span></code></a> or <a class="reference internal" href="#rcpy.button.ButtonEvent.RELEASED" title="rcpy.button.ButtonEvent.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.ButtonEvent.RELEASED</span></code></a></li>
+<li><strong>debounce</strong> (<em>int</em>) – number of times to read input for debouncing (default <cite>rcpy.button.DEBOUNCE</cite>)</li>
+<li><strong>timeout</strong> (<em>int</em>) – timeout in milliseconds (default <cite>None</cite>)</li>
+<li><strong>target</strong> (<em>int</em>) – callback function to run in case input changes (default <cite>None</cite>)</li>
+<li><strong>vargs</strong> (<em>int</em>) – positional arguments for function <cite>target</cite> (default <cite>()</cite>)</li>
+<li><strong>kwargs</strong> (<em>int</em>) – keyword arguments for function <cite>target</cite> (default <cite>{}</cite>)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#rcpy.button.ButtonEvent" title="rcpy.button.ButtonEvent"><code class="xref py py-class docutils literal"><span class="pre">rcpy.button.ButtonEvent</span></code></a> is an event handler for button events.</p>
+<dl class="data">
+<dt id="rcpy.button.ButtonEvent.PRESSED">
+<code class="descname">PRESSED</code><a class="headerlink" href="#rcpy.button.ButtonEvent.PRESSED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event representing pressing a button; equal to <a class="reference internal" href="#rcpy.gpio.InputEvent.LOW" title="rcpy.gpio.InputEvent.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.InputEvent.LOW</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.button.ButtonEvent.RELEASED">
+<code class="descname">RELEASED</code><a class="headerlink" href="#rcpy.button.ButtonEvent.RELEASED" title="Permalink to this definition">¶</a></dt>
+<dd><p>Event representing releasing a button; equal to <a class="reference internal" href="#rcpy.gpio.InputEvent.HIGH" title="rcpy.gpio.InputEvent.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.InputEvent.HIGH</span></code></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.ButtonEvent.action">
+<code class="descname">action</code><span class="sig-paren">(</span><em>event</em>, <em>*vargs</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.ButtonEvent.action" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> – either <a class="reference internal" href="#rcpy.button.PRESSED" title="rcpy.button.PRESSED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.PRESSED</span></code></a> or <a class="reference internal" href="#rcpy.button.RELEASED" title="rcpy.button.RELEASED"><code class="xref py py-data docutils literal"><span class="pre">rcpy.button.RELEASED</span></code></a></li>
+<li><strong>vargs</strong> – variable positional arguments</li>
+<li><strong>kwargs</strong> – variable keyword arguments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Action to perform when event is detected.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.ButtonEvent.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.ButtonEvent.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the input event handler thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.button.ButtonEvent.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.button.ButtonEvent.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to stop the input event handler thread. Once it has stopped it cannot be restarted.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-rcpy.led">
+<span id="module-rcpy-led"></span><span id="rcpy-led"></span><h2>Module <cite>rcpy.led</cite><a class="headerlink" href="#module-rcpy.led" title="Permalink to this headline">¶</a></h2>
+<p>This module provides an interface to the <em>RED</em> and <em>GREEN</em> buttons in
+the Robotics Cape. The command:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rcpy.led</span> <span class="k">as</span> <span class="nn">led</span>
+</pre></div>
+</div>
+<p>imports the module. The <a class="reference internal" href="#rcpy-led"><span class="std std-ref">Module rcpy.led</span></a> provides objects corresponding
+to the <em>RED</em> and <em>GREEN</em> buttons on the Robotics Cape, namely
+<a class="reference internal" href="#rcpy.led.red" title="rcpy.led.red"><code class="xref py py-data docutils literal"><span class="pre">rcpy.led.red</span></code></a> and <a class="reference internal" href="#rcpy.led.green" title="rcpy.led.green"><code class="xref py py-data docutils literal"><span class="pre">rcpy.led.green</span></code></a>. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">led</span><span class="o">.</span><span class="n">red</span><span class="o">.</span><span class="n">on</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>turns the <em>RED</em> LED on and:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">led</span><span class="o">.</span><span class="n">green</span><span class="o">.</span><span class="n">off</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>turns the <em>GREEN</em> LED off. Likewise:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">led</span><span class="o">.</span><span class="n">green</span><span class="o">.</span><span class="n">is_on</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>returns <code class="samp docutils literal"><span class="pre">True</span></code> if the <em>GREEN</em> LED is on and:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">led</span><span class="o">.</span><span class="n">red</span><span class="o">.</span><span class="n">is_off</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>returns <code class="samp docutils literal"><span class="pre">True</span></code> if the <em>RED</em> LED is off.</p>
+<p>This module also provides the class <a class="reference internal" href="#rcpy.led.Blink" title="rcpy.led.Blink"><code class="xref py py-class docutils literal"><span class="pre">rcpy.led.Blink</span></code></a> to
+handle LED blinking. It spawns a thread that will keep LEDs blinking
+with a given period. For example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">blink</span> <span class="o">=</span> <span class="n">Blink</span><span class="p">(</span><span class="n">led</span><span class="o">.</span><span class="n">red</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">blink</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>starts blinking the <em>RED</em> LED every 0.5 seconds. One can also
+instantiate an <a class="reference internal" href="#rcpy.led.Blink" title="rcpy.led.Blink"><code class="xref py py-class docutils literal"><span class="pre">rcpy.led.Blink</span></code></a> object by calling
+<a class="reference internal" href="#rcpy.led.LED.blink" title="rcpy.led.LED.blink"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.led.LED.blink()</span></code></a> as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">blink</span> <span class="o">=</span> <span class="n">led</span><span class="o">.</span><span class="n">red</span><span class="o">.</span><span class="n">Blink</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">blink</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>which produces the same result. One can stop or resume blinking by calling <a class="reference internal" href="#rcpy.led.Blink.toggle" title="rcpy.led.Blink.toggle"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.led.Blink.toggle()</span></code></a> as in:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">blink</span><span class="o">.</span><span class="n">toggle</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>or call:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">blink</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>to permanently stop the blinking thread.</p>
+<div class="section" id="id5">
+<h3>Constants<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<dl class="data">
+<dt id="rcpy.led.ON">
+<code class="descclassname">rcpy.led.</code><code class="descname">ON</code><a class="headerlink" href="#rcpy.led.ON" title="Permalink to this definition">¶</a></dt>
+<dd><p>State of an on LED; equal to <a class="reference internal" href="#rcpy.gpio.HIGH" title="rcpy.gpio.HIGH"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.HIGH</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.led.OFF">
+<code class="descclassname">rcpy.led.</code><code class="descname">OFF</code><a class="headerlink" href="#rcpy.led.OFF" title="Permalink to this definition">¶</a></dt>
+<dd><p>State of an off led; equal to <a class="reference internal" href="#rcpy.gpio.LOW" title="rcpy.gpio.LOW"><code class="xref py py-data docutils literal"><span class="pre">rcpy.gpio.LOW</span></code></a>.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.led.red">
+<code class="descclassname">rcpy.led.</code><code class="descname">red</code><a class="headerlink" href="#rcpy.led.red" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#rcpy.led.LED" title="rcpy.led.LED"><code class="xref py py-class docutils literal"><span class="pre">rcpy.led.LED</span></code></a> representing the Robotics Cape <em>RED</em> LED.</p>
+</dd></dl>
+
+<dl class="data">
+<dt id="rcpy.led.green">
+<code class="descclassname">rcpy.led.</code><code class="descname">green</code><a class="headerlink" href="#rcpy.led.green" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#rcpy.led.LED" title="rcpy.led.LED"><code class="xref py py-class docutils literal"><span class="pre">rcpy.led.LED</span></code></a> representing the Robotics Cape <em>GREEN</em> LED.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="id6">
+<h3>Classes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="rcpy.led.LED">
+<em class="property">class </em><code class="descclassname">rcpy.led.</code><code class="descname">LED</code><span class="sig-paren">(</span><em>output</em>, <em>state = rcpy.led.OFF</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Bases:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">rcpy.gpio.Output</span></code></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>output</strong> – GPIO pin</li>
+<li><strong>state</strong> – initial LED state</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p><a class="reference internal" href="#rcpy.led.LED" title="rcpy.led.LED"><code class="xref py py-class docutils literal"><span class="pre">rcpy.led.LED</span></code></a> represents LEDs in the Robotics Cape or Beaglebone Blue.</p>
+<dl class="method">
+<dt id="rcpy.led.LED.is_on">
+<code class="descname">is_on</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED.is_on" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="samp docutils literal"><span class="pre">True</span></code> if LED is on and <code class="samp docutils literal"><span class="pre">False</span></code> if LED is off</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.LED.is_off">
+<code class="descname">is_off</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED.is_off" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><code class="samp docutils literal"><span class="pre">True</span></code> if LED is off and <code class="samp docutils literal"><span class="pre">False</span></code> if LED is on</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.LED.on">
+<code class="descname">on</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED.on" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change LED state to <code class="xref py py-data docutils literal"><span class="pre">rcpy.LED.ON</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.LED.off">
+<code class="descname">off</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED.off" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change LED state to <code class="xref py py-data docutils literal"><span class="pre">rcpy.LED.OFF</span></code>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.LED.toggle">
+<code class="descname">toggle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED.toggle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle current LED state.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.LED.blink">
+<code class="descname">blink</code><span class="sig-paren">(</span><em>period</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.LED.blink" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>period</strong> (<em>float</em>) – period of blinking</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">an instance of <a class="reference internal" href="#rcpy.led.Blink" title="rcpy.led.Blink"><code class="xref py py-class docutils literal"><span class="pre">rcpy.led.Blink</span></code></a>.</td>
+</tr>
+</tbody>
+</table>
+<p>Blinks LED with a period of <cite>period</cite> seconds.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rcpy.led.Blink">
+<em class="property">class </em><code class="descclassname">rcpy.led.</code><code class="descname">Blink</code><span class="sig-paren">(</span><em>led</em>, <em>period</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.Blink" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Bases:</th><td class="field-body">threading.Thread</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="rcpy.led.Blink.set_period">
+<code class="descname">set_period</code><span class="sig-paren">(</span><em>period</em><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.Blink.set_period" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>period</strong> (<em>float</em>) – period of blinking</td>
+</tr>
+</tbody>
+</table>
+<p>Set blinking period.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.Blink.toggle">
+<code class="descname">toggle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.Blink.toggle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Toggle blinking on and off. Call toggle again to resume or stop blinking.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.Blink.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.Blink.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start the blinking thread.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rcpy.led.Blink.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#rcpy.led.Blink.stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the blinking thread. Blinking cannot resume after calling <a class="reference internal" href="#rcpy.led.Blink.stop" title="rcpy.led.Blink.stop"><code class="xref py py-meth docutils literal"><span class="pre">rcpy.led.Blink.stop()</span></code></a>.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="module-rcpy-encoder">
+<span id="rcpy-encoder"></span><h2>Module <cite>rcpy.encoder</cite><a class="headerlink" href="#module-rcpy-encoder" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-rcpy-mpu9250">
+<span id="rcpy-mpy9250"></span><h2>Module <cite>rcpy.mpu9250</cite><a class="headerlink" href="#module-rcpy-mpu9250" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-rcpy-motor">
+<span id="rcpy-motor"></span><h2>Module <cite>rcpy.motor</cite><a class="headerlink" href="#module-rcpy-motor" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Python 3 bindings for Robotics Cape</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rcpy">Module <cite>rcpy</cite></a><ul>
+<li><a class="reference internal" href="#constants">Constants</a></li>
+<li><a class="reference internal" href="#low-level-functions">Low-level functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rcpy.gpio">Module <cite>rcpy.gpio</cite></a><ul>
+<li><a class="reference internal" href="#id1">Constants</a></li>
+<li><a class="reference internal" href="#classes">Classes</a></li>
+<li><a class="reference internal" href="#id2">Low-level functions</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rcpy.button">Module <cite>rcpy.button</cite></a><ul>
+<li><a class="reference internal" href="#id3">Constants</a></li>
+<li><a class="reference internal" href="#id4">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rcpy.led">Module <cite>rcpy.led</cite></a><ul>
+<li><a class="reference internal" href="#id5">Constants</a></li>
+<li><a class="reference internal" href="#id6">Classes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-rcpy-encoder">Module <cite>rcpy.encoder</cite></a></li>
+<li><a class="reference internal" href="#module-rcpy-mpu9250">Module <cite>rcpy.mpu9250</cite></a></li>
+<li><a class="reference internal" href="#module-rcpy-motor">Module <cite>rcpy.motor</cite></a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Mauricio de Oliveira.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

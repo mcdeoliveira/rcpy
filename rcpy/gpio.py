@@ -98,6 +98,9 @@ def read(pin, timeout = None):
                 elif flag & (select.POLLHUP | select.POLLERR):
                     raise Exception('Could not read pin {}'.format(pin))
 
+class Output:
+    pass
+                
 class Input:
 
     def __init__(self, pin):

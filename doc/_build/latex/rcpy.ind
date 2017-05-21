@@ -1,0 +1,110 @@
+\begin{sphinxtheindex}
+\def\bigletter#1{{\Large\sffamily#1}\nopagebreak\vspace{1mm}}
+
+  \bigletter A
+  \item action() (rcpy.button.ButtonEvent method), \hyperpage{14}
+  \item action() (rcpy.gpio.InputEvent method), \hyperpage{8}
+  \item add\_cleanup() (in module rcpy), \hyperpage{3}
+
+  \indexspace
+  \bigletter B
+  \item Blink (class in rcpy.led), \hyperpage{16}
+  \item blink() (rcpy.led.LED method), \hyperpage{16}
+  \item Button (class in rcpy.button), \hyperpage{12}
+  \item ButtonEvent (class in rcpy.button), \hyperpage{14}
+  \item ButtonEvent.PRESSED (in module rcpy.button), \hyperpage{14}
+  \item ButtonEvent.RELEASED (in module rcpy.button), \hyperpage{14}
+
+  \indexspace
+  \bigletter D
+  \item DEBOUNCE (in module rcpy.button), \hyperpage{12}
+  \item DEBOUNCE\_INTERVAL (in module rcpy.gpio), \hyperpage{6}
+
+  \indexspace
+  \bigletter E
+  \item exit() (in module rcpy), \hyperpage{3}
+  \item EXITING (in module rcpy), \hyperpage{3}
+
+  \indexspace
+  \bigletter G
+  \item get() (in module rcpy.gpio), \hyperpage{9}
+  \item get\_state() (in module rcpy), \hyperpage{3}
+  \item green (in module rcpy.led), \hyperpage{16}
+
+  \indexspace
+  \bigletter H
+  \item HIGH (in module rcpy.gpio), \hyperpage{6}
+  \item high() (rcpy.gpio.Input method), \hyperpage{7}
+  \item high\_or\_low() (rcpy.gpio.Input method), \hyperpage{7}
+
+  \indexspace
+  \bigletter I
+  \item IDLE (in module rcpy), \hyperpage{3}
+  \item Input (class in rcpy.gpio), \hyperpage{6}
+  \item InputEvent (class in rcpy.gpio), \hyperpage{8}
+  \item InputEvent.HIGH (in module rcpy.gpio), \hyperpage{8}
+  \item InputEvent.LOW (in module rcpy.gpio), \hyperpage{8}
+  \item InputTimeout (class in rcpy.gpio), \hyperpage{6}
+  \item is\_high() (rcpy.gpio.Input method), \hyperpage{7}
+  \item is\_low() (rcpy.gpio.Input method), \hyperpage{7}
+  \item is\_off() (rcpy.led.LED method), \hyperpage{16}
+  \item is\_on() (rcpy.led.LED method), \hyperpage{16}
+  \item is\_pressed() (rcpy.button.Button method), \hyperpage{12}
+  \item is\_released() (rcpy.button.Button method), \hyperpage{13}
+
+  \indexspace
+  \bigletter L
+  \item LED (class in rcpy.led), \hyperpage{16}
+  \item LOW (in module rcpy.gpio), \hyperpage{6}
+  \item low() (rcpy.gpio.Input method), \hyperpage{7}
+
+  \indexspace
+  \bigletter M
+  \item mode (in module rcpy.button), \hyperpage{12}
+
+  \indexspace
+  \bigletter O
+  \item OFF (in module rcpy.led), \hyperpage{16}
+  \item off() (rcpy.led.LED method), \hyperpage{16}
+  \item ON (in module rcpy.led), \hyperpage{16}
+  \item on() (rcpy.led.LED method), \hyperpage{16}
+
+  \indexspace
+  \bigletter P
+  \item pause (in module rcpy.button), \hyperpage{12}
+  \item PAUSED (in module rcpy), \hyperpage{3}
+  \item POLL\_TIMEOUT (in module rcpy.gpio), \hyperpage{6}
+  \item PRESSED (in module rcpy.button), \hyperpage{12}
+  \item pressed() (rcpy.button.Button method), \hyperpage{13}
+  \item pressed\_or\_released() (rcpy.button.Button method), \hyperpage{13}
+
+  \indexspace
+  \bigletter R
+  \item rcpy (module), \hyperpage{3}
+  \item rcpy.button (module), \hyperpage{11}
+  \item rcpy.gpio (module), \hyperpage{5}
+  \item rcpy.led (module), \hyperpage{15}
+  \item read() (in module rcpy.gpio), \hyperpage{9}
+  \item red (in module rcpy.led), \hyperpage{16}
+  \item RELEASED (in module rcpy.button), \hyperpage{12}
+  \item released() (rcpy.button.Button method), \hyperpage{13}
+  \item RUNNING (in module rcpy), \hyperpage{3}
+
+  \indexspace
+  \bigletter S
+  \item set() (in module rcpy.gpio), \hyperpage{8}
+  \item set\_period() (rcpy.led.Blink method), \hyperpage{16}
+  \item set\_state() (in module rcpy), \hyperpage{3}
+  \item start() (rcpy.button.ButtonEvent method), \hyperpage{14}
+  \item start() (rcpy.gpio.InputEvent method), \hyperpage{8}
+  \item start() (rcpy.led.Blink method), \hyperpage{17}
+  \item stop() (rcpy.button.ButtonEvent method), \hyperpage{14}
+  \item stop() (rcpy.gpio.InputEvent method), \hyperpage{8}
+  \item stop() (rcpy.led.Blink method), \hyperpage{17}
+
+  \indexspace
+  \bigletter T
+  \item toggle() (rcpy.led.Blink method), \hyperpage{16}
+  \item toggle() (rcpy.led.LED method), \hyperpage{16}
+
+\end{sphinxtheindex}
