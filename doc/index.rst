@@ -585,17 +585,11 @@ This module also provides the class :py:class:`rcpy.led.Blink` to
 handle LED blinking. It spawns a thread that will keep LEDs blinking
 with a given period. For example::
 
-    blink = Blink(led.red, .5)
+    blink = led.Blink(led.red, .5)
     blink.start()
 
-starts blinking the *RED* LED every 0.5 seconds. One can also
-instantiate an :py:class:`rcpy.led.Blink` object by calling
-:py:meth:`rcpy.led.LED.blink` as in::
-
-    blink = led.red.Blink(.5)
-    blink.start()
-
-which produces the same result. One can stop or resume blinking by calling :py:meth:`rcpy.led.Blink.toggle` as in::
+starts blinking the *RED* LED every 0.5 seconds. One can stop or
+resume blinking by calling :py:meth:`rcpy.led.Blink.toggle` as in::
 
     blink.toggle()
 
@@ -604,6 +598,15 @@ or call::
     blink.stop()
 
 to permanently stop the blinking thread.
+
+One can also instantiate an :py:class:`rcpy.led.Blink` object by calling
+:py:meth:`rcpy.led.LED.blink` as in::
+
+    blink = led.red.blink(.5)
+
+which returns an instance of
+:py:class:`rcpy.led.Blink`. :py:meth:`rcpy.led.LED.blink`
+automatically calls :py:meth:`rcpy.led.Blink.start`.
 
 Constants
 ---------
