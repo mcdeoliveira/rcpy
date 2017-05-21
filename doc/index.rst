@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-===================================
-Python 3 bindings for Robotics Cape
-===================================
+========================================================
+Python 3 Interface for Robotics Cape and Beaglebone Blue
+========================================================
 
 .. toctree::
    :maxdepth: 2
@@ -130,7 +130,7 @@ calling::
 
     pause_event.start()
     
-and it can be stop by::
+and it can be stopped by::
   
     pause_event.stop()
 
@@ -340,29 +340,36 @@ the Robotics Cape. The command::
 
     import rcpy.button as button
 
-imports the module. The :ref:`rcpy_button` provides
-objects corresponding to the *PAUSE* and *MODE* buttons on the
-Robotics Cape. Those are :py:data:`rcpy.button.pause` and
-:py:data:`rcpy.button.mode`. For example::
+imports the module. The :ref:`rcpy_button` provides objects
+corresponding to the *PAUSE* and *MODE* buttons on the Robotics
+Cape. Those are :py:data:`rcpy.button.pause` and
+:py:data:`rcpy.button.mode`. One can import those objects directly
+using::
+
+    from rcpy.button import mode, pause
+
+After importing these objects::
     
-    if button.mode.pressed():
+    if mode.pressed():
         print('<MODE> pressed!')
 
 waits forever until the *MODE* button on the Robotics Cape is pressed and::
 
-    if button.mode.released():
+    if mode.released():
         print('<MODE> released!')
 
 waits forever until the *MODE* button on the Robotics Cape is
 released. Note that nothing will print if you first have to press the
 button before releasing because :py:meth:`rcpy.button.Button.released`
 returns :samp:`False` after the first input event, which in this case
-was *pressed*. As with :ref:`rcpy_gpio`, it is possible to use
+was :py:data:`rcpy.button.PRESSED`.
+
+As with :ref:`rcpy_gpio`, it is possible to use
 :py:class:`rcpy.gpio.InputTimeout` as in::
 
     import rcpy.gpio as gpio
     try:
-        if button.mode.pressed(timeout = 2000):
+        if mode.pressed(timeout = 2000):
             print('<MODE> pressed!')
     except gpio.InputTimeout:
         print('Timed out!')
@@ -381,10 +388,16 @@ defines a class that can be used to print :samp:`Got <PAUSE>!` every
 time the *PAUSE* button is pressed. To instantiate and start the event
 handler use::
 
-    pause_event = MyButtonEvent(button.pause, button.ButtonEvent.PRESSED)
+    pause_event = MyButtonEvent(pause, button.ButtonEvent.PRESSED)
     pause_event.start()
 
-The event handler can be stop by calling::
+Note that the event :py:data:`button.ButtonEvent.PRESSED` was used so
+that :py:meth:`MyButtonEvent.action` is called only when the *PAUSE*
+button is pressed. It may be convenient to import these events::
+
+    from rcpy.button import PRESSED, RELEASED
+    
+The event handler can be stopped by calling::
   
     pause_event.stop()
 
@@ -393,13 +406,12 @@ a function to the argument `target` of
 :py:class:`rcpy.button.ButtonEvent` as in::
 
     def pause_action(input, event):
-        if event == button.ButtonEvent.PRESSED:
+        if event == PRESSED:
             print('<PAUSE> pressed!')
-        elif event == button.ButtonEvent.RELEASED:
+        elif event == RELEASED:
             print('<PAUSE> released!')
 	    
-    pause_event = button.ButtonEvent(button.pause,
-                                     button.ButtonEvent.PRESSED | button.ButtonEvent.RELEASED,
+    pause_event = button.ButtonEvent(pause, PRESSED | RELEASED,
 			             target = pause_action)
 
 This event handler should be started and stopped using
@@ -411,7 +423,7 @@ passed as in::
     def pause_action_with_parameter(input, event, parameter):
         print('Got <PAUSE> with {}!'.format(parameter))
 	    
-    pause_event = button.ButtonEvent(button.pause, button.ButtonEvent.PRESSED,
+    pause_event = button.ButtonEvent(pause, PRESSED,
                                      target = pause_action_with_parameter,
 				     vargs = ('some parameter',))
 
@@ -425,14 +437,6 @@ debouncing by default.
 Constants
 ---------
 
-.. py:data:: PRESSED
-	     
-   State of a pressed button; equal to :py:data:`rcpy.gpio.LOW`.
-	     
-.. py:data:: RELEASED
-	     
-   State of a released button; equal to :py:data:`rcpy.gpio.HIGH`.
-
 .. py:data:: pause
 	     
    :py:class:`rcpy.button.Button` representing the Robotics Cape *PAUSE* button.
@@ -440,6 +444,14 @@ Constants
 .. py:data:: mode
 	     
    :py:class:`rcpy.button.Button` representing the Robotics Cape *MODE* button.
+       
+.. py:data:: PRESSED
+	     
+   State of a pressed button; equal to :py:data:`rcpy.gpio.LOW`.
+	     
+.. py:data:: RELEASED
+	     
+   State of a released button; equal to :py:data:`rcpy.gpio.HIGH`.
 
 .. py:data:: DEBOUNCE
 	     
@@ -611,14 +623,6 @@ automatically calls :py:meth:`rcpy.led.Blink.start`.
 Constants
 ---------
 
-.. py:data:: ON
-	     
-   State of an on LED; equal to :py:data:`rcpy.gpio.HIGH`.
-	     
-.. py:data:: OFF
-	     
-   State of an off led; equal to :py:data:`rcpy.gpio.LOW`.
-
 .. py:data:: red
 	     
    :py:class:`rcpy.led.LED` representing the Robotics Cape *RED* LED.
@@ -626,7 +630,14 @@ Constants
 .. py:data:: green
 	     
    :py:class:`rcpy.led.LED` representing the Robotics Cape *GREEN* LED.
-
+       
+.. py:data:: ON
+	     
+   State of an on LED; equal to :py:data:`rcpy.gpio.HIGH`.
+	     
+.. py:data:: OFF
+	     
+   State of an off led; equal to :py:data:`rcpy.gpio.LOW`.
 
 Classes
 -------
@@ -694,15 +705,215 @@ Classes
 Module `rcpy.encoder`
 =====================
 
-.. _rcpy_mpy9250:
+.. py:module:: rcpy.encoder
 
-Module `rcpy.mpu9250`
-=====================
+This module provides an interface to the four *encoder channels* in
+the Robotics Cape. The command::
 
+    import rcpy.encoder as encoder
+
+imports the module. The :ref:`rcpy_encoder` provides objects
+corresponding to the each of the encoder channels on the Robotics
+Cape, namely :py:data:`rcpy.encoder.encoder1`,
+:py:data:`rcpy.encoder.encoder2`, :py:data:`rcpy.encoder.encoder3`,
+and :py:data:`rcpy.encoder.encoder4`. It may be convenient to import
+one or all of these objects as in ::
+
+    from rcpy.encoder import encoder1
+
+The current encoder count can be obtained using::
+
+    encoder1.get()
+
+One can also *reset* the count to zero using::
+
+    encoder1.reset()
+
+or to an arbitrary count using::
+
+    encode1.set(1024)
+
+Constants
+---------
+
+.. py:data:: encoder1
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 1*.
+
+.. py:data:: encoder2
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 2*.
+       
+.. py:data:: encoder3
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 3*.
+       
+.. py:data:: encoder4
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 4*.
+	       
+Classes
+-------
+
+.. py:class:: Encoder(channel, count = None)
+
+   :param output: encoder channel (1 through 4)
+   :param state: initial encoder count (Default None)
+	      
+   :py:class:`rcpy.encoder.Encoder` represents encoders in the Robotics Cape or Beaglebone Blue.
+       
+   .. py:method:: get()
+
+      :returns: current encoder count
+		  
+   .. py:method:: set(count)
+            
+      Set current encoder count to `count`.
+
+   .. py:method:: reset()
+            
+      Set current encoder count to `0`.
+      
+Low-level functions
+-------------------
+
+.. py:function:: get(channel)
+
+   :param int channel: encoder channel number
+
+   :returns: current encoder count
+
+   This is a non-blocking call.
+   
+.. py:function:: set(channel, count = 0)
+
+   :param int channel: encoder channel number
+   :param int count: desired encoder count
+
+   Set encoder `channel` count to `value`.
+		     
 .. _rcpy_motor:
 
 Module `rcpy.motor`
 ===================
+
+.. py:module:: rcpy.motor
+
+This module provides an interface to the four *motor channels* in the
+Robotics Cape. Those control a high power PWM (Pulse Width Modulation)
+signal which is typically used to control *DC Motors*. The command::
+
+    import rcpy.motor as motor
+
+imports the module. The :ref:`rcpy_motor` provides objects
+corresponding to the each of the motor channels on the Robotics Cape,
+namely :py:data:`rcpy.motor.motor1`, :py:data:`rcpy.motor.motor2`,
+:py:data:`rcpy.motor.motor3`, and :py:data:`rcpy.motor.motor4`. It may
+be convenient to import one or all of these objects as in ::
+
+    from rcpy.motor import motor1
+
+The current average voltage applied to the motor can be set using::
+
+    duty = 1
+    motor1.set(duty)
+
+where `duty` is a number varying from -1 to 1 which controls the
+percentage of the voltage available to the Robotics Cape that should
+be applied on the motor. A motor can be turned off by::
+
+    motor1.set(0)
+
+or using one of the special methods
+:py:meth:`rcpy.motor.Motor.free_spin` or
+:py:meth:`rcpy.motor.Motor.brake`, which can be used to turn off the
+motor and set it in a *free-spin* or *braking* configuration. For
+example::
+
+    motor1.free_spin()
+
+puts :py:data:`motor1` in *free-spin* mode. In *free-spin mode* the
+motor behaves as if there were no voltage applied to its terminal,
+that is it is allowed to spin freely. In *brake mode* the terminals of
+the motor are *short-circuited* and the motor winding will exert an
+opposing force if the motor shaft is moved.
+
+Constants
+---------
+
+.. py:data:: motor1
+
+   :py:class:`rcpy.motor.Motor` representing the Robotics Cape *Motor 1*.
+
+.. py:data:: motor2
+
+   :py:class:`rcpy.motor.Motor` representing the Robotics Cape *Motor 2*.
+       
+.. py:data:: motor3
+
+   :py:class:`rcpy.motor.Motor` representing the Robotics Cape *Motor 3*.
+       
+.. py:data:: motor4
+
+   :py:class:`rcpy.motor.Motor` representing the Robotics Cape *Motor 4*.
+	       
+Classes
+-------
+
+.. py:class:: Motor(channel, duty = None)
+
+   :param output: motor channel (1 through 4)
+   :param state: initial motor duty cycle (Default None)
+	      
+   :py:class:`rcpy.motor.Motor` represents motors in the Robotics Cape or Beaglebone Blue.
+       
+   .. py:method:: set(duty)
+            
+      Set current motor duty cycle to `duty`. `duty` is a number between -1 and 1.
+
+   .. py:method:: free_spin()
+            
+      Stops the motor and puts it in *free-spin* mode.
+
+   .. py:method:: brake()
+            
+      Stops the motor and puts it in *brake* mode.      
+      
+Low-level functions
+-------------------
+
+.. py:function:: set(channel, duty)
+
+   :param int channel: motor channel number
+   :param int duty: desired motor duty cycle
+
+   Sets the motor channel `channel` duty cycle to `duty`.
+
+   This is a non-blocking call.
+		    
+.. py:function:: set_free_spin(channel)
+
+   :param int channel: motor channel number
+
+   Puts the motor channel `channel` in *free-spin mode*.
+		       
+   This is a non-blocking call.
+	       
+.. py:function:: set_brake(channel)
+
+   :param int channel: motor channel number
+
+   Puts the motor channel `channel` in *brake mode*.
+		       
+   This is a non-blocking call.
+
+.. _rcpy_mpu9250:
+
+Module `rcpy.mpu9250`
+=====================
+
+.. py:module:: rcpy.mpu9250
+
 
 Indices and tables
 ==================

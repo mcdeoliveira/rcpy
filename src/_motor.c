@@ -46,7 +46,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef module = {
   PyModuleDef_HEAD_INIT,
-  "motor",   /* name of module */
+  "_motor",   /* name of module */
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
 	       or -1 if the module keeps state in global variables. */
@@ -55,7 +55,7 @@ static struct PyModuleDef module = {
 
 /* python functions */
 
-PyMODINIT_FUNC PyInit_motor(void)
+PyMODINIT_FUNC PyInit__motor(void)
 {
   PyObject *m;
 

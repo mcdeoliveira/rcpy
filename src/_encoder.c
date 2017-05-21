@@ -13,7 +13,7 @@ static PyObject *encoder_read(PyObject *self, PyObject *args);
 static PyObject *encoder_set(PyObject *self, PyObject *args);
 
 static PyMethodDef module_methods[] = {
-  {"read",
+  {"get",
    (PyCFunction)encoder_read,
    METH_VARARGS,
    "read encoder"}
@@ -28,7 +28,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef module = {
   PyModuleDef_HEAD_INIT,
-  "encoder",   /* name of module */
+  "_encoder",   /* name of module */
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
 	       or -1 if the module keeps state in global variables. */
@@ -37,7 +37,7 @@ static struct PyModuleDef module = {
 
 /* python functions */
 
-PyMODINIT_FUNC PyInit_encoder(void)
+PyMODINIT_FUNC PyInit__encoder(void)
 {
   PyObject *m;
 
