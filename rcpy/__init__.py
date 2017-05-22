@@ -70,6 +70,8 @@ def cleanup():
     # get state fd
     fd = _get_state_fd()
     pipes = _get_state_pipe_list()
+    if len(pipes()):
+        print('{} pipes open'.format(len(pipes)))
 
     print('Setting EXITING state')
     # call exit
