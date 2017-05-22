@@ -19,8 +19,14 @@ if not os.path.exists(_RC_DIR):
     os.makedirs(_RC_DIR)
 _RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 
+# state functions
+def _get_state_fd(fd = _RC_STATE_FD):
+    return fd
+
 # set state 
-def set_state(state, fd = _RC_STATE_FD):
+def set_state(state):
+    # get state fd
+    fd = _get_state_fd()
     # call robotics cape set_state
     _set_state(state)
     # write to stream
@@ -28,7 +34,9 @@ def set_state(state, fd = _RC_STATE_FD):
     fd.write(bytes(state))
 
 # cleanup function
-def cleanup(fd = _RC_STATE_FD):
+def cleanup():
+    # get state fd
+    fd = _get_state_fd()
     # call exit
     exit()
     # call robotics cape cleanup
