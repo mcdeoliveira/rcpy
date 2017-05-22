@@ -126,9 +126,9 @@ a function to the argument `target` of
         elif event == InputEvent.HIGH:
             print('<PAUSE> went HIGH')
 	    
-    pause_event = gpio.InputEvent(pause_button,
-                                  InputEvent.LOW | InputEvent.HIGH,
-				  target = pause_action)
+    pause_event = InputEvent(pause_button,
+                             InputEvent.LOW | InputEvent.HIGH,
+			     target = pause_action)
 
 Note that the function `pause_action` will be called when
 `pause_button` becomes either :py:data:`rcpy.gpio.HIGH` or
@@ -148,9 +148,9 @@ Additional positional or keyword arguments can be passed as in::
     def pause_action_with_parameter(input, event, parameter):
         print('Got <PAUSE> with {}!'.format(parameter))
 	    
-    pause_event = gpio.InputEvent(pause_button, InputEvent.LOW,
-                                  target = pause_action_with_parameter,
-				  vargs = ('some parameter',))
+    pause_event = InputEvent(pause_button, InputEvent.LOW,
+                             target = pause_action_with_parameter,
+			     vargs = ('some parameter',))
 
 See also :py:class:`rcpy.button.Button` for a better interface for
 working with the Robotics Cape buttons.
@@ -393,9 +393,9 @@ a function to the argument `target` of
         elif event == ButtonEvent.RELEASED:
             print('<PAUSE> released!')
 	    
-    pause_event = button.ButtonEvent(pause,
-                                     ButtonEvent.PRESSED | ButtonEvent.RELEASED,
-			             target = pause_action)
+    pause_event = ButtonEvent(pause,
+                              ButtonEvent.PRESSED | ButtonEvent.RELEASED,
+			      target = pause_action)
 
 This event handler should be started and stopped using
 :py:meth:`rcpy.button.ButtonEvent.start` and
@@ -406,9 +406,9 @@ passed as in::
     def pause_action_with_parameter(input, event, parameter):
         print('Got <PAUSE> with {}!'.format(parameter))
 	    
-    pause_event = button.ButtonEvent(pause, ButtonEvent.PRESSED,
-                                     target = pause_action_with_parameter,
-				     vargs = ('some parameter',))
+    pause_event = ButtonEvent(pause, ButtonEvent.PRESSED,
+                              target = pause_action_with_parameter,
+		              vargs = ('some parameter',))
 
 The main difference between :ref:`rcpy_button` and :ref:`rcpy_gpio` is
 that :ref:`rcpy_button` defines the constants
