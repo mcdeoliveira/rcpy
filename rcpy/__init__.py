@@ -23,6 +23,9 @@ _RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 def _get_state_fd(fd = _RC_STATE_FD):
     return fd
 
+def get_state_filename(filename = _RC_STATE):
+    return filename
+
 # set state 
 def set_state(state):
     # get state fd
