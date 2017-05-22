@@ -56,9 +56,9 @@ def cleanup():
     if len(pipes):
         print('{} pipes open'.format(len(pipes)))
 
-    print('Setting EXITING state')
     # call exit
-    .exit()
+    print('Setting EXITING state')
+    set_state(EXITING)
     time.sleep(.5)
     
     print('Calling roboticscape cleanup')
