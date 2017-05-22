@@ -103,7 +103,7 @@ def read(pin, timeout = None):
             for fd, flag in events:
 
                 # state change
-                if fd is state_r_fd.fileno():
+                if fd is state_r_fd:
                     print('state event flag = {}'.format(flag))
                     print('Got state change! state = {}'.format(rcpy.get_state()))
                     break
