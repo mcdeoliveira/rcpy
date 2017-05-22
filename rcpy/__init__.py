@@ -58,8 +58,8 @@ def cleanup():
 
     # call exit
     print('Setting EXITING state')
-    set_state(EXITING)
-    time.sleep(.5)
+    #set_state(EXITING)
+    #time.sleep(.5)
     
     print('Calling roboticscape cleanup')
     # call robotics cape cleanup
