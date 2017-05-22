@@ -42,7 +42,7 @@ class IMU():
 
     _shared_state = {}
 
-    def __init__(**kwargs):
+    def __init__(self, **kwargs):
 
         # Makes sure clock is a singleton
         self.__dict__ = self._shared_state
