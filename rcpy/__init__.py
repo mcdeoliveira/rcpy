@@ -12,24 +12,11 @@ RUNNING = 1
 PAUSED = 2
 EXITING = 3
 
-# create files for keeping track of state
-_RC_DIR = '/tmp/robotics_cape'
-_RC_STATE = _RC_DIR + '/state'
-if not os.path.exists(_RC_DIR):
-    os.makedirs(_RC_DIR)
-_RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
-
+# create pipes for communicating state
 _RC_STATE_PIPE_LIST = []
-
-# state functions
-def _get_state_fd(fd = _RC_STATE_FD):
-    return fd
 
 def _get_state_pipe_list(p = _RC_STATE_PIPE_LIST):
     return p
-
-def get_state_filename(filename = _RC_STATE):
-    return filename
 
 # creates pipes for communication
 
@@ -46,16 +33,11 @@ def destroy_pipe(pipe):
 
 # set state 
 def set_state(state):
-    # get state fd
-    fd = _get_state_fd()
-    # call robotics cape set_state
-    _set_state(state)
-    # write to stream
-    fd.seek(0)
-    fd.write(bytes(str(state) + '\n', 'UTF-8'))
     # write to open pipes
     for (r_fd, w_fd) in _get_state_pipe_list():
         os.write(w_fd, bytes(str(state), 'UTF-8'))
+    # call robotics cape set_state
+    _set_state(state)
 
 # cleanup function
 _CLEANUP_FLAG = False
@@ -67,8 +49,7 @@ def cleanup():
     _CLEANUP_FLAG = True
 
     print('Initiating cleanup...')
-    # get state fd
-    fd = _get_state_fd()
+    # get state pipes
     pipes = _get_state_pipe_list()
     if len(pipes):
         print('{} pipes open'.format(len(pipes)))
@@ -82,10 +63,6 @@ def cleanup():
     # call robotics cape cleanup
     _cleanup()
 
-    print('Closing streams')
-    # closed streams
-    fd.close()
-    
     print('Closing pipes')
     # close open pipes left
     while len(pipes):
