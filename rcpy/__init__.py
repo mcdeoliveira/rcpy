@@ -59,17 +59,23 @@ def set_state(state):
 
 # cleanup function
 def cleanup():
+    print('> Cleanup')
     # get state fd
     fd = _get_state_fd()
+    pipes = _get_state_pipe_list()
     # call exit
+    print('> will call exit')
     exit()
-    time.sleep(1)
+    print('> any pipes? {}'.format(len(pipes)))
+    while len(pipes):
+        print('Waiting for {} pipes to close'.format(len(pipes)))
+        time.sleep(.1)
     # call robotics cape cleanup
     _cleanup()
     # closed streams
     fd.close()
     # close open pipes
-    pipes = _get_state_pipe_list()
+    print('> any pipes? {}'.format(len(pipes)))
     while len(pipes):
         destroy_pipe(pipes.pop())
     
