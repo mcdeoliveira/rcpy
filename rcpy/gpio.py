@@ -105,7 +105,7 @@ def read(pin, timeout = None):
                 # state change
                 if fd is state_r_fd:
                     print('state event flag = {}'.format(flag))
-                    state = os.read(state_r_fd)
+                    state = os.read(state_r_fd, 1)
                     print('Got state change! state = {}'.format(state))
                     break
 
