@@ -1,6 +1,3 @@
-# import Python libraries
-import threading
-    
 # import rcpy libraries
 import rcpy 
 import rcpy.gpio as gpio

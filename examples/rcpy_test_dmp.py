@@ -1,6 +1,6 @@
 # import python libraries
 import time
-import getopt
+import getopt, sys
 
 # import rcpy library
 # This automatically initizalizes the robotics cape
