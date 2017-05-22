@@ -73,6 +73,7 @@ def cleanup():
     # call exit
     print('> will call exit')
     exit()
+    time.sleep(.5)
     print('> any pipes? {}'.format(len(pipes)))
     # call robotics cape cleanup
     _cleanup()
