@@ -19,7 +19,7 @@ if not os.path.exists(_RC_DIR):
     os.makedirs(_RC_DIR)
 _RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 
-_RC_STATE_PIPE_LIST = ()
+_RC_STATE_PIPE_LIST = []
 
 # state functions
 def _get_state_fd(fd = _RC_STATE_FD):
@@ -38,8 +38,9 @@ def create_pipe():
     _get_state_pipe_list().append((r_fd, w_fd))
     return (r_fd, w_fd)
 
-def destroy_pipe((r_fd, w_fd)):
-    _get_state_pipe_list().remove((r_fd, w_fd))
+def destroy_pipe(pipe):
+    _get_state_pipe_list().remove(pipe)
+    (r_fd, w_fd) = pipe
     r_fd.close()
     w_fd.close()
 
