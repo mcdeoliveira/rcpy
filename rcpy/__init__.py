@@ -4,6 +4,7 @@ import os
 
 from rcpy.rcpy import initialize, cleanup
 from rcpy.rcpy import set_state as _set_state
+from rcpy.rcpy import cleanup as _cleanup
 
 # constants
 IDLE = 0
@@ -19,13 +20,22 @@ if not os.path.exists(_RC_DIR):
 _RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 
 # set state 
-def set_state(state,  fd = _RC_STATE_FD):
+def set_state(state, fd = _RC_STATE_FD):
     # call robotics cape set_state
     _set_state(state)
     # write to stream
     fd.seek(0)
     fd.write(bytes(state))
 
+# cleanup function
+def cleanup(fd = _RC_STATE_FD):
+    # call exit
+    exit()
+    # call robotics cape cleanup
+    _set_state(state)
+    # closed stream
+    fd.close()
+    
 # idle function
 def idle():
     set_state(IDLE)
@@ -41,7 +51,7 @@ def pause():
 # exit function
 def exit():
     set_state(EXITING)
-
+    
 # cleanup handler
 def handler(signum, frame):
     warnings.warn('Signal handler called with signal {}'.format(signum))
