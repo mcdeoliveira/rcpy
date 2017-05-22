@@ -61,7 +61,13 @@ import select
 class InputTimeout(Exception):
     pass
 
-def read(pin, timeout = None):
+def read(pin, timeout = None, state_pipe = None):
+
+    # create pipe if necessary
+    destroy_pipe = False
+    if state_pipe is None:
+        state_pipe = rcpy.create_pipe()
+        destroy_pipe = True
     
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
@@ -75,7 +81,7 @@ def read(pin, timeout = None):
                         select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         # listen to state change as well
-        state_r_fd, state_w_fd = rcpy.create_pipe()
+        state_r_fd, state_w_fd = state_pipe
         poller.register(state_r_fd,
                         select.POLLIN | select.POLLHUP | select.POLLERR)
 
@@ -89,8 +95,9 @@ def read(pin, timeout = None):
                 # can fail if timeout is given
                 events = poller.poll(timeout)
                 if len(events) == 0:
-                    # remove pipe
-                    rcpy.destroy_pipe((state_r_fd, state_w_fd))
+                    # destroy pipe
+                    if destroy_pipe:
+                        rcpy.destroy_pipe(state_pipe)
                     # raise timeout exception
                     raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
                 
@@ -106,9 +113,11 @@ def read(pin, timeout = None):
                 # state change
                 if fd is state_r_fd:
                     print('state event flag = {}'.format(flag))
-                    state = os.read(state_r_fd, 1)
+                    state = int(os.read(state_r_fd, 1))
                     print('Got state change! state = {}'.format(state))
-                    break
+                    if state == rcpy.EXITING:
+                        print('Got exiting state, breaking')
+                        break
 
                 # input event
                 if fd is f.fileno():
@@ -116,19 +125,22 @@ def read(pin, timeout = None):
                 
                     # Handle inputs
                     if flag & (select.POLLIN | select.POLLPRI):
-                        # remove pipe
-                        rcpy.destroy_pipe((state_r_fd, state_w_fd))
+                        # destroy pipe
+                        if destroy_pipe:
+                            rcpy.destroy_pipe(state_pipe)
                         # return read value
                         return get(pin)
                 
                     elif flag & (select.POLLHUP | select.POLLERR):
-                        # remove pipe
-                        rcpy.destroy_pipe((state_r_fd, state_w_fd))
+                        # destroy pipe
+                        if destroy_pipe:
+                            rcpy.destroy_pipe(state_pipe)
                         # raise exception
                         raise Exception('Could not read pin {}'.format(pin))
 
-        # remove pipe
-        rcpy.destroy_pipe((state_r_fd, state_w_fd))
+        # destroy pipe
+        if destroy_pipe:
+            rcpy.destroy_pipe(state_pipe)
                     
 class Output:
     pass
