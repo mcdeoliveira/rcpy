@@ -61,12 +61,12 @@ import select
 class InputTimeout(Exception):
     pass
 
-def read(pin, timeout = None, state_pipe = None):
+def read(pin, timeout = None, pipe = None):
 
     # create pipe if necessary
     destroy_pipe = False
-    if state_pipe is None:
-        state_pipe = rcpy.create_pipe()
+    if pipe is None:
+        pipe = rcpy.create_pipe()
         destroy_pipe = True
     
     # open stream
@@ -81,7 +81,7 @@ def read(pin, timeout = None, state_pipe = None):
                         select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         # listen to state change as well
-        state_r_fd, state_w_fd = state_pipe
+        state_r_fd, state_w_fd = pipe
         poller.register(state_r_fd,
                         select.POLLIN | select.POLLHUP | select.POLLERR)
 
@@ -97,7 +97,7 @@ def read(pin, timeout = None, state_pipe = None):
                 if len(events) == 0:
                     # destroy pipe
                     if destroy_pipe:
-                        rcpy.destroy_pipe(state_pipe)
+                        rcpy.destroy_pipe(pipe)
                     # raise timeout exception
                     raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
                 
@@ -127,20 +127,20 @@ def read(pin, timeout = None, state_pipe = None):
                     if flag & (select.POLLIN | select.POLLPRI):
                         # destroy pipe
                         if destroy_pipe:
-                            rcpy.destroy_pipe(state_pipe)
+                            rcpy.destroy_pipe(pipe)
                         # return read value
                         return get(pin)
                 
                     elif flag & (select.POLLHUP | select.POLLERR):
                         # destroy pipe
                         if destroy_pipe:
-                            rcpy.destroy_pipe(state_pipe)
+                            rcpy.destroy_pipe(pipe)
                         # raise exception
                         raise Exception('Could not read pin {}'.format(pin))
 
         # destroy pipe
         if destroy_pipe:
-            rcpy.destroy_pipe(state_pipe)
+            rcpy.destroy_pipe(pipe)
                     
 class Output:
     pass
@@ -156,13 +156,13 @@ class Input:
     def is_low(self):
         return get(self.pin) == LOW
 
-    def high_or_low(self, debounce = 0, timeout = None):
+    def high_or_low(self, debounce = 0, timeout = None, pipe = None):
         
         # repeat until event is detected
         while rcpy.get_state() != rcpy.EXITING:
 
             # read event
-            event = read(self.pin, timeout)
+            event = read(self.pin, timeout, pipe)
 
             # debounce
             k = 0
@@ -176,15 +176,15 @@ class Input:
             if value == event:
                 return value
                     
-    def high(self, debounce = 0, timeout = None):
-        event = self.high_or_low(debounce, timeout)
+    def high(self, debounce = 0, timeout = None, pipe = None):
+        event = self.high_or_low(debounce, timeout, pipe)
         if event == HIGH:
             return True
         else:
             return False
 
-    def low(self, debounce = 0, timeout = None):
-        event = self.high_or_low(debounce, timeout)
+    def low(self, debounce = 0, timeout = None, pipe = None):
+        event = self.high_or_low(debounce, timeout, pipe = None)
         if event == LOW:
             return True
         else:
@@ -210,6 +210,7 @@ class InputEvent(threading.Thread):
         self.kwargs = kwargs
         self.timeout = timeout
         self.debounce = 0
+        self.pipe = rcpy.create_pipe()
 
     def action(self, event):
         if self.target:
@@ -225,7 +226,9 @@ class InputEvent(threading.Thread):
         while rcpy.get_state() != rcpy.EXITING and self.run:
 
             try:
-                evnt = self.input.high_or_low(self.debounce, self.timeout)
+                evnt = self.input.high_or_low(self.debounce,
+                                              self.timeout,
+                                              self.pipe)
                 if evnt is not None:
                     evnt = 1 << evnt
                     if evnt & self.event:
@@ -237,4 +240,5 @@ class InputEvent(threading.Thread):
 
     def stop(self):
         self.run = False
-
+        # write to pipe to abort
+        os.write(self.pipe[1], bytes(str(rcpy.EXITING), 'UTF-8'))
