@@ -1,5 +1,7 @@
 import warnings
 import signal
+import os
+
 from rcpy.rcpy import initialize, cleanup
 from rcpy.rcpy import set_state as _set_state
 
@@ -12,6 +14,8 @@ EXITING = 3
 # create files for keeping track of state
 _RC_DIR = '/tmp/robotics_cape'
 _RC_STATE = _RC_DIR + '/state'
+if not os.path.exists(_RC_DIR):
+    os.makedirs(_RC_DIR)
 _RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 
 # set state 
