@@ -75,13 +75,12 @@ def read(pin, timeout = None):
                         select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         # listen to state change as well
-        state_fd = open(rcpy.get_state_filename(), 'rb', buffering = 0)
-        state_fd.read()
-        poller.register(state_fd,
-                        select.POLLPRI | select.POLLHUP | select.POLLERR)
+        state_r_fd, state_w_fd = rcpy.create_pipe()
+        poller.register(state_r_fd,
+                        select.POLLIN | select.POLLHUP | select.POLLERR)
 
         print('f = {}'.format(f))
-        print('state_fd = {}'.format(state_fd))
+        print('state_r_fd = {}'.format(state_r_fd))
         
         while rcpy.get_state() != rcpy.EXITING:
 
@@ -90,6 +89,9 @@ def read(pin, timeout = None):
                 # can fail if timeout is given
                 events = poller.poll(timeout)
                 if len(events) == 0:
+                    # remove pipe
+                    rcpy.destroy_pipe((state_r_fd, state_w_fd))
+                    # raise timeout exception
                     raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
                 
             else:
@@ -101,7 +103,7 @@ def read(pin, timeout = None):
             for fd, flag in events:
 
                 # state change
-                if fd is state_fd.fileno():
+                if fd is state_r_fd.fileno():
                     print('state event flag = {}'.format(flag))
                     print('Got state change! state = {}'.format(rcpy.get_state()))
                     break
@@ -112,12 +114,20 @@ def read(pin, timeout = None):
                 
                     # Handle inputs
                     if flag & (select.POLLIN | select.POLLPRI):
+                        # remove pipe
+                        rcpy.destroy_pipe((state_r_fd, state_w_fd))
                         # return read value
                         return get(pin)
                 
                     elif flag & (select.POLLHUP | select.POLLERR):
+                        # remove pipe
+                        rcpy.destroy_pipe((state_r_fd, state_w_fd))
+                        # raise exception
                         raise Exception('Could not read pin {}'.format(pin))
 
+        # remove pipe
+        rcpy.destroy_pipe((state_r_fd, state_w_fd))
+                    
 class Output:
     pass
                 

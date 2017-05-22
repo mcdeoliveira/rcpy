@@ -19,12 +19,29 @@ if not os.path.exists(_RC_DIR):
     os.makedirs(_RC_DIR)
 _RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 
+_RC_STATE_PIPE_LIST = ()
+
 # state functions
 def _get_state_fd(fd = _RC_STATE_FD):
     return fd
 
+def _get_state_pipe_list(p = _RC_STATE_PIPE_LIST):
+    return p
+
 def get_state_filename(filename = _RC_STATE):
     return filename
+
+# creates pipes for communication
+
+def create_pipe():
+    r_fd, w_fd = os.pipe()
+    _get_state_pipe_list().append((r_fd, w_fd))
+    return (r_fd, w_fd)
+
+def destroy_pipe((r_fd, w_fd)):
+    _get_state_pipe_list().remove((r_fd, w_fd))
+    r_fd.close()
+    w_fd.close()
 
 # set state 
 def set_state(state):
@@ -35,6 +52,9 @@ def set_state(state):
     # write to stream
     fd.seek(0)
     fd.write(bytes(str(state) + '\n', 'UTF-8'))
+    # write to open pipes
+    for (r_fd, w_fd) in _get_state_pipe_list():
+        w_fd.write(bytes(str(state), 'UTF-8'))
 
 # cleanup function
 def cleanup():
@@ -44,8 +64,12 @@ def cleanup():
     exit()
     # call robotics cape cleanup
     _cleanup()
-    # closed stream
+    # closed streams
     fd.close()
+    # close open pipes
+    pipes = _get_state_pipe_list()
+    while len(pipes):
+        destroy_pipe(pipes.pop()):
     
 # idle function
 def idle():
