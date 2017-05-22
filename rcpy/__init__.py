@@ -41,8 +41,8 @@ def create_pipe():
 def destroy_pipe(pipe):
     _get_state_pipe_list().remove(pipe)
     (r_fd, w_fd) = pipe
-    r_fd.close()
-    w_fd.close()
+    os.close(r_fd)
+    os.close(w_fd)
 
 # set state 
 def set_state(state):
