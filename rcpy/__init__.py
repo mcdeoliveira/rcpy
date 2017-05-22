@@ -70,7 +70,7 @@ def cleanup():
     # close open pipes
     pipes = _get_state_pipe_list()
     while len(pipes):
-        destroy_pipe(pipes.pop()):
+        destroy_pipe(pipes.pop())
     
 # idle function
 def idle():
