@@ -57,6 +57,7 @@ def cleanup():
     if len(pipes):
         print('{} pipes open'.format(len(pipes)))
 
+    # set state as exiting
     set_state(EXITING)
         
     print('Calling roboticscape cleanup')
@@ -69,7 +70,7 @@ def cleanup():
         while len(pipes):
             destroy_pipe(pipes[0])
         
-    print('Exiting')
+    print('Dnoe with cleanup')
     
 # idle function
 def idle():
