@@ -47,8 +47,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'rcpy'
-copyright = '2017, Mauricio de Oliveira'
-author = 'Mauricio de Oliveira'
+copyright = '2017, Mauricio C. de Oliveira'
+author = 'Mauricio C. de Oliveira'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -128,8 +128,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'rcpy.tex', 'rcpy Documentation',
-     'Mauricio de Oliveira', 'manual'),
+    (master_doc, 'rcpy.tex', 'Python 3 Interface for Robotics Cape and Beaglebone Blue',
+     'Mauricio C. de Oliveira', 'manual'),
 ]
 
 
