@@ -2,7 +2,7 @@ import warnings
 import signal
 import os
 
-from rcpy.rcpy import initialize, cleanup
+from rcpy.rcpy import initialize, cleanup, get_state
 from rcpy.rcpy import set_state as _set_state
 from rcpy.rcpy import cleanup as _cleanup
 
