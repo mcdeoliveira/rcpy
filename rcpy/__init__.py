@@ -58,8 +58,15 @@ def set_state(state):
         os.write(w_fd, bytes(str(state), 'UTF-8'))
 
 # cleanup function
+_CLEANUP_FLAG = False
 def cleanup():
-    print('> Cleanup')
+    global _CLEANUP_FLAG
+    # return to avoid multiple calls to cleanup
+    if _CLEANUP_FLAG:
+        return
+    _CLEANUP_FLAG = True
+    
+    print('> Start cleanup')
     # get state fd
     fd = _get_state_fd()
     pipes = _get_state_pipe_list()
