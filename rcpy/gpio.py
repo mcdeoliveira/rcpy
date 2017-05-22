@@ -79,7 +79,7 @@ def read(pin, timeout = None):
         state_fd = open(rcpy.get_state_filename(), 'rb', buffering = 0)
         state_fd.read()
         poller.register(state_fd,
-                        select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
+                        select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         print('f = {}'.format(f))
         print('state_fd = {}'.format(state_fd))
@@ -101,19 +101,21 @@ def read(pin, timeout = None):
                   
             for fd, flag in events:
 
-                if fd is state_fd:
+                # state change
+                if fd is state_fd.fileno():
                     print('Got state change! state = {}'.format(rcpy.get_state()))
                     break
+
+                # input event
+                if fd is f.fileno():
                 
-                # if fd is f:
+                    # Handle inputs
+                    if flag & (select.POLLIN | select.POLLPRI):
+                        # return read value
+                        return get(pin)
                 
-                # Handle inputs
-                if flag & (select.POLLIN | select.POLLPRI):
-                    # return read value
-                    return get(pin)
-                
-                elif flag & (select.POLLHUP | select.POLLERR):
-                    raise Exception('Could not read pin {}'.format(pin))
+                    elif flag & (select.POLLHUP | select.POLLERR):
+                        raise Exception('Could not read pin {}'.format(pin))
 
 class Output:
     pass
