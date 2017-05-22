@@ -80,10 +80,8 @@ def cleanup():
     fd.close()
     # close open pipes
     print('> any pipes? {}'.format(len(pipes)))
-    print('> pipes = {}'.format(pipes))
     while len(pipes):
-        print('pipes[-1] = {}'.format(pipes[-1]))
-        destroy_pipe(pipes.pop())
+        destroy_pipe(pipes[-1])
     
 # idle function
 def idle():
