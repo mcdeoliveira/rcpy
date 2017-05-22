@@ -71,17 +71,17 @@ def main():
                 if channel == 0:
 
                     # read all encoders
-                    e1 = encoder.read(1)
-                    e2 = encoder.read(2)
-                    e3 = encoder.read(3)
-                    e4 = encoder.read(4)
+                    e1 = encoder.get(1)
+                    e2 = encoder.get(2)
+                    e3 = encoder.get(3)
+                    e4 = encoder.get(4)
 
                     print('\r {:+6d} | {:+6d} | {:+6d} | {:+6d}'.format(e1,e2,e3,e4), end='')
 
                 else:
 
                     # read one encoder
-                    e = encoder.read(channel)
+                    e = encoder.get(channel)
 
                     print('\r {:+6d}'.format(e), end='')
                         
