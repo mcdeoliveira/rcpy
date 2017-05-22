@@ -78,7 +78,7 @@ def read(pin, timeout = None):
         # listen to state change as well
         state_fd = rcpy._get_state_fd()
         poller.register(state_fd,
-                        select.POLLPRI | select.POLLHUP | select.POLLERR)
+                        select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
         
         while rcpy.get_state() != rcpy.EXITING:
 
