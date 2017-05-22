@@ -70,13 +70,13 @@ def read(pin, timeout = None):
 
         # create poller
         poller = select.poll()
-        f.seek(0, 2)
+        f.seek(-1, 2)
         poller.register(f,
                         select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         # listen to state change as well
         state_fd = open(rcpy.get_state_filename(), 'rb', buffering = 0)
-        state_fd.seek(0, 2)
+        state_fd.seek(-1, 2)
         poller.register(state_fd,
                         select.POLLPRI | select.POLLHUP | select.POLLERR)
 
