@@ -1,9 +1,3 @@
-if __name__ == "__main__":
-
-    # This is only necessary if package has not been installed
-    import sys
-    sys.path.append('..')
-
 # import python libraries
 import time
 import getopt
