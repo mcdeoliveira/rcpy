@@ -1,6 +1,6 @@
 import warnings
 import signal
-import os
+import os, time
 
 from rcpy.rcpy import initialize, cleanup, get_state
 from rcpy.rcpy import set_state as _set_state
