@@ -102,11 +102,13 @@ def read(pin, timeout = None):
 
                 # state change
                 if fd is state_fd.fileno():
+                    print('state event flag = {}'.format(flag))
                     print('Got state change! state = {}'.format(rcpy.get_state()))
                     break
 
                 # input event
                 if fd is f.fileno():
+                    print('input event flag = {}'.format(flag))
                 
                     # Handle inputs
                     if flag & (select.POLLIN | select.POLLPRI):
