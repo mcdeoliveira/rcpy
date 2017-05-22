@@ -81,6 +81,7 @@ def cleanup():
     # close open pipes
     print('> any pipes? {}'.format(len(pipes)))
     while len(pipes):
+        print('pipes[-1] = {}'.format(pipes[-1]))
         destroy_pipe(pipes.pop())
     
 # idle function
