@@ -74,9 +74,6 @@ def cleanup():
     print('> will call exit')
     exit()
     print('> any pipes? {}'.format(len(pipes)))
-    while len(pipes):
-        print('Waiting for {} pipes to close'.format(len(pipes)))
-        time.sleep(.1)
     # call robotics cape cleanup
     _cleanup()
     # closed streams
