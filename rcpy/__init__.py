@@ -32,7 +32,7 @@ def cleanup(fd = _RC_STATE_FD):
     # call exit
     exit()
     # call robotics cape cleanup
-    _set_state(EXITING)
+    _cleanup()
     # closed stream
     fd.close()
     
