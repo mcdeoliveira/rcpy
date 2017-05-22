@@ -55,7 +55,7 @@ POLL_TIMEOUT = 1000
 
 DEBOUNCE_INTERVAL = 0.5
 
-import io, threading, time
+import io, threading, time, os
 import select
 
 class InputTimeout(Exception):
@@ -105,7 +105,8 @@ def read(pin, timeout = None):
                 # state change
                 if fd is state_r_fd:
                     print('state event flag = {}'.format(flag))
-                    print('Got state change! state = {}'.format(rcpy.get_state()))
+                    state = os.read(state_r_fd)
+                    print('Got state change! state = {}'.format(state))
                     break
 
                 # input event

@@ -55,7 +55,7 @@ def set_state(state):
     fd.write(bytes(str(state) + '\n', 'UTF-8'))
     # write to open pipes
     for (r_fd, w_fd) in _get_state_pipe_list():
-        w_fd.write(bytes(str(state), 'UTF-8'))
+        os.write(w_fd, bytes(str(state), 'UTF-8'))
 
 # cleanup function
 def cleanup():
