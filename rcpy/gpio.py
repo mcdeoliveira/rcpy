@@ -79,7 +79,7 @@ def read(pin, timeout = None):
         state_fd = open(rcpy.get_state_filename(), 'rb', buffering = 0)
         state_fd.read()
         poller.register(state_fd,
-                        select.POLLPRI | select.POLLHUP | select.POLLERR)
+                        select.POLLIN | select.POLLPRI | select.POLLHUP | select.POLLERR)
 
         print('f = {}'.format(f))
         print('state_fd = {}'.format(state_fd))
