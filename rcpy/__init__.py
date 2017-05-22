@@ -33,7 +33,6 @@ def set_state(state):
     # call robotics cape set_state
     _set_state(state)
     # write to stream
-    fd.seek(0)
     fd.write(bytes(str(state) + '\n', 'UTF-8'))
 
 # cleanup function
