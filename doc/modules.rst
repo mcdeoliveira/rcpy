@@ -923,11 +923,11 @@ is they all refer to the same instance.
 
 Setup can be done at creation, such as in ::
 
-    imu = mpu9250.IMU(enable_dmp = True, dmp_sample_rate = 2,
+    imu = mpu9250.IMU(enable_dmp = True, dmp_sample_rate = 4,
                       enable_magnetometer = True)
 
 which starts and initializes the MPU-9250 to use its DMP (Dynamic
-Motion Processor) to provide periodic readings at a rate of 2 Hz and
+Motion Processor) to provide periodic readings at a rate of 4 Hz and
 also its magnetometer.
 
 The data can be read using::
@@ -941,7 +941,7 @@ execution with the DMP. For example::
         data = imu.read()
 	print('heading = {}'.format(data['head']))
 
-will print the current heading at a rate of 2 Hz. More details about
+will print the current heading at a rate of 4 Hz. More details about
 the configuration options and the format of the data can be obtained
 in the help for the functions :py:func:`rcpy.mpu9250.initialize` and
 :py:func:`rcpy.mpu9250.read`.
