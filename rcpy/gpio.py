@@ -85,9 +85,6 @@ def read(pin, timeout = None, pipe = None):
         poller.register(state_r_fd,
                         select.POLLIN | select.POLLHUP | select.POLLERR)
 
-        print('f = {}'.format(f))
-        print('state_r_fd = {}'.format(state_r_fd))
-        
         while rcpy.get_state() != rcpy.EXITING:
 
             # wait for events
@@ -106,25 +103,20 @@ def read(pin, timeout = None, pipe = None):
                 # events = poller.poll(POLL_TIMEOUT)
                 events = poller.poll()
 
-            print('events = {}'.format(events))
-                  
             for fd, flag in events:
 
                 # state change
                 if fd is state_r_fd:
-                    print('state event flag = {}'.format(flag))
+                    # get state
                     state = int(os.read(state_r_fd, 1))
-                    print('Got state change! state = {}'.format(state))
                     if state == rcpy.EXITING:
-                        print('Got exiting state, breaking')
+                        # exit!
                         if destroy_pipe:
                             rcpy.destroy_pipe(pipe)
                         return
 
                 # input event
                 if fd is f.fileno():
-                    print('input event flag = {}'.format(flag))
-                
                     # Handle inputs
                     if flag & (select.POLLIN | select.POLLPRI):
                         # destroy pipe
