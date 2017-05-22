@@ -117,7 +117,9 @@ def read(pin, timeout = None, pipe = None):
                     print('Got state change! state = {}'.format(state))
                     if state == rcpy.EXITING:
                         print('Got exiting state, breaking')
-                        break
+                        if destroy_pipe:
+                            rcpy.destroy_pipe(pipe)
+                        return
 
                 # input event
                 if fd is f.fileno():
