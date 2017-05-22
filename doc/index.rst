@@ -113,7 +113,6 @@ This module also provides the class :py:class:`rcpy.gpio.InputEvent` to
 handle input events. For example::
 
     class MyInputEvent(gpio.InputEvent):
-
         def action(self, event):
             print('Got <PAUSE>!')
 
@@ -134,18 +133,24 @@ and it can be stopped by::
   
     pause_event.stop()
 
+The :ref:`rcpy_gpio` defines two types of events:
+:py:data:`rcpy.gpio.LOW` and :py:data:`rcpy.gpio.HIGH`. It may be
+convenient to import the base class :py:data:`rcpy.gpio.InputEvent`::
+
+    from rcpy.gpio import InputEvent
+
 Alternatively one could have created an input event handler by passing
 a function to the argument `target` of
 :py:class:`rcpy.gpio.InputEvent` as in::
 
     def pause_action(input, event):
-        if event == gpio.InputEvent.LOW:
+        if event == InputEvent.LOW:
             print('<PAUSE> went LOW')
-        elif event == gpio.InputEvent.HIGH:
+        elif event == InputEvent.HIGH:
             print('<PAUSE> went HIGH')
 	    
     pause_event = gpio.InputEvent(pause_button,
-                                  gpio.InputEvent.LOW | gpio.InputEvent.HIGH,
+                                  InputEvent.LOW | InputEvent.HIGH,
 				  target = pause_action)
 
 Note that the function `pause_action` will be called when
@@ -153,7 +158,7 @@ Note that the function `pause_action` will be called when
 :py:data:`rcpy.gpio.LOW` because the event passed to the the
 constructor :py:class:`InputEvent` is::
 
-    gpio.InputEvent.LOW | gpio.InputEvent.HIGH
+    InputEvent.LOW | InputEvent.HIGH,
 
 which is joined by the logical or operator `|`. The function
 `pause_action` decides on the type of event by checking the variable
@@ -166,7 +171,7 @@ Additional positional or keyword arguments can be passed as in::
     def pause_action_with_parameter(input, event, parameter):
         print('Got <PAUSE> with {}!'.format(parameter))
 	    
-    pause_event = gpio.InputEvent(pause_button, gpio.InputEvent.LOW,
+    pause_event = gpio.InputEvent(pause_button, InputEvent.LOW,
                                   target = pause_action_with_parameter,
 				  vargs = ('some parameter',))
 
@@ -380,7 +385,6 @@ This module also provides the class :py:class:`rcpy.button.ButtonEvent` to
 handle input events. For example::
 
     class MyButtonEvent(button.ButtonEvent):
-
         def action(self, event):
             print('Got <PAUSE>!')
 
@@ -393,25 +397,27 @@ handler use::
 
 Note that the event :py:data:`button.ButtonEvent.PRESSED` was used so
 that :py:meth:`MyButtonEvent.action` is called only when the *PAUSE*
-button is pressed. It may be convenient to import these events::
-
-    from rcpy.button import PRESSED, RELEASED
-    
-The event handler can be stopped by calling::
+button is pressed. The event handler can be stopped by calling::
   
     pause_event.stop()
 
+It may be convenient to import the :py:class:`gpio.button.ButtonEvent`
+class::
+
+    from rcpy.button import ButtonEvent
+    
 Alternatively one could have created an input event handler by passing
 a function to the argument `target` of
 :py:class:`rcpy.button.ButtonEvent` as in::
 
     def pause_action(input, event):
-        if event == PRESSED:
+        if event == ButtonEvent.PRESSED:
             print('<PAUSE> pressed!')
-        elif event == RELEASED:
+        elif event == ButtonEvent.RELEASED:
             print('<PAUSE> released!')
 	    
-    pause_event = button.ButtonEvent(pause, PRESSED | RELEASED,
+    pause_event = button.ButtonEvent(pause,
+                                     ButtonEvent.PRESSED | ButtonEvent.RELEASED,
 			             target = pause_action)
 
 This event handler should be started and stopped using
@@ -423,7 +429,7 @@ passed as in::
     def pause_action_with_parameter(input, event, parameter):
         print('Got <PAUSE> with {}!'.format(parameter))
 	    
-    pause_event = button.ButtonEvent(pause, PRESSED,
+    pause_event = button.ButtonEvent(pause, ButtonEvent.PRESSED,
                                      target = pause_action_with_parameter,
 				     vargs = ('some parameter',))
 
@@ -575,21 +581,26 @@ the Robotics Cape. The command::
 
 imports the module. The :ref:`rcpy_led` provides objects corresponding
 to the *RED* and *GREEN* buttons on the Robotics Cape, namely
-:py:data:`rcpy.led.red` and :py:data:`rcpy.led.green`. For example::
+:py:data:`rcpy.led.red` and :py:data:`rcpy.led.green`. It may be
+convenient to import one or all of these objects as in::
+
+    from rcpy.led import red, green
+
+For example::
     
-    led.red.on()
+    red.on()
 
 turns the *RED* LED on and::
 
-    led.green.off()
+    green.off()
 
 turns the *GREEN* LED off. Likewise::
 
-    led.green.is_on()
+    green.is_on()
 
 returns :samp:`True` if the *GREEN* LED is on and::
 
-    led.red.is_off()
+    red.is_off()
 
 returns :samp:`True` if the *RED* LED is off.
 
@@ -597,7 +608,7 @@ This module also provides the class :py:class:`rcpy.led.Blink` to
 handle LED blinking. It spawns a thread that will keep LEDs blinking
 with a given period. For example::
 
-    blink = led.Blink(led.red, .5)
+    blink = led.Blink(red, .5)
     blink.start()
 
 starts blinking the *RED* LED every 0.5 seconds. One can stop or
@@ -614,7 +625,7 @@ to permanently stop the blinking thread.
 One can also instantiate an :py:class:`rcpy.led.Blink` object by calling
 :py:meth:`rcpy.led.LED.blink` as in::
 
-    blink = led.red.blink(.5)
+    blink = red.blink(.5)
 
 which returns an instance of
 :py:class:`rcpy.led.Blink`. :py:meth:`rcpy.led.LED.blink`
@@ -717,22 +728,28 @@ corresponding to the each of the encoder channels on the Robotics
 Cape, namely :py:data:`rcpy.encoder.encoder1`,
 :py:data:`rcpy.encoder.encoder2`, :py:data:`rcpy.encoder.encoder3`,
 and :py:data:`rcpy.encoder.encoder4`. It may be convenient to import
-one or all of these objects as in ::
+one or all of these objects as in::
 
-    from rcpy.encoder import encoder1
+    from rcpy.encoder import encoder2
 
 The current encoder count can be obtained using::
 
-    encoder1.get()
+    encoder2.get()
 
 One can also *reset* the count to zero using::
 
-    encoder1.reset()
+    encoder2.reset()
 
 or to an arbitrary count using::
 
-    encode1.set(1024)
+    encoder2.set(1024)
 
+after which::
+
+    encoder2.get()
+
+will return 1024.
+  
 Constants
 ---------
 
@@ -811,18 +828,18 @@ namely :py:data:`rcpy.motor.motor1`, :py:data:`rcpy.motor.motor2`,
 :py:data:`rcpy.motor.motor3`, and :py:data:`rcpy.motor.motor4`. It may
 be convenient to import one or all of these objects as in ::
 
-    from rcpy.motor import motor1
+    from rcpy.motor import motor2
 
 The current average voltage applied to the motor can be set using::
 
     duty = 1
-    motor1.set(duty)
+    motor2.set(duty)
 
 where `duty` is a number varying from -1 to 1 which controls the
 percentage of the voltage available to the Robotics Cape that should
 be applied on the motor. A motor can be turned off by::
 
-    motor1.set(0)
+    motor2.set(0)
 
 or using one of the special methods
 :py:meth:`rcpy.motor.Motor.free_spin` or
@@ -830,13 +847,14 @@ or using one of the special methods
 motor and set it in a *free-spin* or *braking* configuration. For
 example::
 
-    motor1.free_spin()
+    motor2.free_spin()
 
-puts :py:data:`motor1` in *free-spin* mode. In *free-spin mode* the
+puts :py:data:`motor2` in *free-spin* mode. In *free-spin mode* the
 motor behaves as if there were no voltage applied to its terminal,
 that is it is allowed to spin freely. In *brake mode* the terminals of
 the motor are *short-circuited* and the motor winding will exert an
-opposing force if the motor shaft is moved.
+opposing force if the motor shaft is moved. *Brake mode* is
+essentially the same as setting the duty cycle to zero.
 
 Constants
 ---------
@@ -914,7 +932,193 @@ Module `rcpy.mpu9250`
 
 .. py:module:: rcpy.mpu9250
 
+This module provides an interface to the on-board `MPU-9250
+<https://www.invensense.com/products/motion-tracking/9-axis/mpu-9250/>`_
+Nine-Axis (Gyro + Accelerometer + Compass) MEMS device. The command::
 
+    import rcpy.mpu9250 as mpu9250
+
+imports the module. The :ref:`rcpy_mpu9250` provides objects
+corresponding to the each of the motor channels on the Robotics Cape,
+namely :py:data:`rcpy.motor.motor1`, :py:data:`rcpy.motor.motor2`,
+:py:data:`rcpy.motor.motor3`, and :py:data:`rcpy.motor.motor4`. It may
+be convenient to import one or all of these objects as in ::
+
+    from rcpy.motor import motor2
+
+The current average voltage applied to the motor can be set using::
+
+    duty = 1
+    motor2.set(duty)
+
+where `duty` is a number varying from -1 to 1 which controls the
+percentage of the voltage available to the Robotics Cape that should
+be applied on the motor. A motor can be turned off by::
+
+    motor2.set(0)
+
+or using one of the special methods
+:py:meth:`rcpy.motor.Motor.free_spin` or
+:py:meth:`rcpy.motor.Motor.brake`, which can be used to turn off the
+motor and set it in a *free-spin* or *braking* configuration. For
+example::
+
+    motor2.free_spin()
+
+puts :py:data:`motor2` in *free-spin* mode. In *free-spin mode* the
+motor behaves as if there were no voltage applied to its terminal,
+that is it is allowed to spin freely. In *brake mode* the terminals of
+the motor are *short-circuited* and the motor winding will exert an
+opposing force if the motor shaft is moved.
+
+Constants
+---------
+
+.. py:data:: imu
+
+   :py:class:`rcpy.motor.Motor` representing the Robotics Cape *MPU-9250*.
+
+The following constants can be used to set the accelerometer full scale register:
+       
+.. py:data:: ACCEL_FSR_2G
+.. py:data:: ACCEL_FSR_4G
+.. py:data:: ACCEL_FSR_8G
+.. py:data:: ACCEL_FSR_16G
+
+The following constants can be used to set the gyroscope full scale register:
+
+.. py:data:: GYRO_FSR_250DPS
+.. py:data:: GYRO_FSR_500DPS
+.. py:data:: GYRO_FSR_1000DPS
+.. py:data:: GYRO_FSR_2000DPS
+
+The following constants can be used to set the accelerometer low-pass filter:
+   
+.. py:data:: ACCEL_DLPF_OFF
+.. py:data:: ACCEL_DLPF_184
+.. py:data:: ACCEL_DLPF_92
+.. py:data:: ACCEL_DLPF_41
+.. py:data:: ACCEL_DLPF_20
+.. py:data:: ACCEL_DLPF_10
+.. py:data:: ACCEL_DLPF_5
+
+The following constants can be used to set the gyroscope low-pass filter:
+	     
+.. py:data:: GYRO_DLPF_OFF
+.. py:data:: GYRO_DLPF_184
+.. py:data:: GYRO_DLPF_92
+.. py:data:: GYRO_DLPF_41
+.. py:data:: GYRO_DLPF_20
+.. py:data:: GYRO_DLPF_10
+.. py:data:: GYRO_DLPF_5
+
+The following constants can be used to set the imu orientation:
+   
+.. py:data:: ORIENTATION_Z_UP
+.. py:data:: ORIENTATION_Z_DOWN
+.. py:data:: ORIENTATION_X_UP
+.. py:data:: ORIENTATION_X_DOWN
+.. py:data:: ORIENTATION_Y_UP
+.. py:data:: ORIENTATION_Y_DOWN
+.. py:data:: ORIENTATION_X_FORWARD
+.. py:data:: ORIENTATION_X_BACK
+       
+Classes
+-------
+
+.. py:class:: IMU()
+
+   :param output: motor channel (1 through 4)
+   :param state: initial motor duty cycle (Default None)
+	      
+   :py:class:`rcpy.motor.Motor` represents motors in the Robotics Cape or Beaglebone Blue.
+       
+   .. py:method:: set(duty)
+            
+      Set current motor duty cycle to `duty`. `duty` is a number between -1 and 1.
+
+   .. py:method:: free_spin()
+            
+      Stops the motor and puts it in *free-spin* mode.
+
+   .. py:method:: brake()
+            
+      Stops the motor and puts it in *brake* mode.      
+      
+Low-level functions
+-------------------
+
+.. py:function:: initialize(accel_fsr, gyro_fsr, accel_dlpf, gyro_dlpf, enable_magnetometer, orientation, compass_time_constant, dmp_interrupt_priority, dmp_sample_rate, show_warnings, enable_dmp, enable_fusion)
+
+   :param int accel_fsr: accelerometer full scale
+   :param int gyro_fsr: gyroscope full scale
+   :param int accel_dlpf: accelerometer low-pass filter
+   :param int gyro_dlpf: gyroscope low-pass filter
+   :param bool enable_magnetometer: :py:data:`True` enables the magnetometer
+   :param int orientation: imu orientation
+   :param float compass_time_constant: compass time-constant
+   :param int dmp_interrupt_priority: DMP interrupt priority
+   :param int dmp_sample_rate: DMP sample rate
+   :param int show_warnings: :py:data:`True` shows warnings
+   :param bool enable_dmp: :py:data:`True` enables the DMP
+   :param bool enable_fusion: :py:data:`True` enables data fusion algorithm
+
+   Configure and initialize the MPU-9250.
+
+   Default values are obtained by calling the
+   :c:func:`rc_get_default_imu_config` from the Robotics Cape library.
+   
+.. py:function:: power_off()
+
+   Powers off the MPU-9250
+		 
+.. py:function:: read_accel_data()
+
+   :returns: list with three-axis acceleration in m/s :math:`\!^2`
+
+   This function forces the MPU-9250 registers to be read.
+	     
+.. py:function:: read_gyro_data()
+
+   :returns: list with three-axis angular velocities in deg/s
+	     
+   This function forces the MPU-9250 registers to be read.
+   
+.. py:function:: read_mag_data()
+
+   :raises mup9250Error: if magnetometer is disabled
+			 
+   :returns: list with 3D magnetic field vector in :math:`\mu\!` T
+   
+   This function forces the MPU-9250 registers to be read.
+   
+.. py:function:: read_imu_temp()
+
+   :returns: the imu temperature in deg C
+
+   This function forces the MPU-9250 registers to be read.
+   
+.. py:function:: read()
+
+   :returns: dictionary with the imu data; the keys in the dictionary depend on the current configuration
+	     
+   If the magnetometer is *enabled* the dictionary contains the
+   following keys:
+   
+   * **accel**: 3-axis accelerations (m/s :math:`\!^2`)
+   * **gyro**: 3-axis angular velocities (degree/s)
+   * **mag**: 3D magnetic field vector in (:math:`\mu\!` T)
+   * **quat**: orientation quaternion 
+   * **tb**: pitch/roll/yaw X/Y/Z angles (radians)
+   * **head**: heading from magnetometer (radians)
+
+   If the magnetometer is *not enabled* the keys **mag** and **head**
+   are not present.
+
+   This function forces the MPU-9250 registers to be read only if the
+   DMP is disabled. Otherwise it returns the latest DMP data. It is a
+   blocking call.
+	     
 Indices and tables
 ==================
 

@@ -44,7 +44,8 @@ setup(
     packages=find_packages(),
 
     # extensions
-    ext_modules=[rcpy, mpu9250,
+    ext_modules=[rcpy,
+                 _mpu9250,
                  _encoder, _motor,
                  _gpio, _gpio_mmap,
                  _led, _buttons],

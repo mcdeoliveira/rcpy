@@ -76,7 +76,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef module = {
   PyModuleDef_HEAD_INIT,
-  "mpu9250",   /* name of module */
+  "_mpu9250",   /* name of module */
   module_docstring, /* module documentation, may be NULL */
   -1,       /* size of per-interpreter state of the module,
 	       or -1 if the module keeps state in global variables. */
@@ -92,7 +92,7 @@ static rc_imu_data_t imu_data;       // imu data
 
 /* python functions */
 
-PyMODINIT_FUNC PyInit_mpu9250(void)
+PyMODINIT_FUNC PyInit__mpu9250(void)
 {
   PyObject *m;
 
