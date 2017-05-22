@@ -31,7 +31,7 @@ def set_state(state):
     _set_state(state)
     # write to stream
     fd.seek(0)
-    fd.write(bytes(state))
+    fd.write(bytes(str(state)))
 
 # cleanup function
 def cleanup():
