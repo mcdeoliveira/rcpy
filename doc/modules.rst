@@ -73,7 +73,7 @@ corresponding to the *PAUSE* button on the Robotics Cape. The
 command::
     
     if pause_button.low():
-      print('Got <PAUSE>!')
+        print('Got <PAUSE>!')
 
 waits forever until the *PAUSE* button on the Robotics Cape is pressed
 and::
