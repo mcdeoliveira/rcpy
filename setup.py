@@ -9,9 +9,9 @@ rcpy = Extension("rcpy.rcpy",
                sources = ["src/_rcpy.c"],
                libraries = LIBS)
 
-mpu9250 = Extension("rcpy.mpu9250",
-                    sources = ["src/_mpu9250.c"],
-                    libraries = LIBS)
+_mpu9250 = Extension("rcpy._mpu9250",
+                     sources = ["src/_mpu9250.c"],
+                     libraries = LIBS)
 
 _encoder = Extension("rcpy._encoder",
                      sources = ["src/_encoder.c"],
