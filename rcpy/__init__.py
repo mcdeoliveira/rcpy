@@ -65,6 +65,8 @@ def cleanup():
     if _CLEANUP_FLAG:
         return
     _CLEANUP_FLAG = True
+
+    print('Initiaing cleanup...')
     
     # get state fd
     fd = _get_state_fd()
