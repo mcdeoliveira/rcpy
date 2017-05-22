@@ -6,8 +6,8 @@ from rcpy.rcpy import initialize, cleanup, get_state
 from rcpy.rcpy import set_state as _set_state
 from rcpy.rcpy import cleanup as _cleanup
 
-from hanging_threads import start_monitoring
-monitoring_thread = start_monitoring()
+#from hanging_threads import start_monitoring
+#monitoring_thread = start_monitoring()
 
 # constants
 IDLE = 0
@@ -63,10 +63,11 @@ def cleanup():
     # call robotics cape cleanup
     _cleanup()
 
-    print('Closing pipes')
-    # close open pipes left
-    while len(pipes):
-        destroy_pipe(pipes[0])
+    if len(pipes):
+        print('Closing pipes')
+        # close open pipes left
+        while len(pipes):
+            destroy_pipe(pipes[0])
         
     print('Exiting')
     
