@@ -66,21 +66,30 @@ def cleanup():
         return
     _CLEANUP_FLAG = True
 
-    print('Initiaing cleanup...')
-    
+    print('Initiating cleanup...')
     # get state fd
     fd = _get_state_fd()
     pipes = _get_state_pipe_list()
+
+    print('Setting EXITING state')
     # call exit
     exit()
     time.sleep(.5)
+    
+    print('Calling roboticscape cleanup')
     # call robotics cape cleanup
     _cleanup()
+
+    print('Closing streams')
     # closed streams
     fd.close()
+    
+    print('Closing pipes')
     # close open pipes left
     while len(pipes):
         destroy_pipe(pipes[0])
+        
+    print('Exiting')
     
 # idle function
 def idle():
