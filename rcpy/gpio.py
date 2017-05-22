@@ -75,6 +75,11 @@ def read(pin, timeout = None):
         poller = select.poll()
         poller.register(f, select.POLLPRI | select.POLLHUP | select.POLLERR)
 
+        # listen to state change as well
+        state_fd = rcpy._get_state_fd()
+        poller.register(state_fd,
+                        select.POLLPRI | select.POLLHUP | select.POLLERR)
+        
         while rcpy.get_state() != rcpy.EXITING:
 
             # wait for events
@@ -89,6 +94,12 @@ def read(pin, timeout = None):
                 events = poller.poll(POLL_TIMEOUT)
 
             for fd, flag in events:
+
+                if fd is state_fd:
+                    print('Got state change! state = {}'.format(rcpy.get_state()))
+                    break
+                
+                # if fd is f:
                 
                 # Handle inputs
                 if flag & (select.POLLIN | select.POLLPRI):
