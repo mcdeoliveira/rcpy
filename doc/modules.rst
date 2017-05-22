@@ -121,9 +121,9 @@ a function to the argument `target` of
 :py:class:`rcpy.gpio.InputEvent` as in::
 
     def pause_action(input, event):
-        if event -- InputEvent.LOW:
+        if event == InputEvent.LOW:
             print('<PAUSE> went LOW')
-        elif event -- InputEvent.HIGH:
+        elif event == InputEvent.HIGH:
             print('<PAUSE> went HIGH')
 	    
     pause_event = gpio.InputEvent(pause_button,
@@ -388,9 +388,9 @@ a function to the argument `target` of
 :py:class:`rcpy.button.ButtonEvent` as in::
 
     def pause_action(input, event):
-        if event -- ButtonEvent.PRESSED:
+        if event == ButtonEvent.PRESSED:
             print('<PAUSE> pressed!')
-        elif event -- ButtonEvent.RELEASED:
+        elif event == ButtonEvent.RELEASED:
             print('<PAUSE> released!')
 	    
     pause_event = button.ButtonEvent(pause,

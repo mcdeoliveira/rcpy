@@ -242,3 +242,8 @@ class InputEvent(threading.Thread):
         self.run = False
         # write to pipe to abort
         os.write(self.pipe[1], bytes(str(rcpy.EXITING), 'UTF-8'))
+        # sleep and destroy pipe
+        time.sleep(1)
+        rcpy.destroy_pipe(self.pipe)
+        self.pipe = None
+        
