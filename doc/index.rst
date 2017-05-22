@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-========================================================
-Python 3 Interface for Robotics Cape and Beaglebone Blue
-========================================================
+====================================================================================
+Python 3 Interface for the Robotics Cape on the Beaglebone Black and Beaglebone Blue
+====================================================================================
 
 .. toctree::
    :maxdepth: 2

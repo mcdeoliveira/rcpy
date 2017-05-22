@@ -128,7 +128,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'rcpy.tex', 'Python 3 Interface for Robotics Cape and Beaglebone Blue',
+    (master_doc, 'rcpy.tex', 'Python 3 Interface for the Robotics Cape on the Beaglebone Black and the Beaglebone Blue',
      'Mauricio C. de Oliveira', 'manual'),
 ]
 
