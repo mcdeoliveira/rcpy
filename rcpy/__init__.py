@@ -24,7 +24,7 @@ def set_state(state,  fd = _RC_STATE_FD):
     _set_state(state)
     # write to stream
     fd.seek(0)
-    fd.write(str(state))
+    fd.write(bytes(state))
 
 # idle function
 def idle():
