@@ -33,9 +33,11 @@ def destroy_pipe(pipe):
 
 # set state 
 def set_state(state):
+    print('writting to pipes')
     # write to open pipes
     for (r_fd, w_fd) in _get_state_pipe_list():
         os.write(w_fd, bytes(str(state), 'UTF-8'))
+    print('calling _set_state')
     # call robotics cape set_state
     _set_state(state)
 
@@ -56,7 +58,7 @@ def cleanup():
 
     print('Setting EXITING state')
     # call exit
-    exit()
+    .exit()
     time.sleep(.5)
     
     print('Calling roboticscape cleanup')
