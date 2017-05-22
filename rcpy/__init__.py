@@ -63,6 +63,7 @@ def cleanup():
     fd = _get_state_fd()
     # call exit
     exit()
+    time.sleep(1)
     # call robotics cape cleanup
     _cleanup()
     # closed streams
