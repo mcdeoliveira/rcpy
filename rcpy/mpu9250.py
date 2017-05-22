@@ -182,5 +182,3 @@ class IMU():
 
         # read mpu9250
         return read()
-
-imu = IMU()

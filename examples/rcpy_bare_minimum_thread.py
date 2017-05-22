@@ -1,9 +1,3 @@
-if __name__ == "__main__":
-
-    # This is only necessary if package has not been installed
-    import sys
-    sys.path.append('..')
-
 # import python libraries
 import time
 import threading
@@ -11,16 +5,16 @@ import threading
 # import rcpy library
 # This automatically initizalizes the robotics cape
 import rcpy 
-import rcpy.mpu9250 as mpu9250 
+import rcpy.mpu9250 as mpu9250
 
 # function to run on a thread
-def thread_function(name):
+def thread_function(imu, name):
 
     # make sure the thread will terminate
     while rcpy.get_state() != rcpy.EXITING:
 
         # read to synchronize with imu
-        data = mpu9250.read()
+        data = imu.read()
         
         # handle other states
         if rcpy.get_state() == rcpy.RUNNING:
@@ -36,16 +30,16 @@ print("Press Ctrl-C to exit")
 
 # enable dmp
 sample_rate = 8
-mpu9250.initialize(enable_dmp = True,
-                   dmp_sample_rate = sample_rate)
+imu = mpu9250.IMU(enable_dmp = True,
+                  dmp_sample_rate = sample_rate)
 
 # set state to rcpy.RUNNING
 rcpy.set_state(rcpy.RUNNING)
 
 # fire up threads
 threads = []
-threads.append(threading.Thread(target = thread_function, args = ("#1",)))
-threads.append(threading.Thread(target = thread_function, args = ("#2",)))
+threads.append(threading.Thread(target = thread_function, args = (imu, "#1")))
+threads.append(threading.Thread(target = thread_function, args = (imu, "#2")))
 for t in threads:
     t.start()
 
