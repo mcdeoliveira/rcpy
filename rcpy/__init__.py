@@ -9,6 +9,11 @@ RUNNING = 1
 PAUSED = 2
 EXITING = 3
 
+# create files for keeping track of state
+_RC_DIR = '/tmp/robotics_cape'
+_RC_STATE = _RC_DIR + '/state'
+_RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
+
 # set state 
 def set_state(state,  fd = _RC_STATE_FD):
     # call robotics cape set_state
@@ -52,11 +57,6 @@ def handler(signum, frame):
     
 # make sure it is disabled when exiting cleanly
 import atexit; atexit.register(cleanup)
-
-# create files for keeping track of state
-_RC_DIR = '/tmp/robotics_cape'
-_RC_STATE = _RC_DIR + '/state'
-_RC_STATE_FD = open(_RC_STATE, 'bw+', buffering = 0)
 
 # initialize cape
 initialize()
