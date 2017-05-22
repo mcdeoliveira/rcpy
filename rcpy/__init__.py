@@ -6,8 +6,8 @@ from rcpy.rcpy import initialize, cleanup, get_state
 from rcpy.rcpy import set_state as _set_state
 from rcpy.rcpy import cleanup as _cleanup
 
-#from hanging_threads import start_monitoring
-#monitoring_thread = start_monitoring()
+from hanging_threads import start_monitoring
+monitoring_thread = start_monitoring()
 
 # constants
 IDLE = 0
