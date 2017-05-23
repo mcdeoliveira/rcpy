@@ -200,10 +200,6 @@ Constants
 	     
    Logic low level; equals `0`.
 
-.. py:data:: POLL_TIMEOUT
-	     
-   Timeout in ms to be used when polling GPIO input (Default 100ms)
-
 .. py:data:: DEBOUNCE_INTERVAL
 	     
    Interval in ms to be used for debouncing (Default 0.5ms)
@@ -239,11 +235,8 @@ Classes
 
       Wait for pin to change state.
       
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
 
    .. py:method:: high(debounce = 0, timeout = None)
 
@@ -255,11 +248,7 @@ Classes
 	 
       Wait for pin to change state.
 
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 
    .. py:method:: low(debounce = 0, timeout = None)
 
@@ -271,11 +260,7 @@ Classes
 				      
       Wait for pin to change state.
 
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 			  
 .. py:class:: InputEvent(input, event, debounce = 0, timeout = None, target = None, vargs = (), kwargs = {})
 
@@ -513,11 +498,7 @@ Classes
 		
       Wait for button state to change.
 
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
       
    .. py:method:: pressed(debounce = rcpy.button.DEBOUNCE, timeout = None)
 
@@ -529,11 +510,7 @@ Classes
 				      
       Wait for button state to change.
       
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
       
    .. py:method:: released(debounce = rcpy.button.DEBOUNCE, timeout = None)
 
@@ -545,11 +522,7 @@ Classes
 
       Wait for button state to change.
 		  
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
       
 .. py:class:: ButtonEvent(input, event, debounce = rcpy.button.DEBOUNCE, timeout = None, target = None, vargs = (), kwargs = {})
 

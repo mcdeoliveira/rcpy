@@ -51,7 +51,6 @@ BATT_LED_3 = 61      #  P8.26
 BATT_LED_4 = 26      #  P8.14
 
 SYSFS_GPIO_DIR = '/sys/class/gpio'
-POLL_TIMEOUT = 1000
 
 DEBOUNCE_INTERVAL = 0.5
 
@@ -100,7 +99,6 @@ def read(pin, timeout = None, pipe = None):
                 
             else:
                 # timeout = None, never fails
-                # events = poller.poll(POLL_TIMEOUT)
                 events = poller.poll()
 
             for fd, flag in events:
