@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # import rcpy libraries
 import rcpy 
 import rcpy.gpio as gpio
