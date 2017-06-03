@@ -17,18 +17,22 @@ Not all functions are supported. Currently supported functions are:
 
 You might also be interested in the [ctrl package](https://github.com/mcdeoliveira/ctrl).
 
+## Preliminaries
+
+You will need the
+[Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer)
+version 0.3.4 or higher. Depending on the image you have on your
+Beaglebone Black or Blue it might already be installed! You can check
+if it is installed and the current version by running
+
+    rc_version
+	
+on your Beaglebone. Follow these
+[instructions](http://strawsondesign.com/#!manual-install) if the
+command `rc_version` is not found to install the library or update it
+if you have an older version.
+
 ## Installation
-
-As of today you will need a modified version of the current Robotics
-Cape library. You can clone it from my fork:
-
-    git clone https://github.com/mcdeoliveira/Robotics_Cape_Installer
-
-Make sure you compile and install the modified version of the library:
-
-    cd Robotics_Cape_Installer/libraries
-    make clean
-    make install
 
 Clone this repository:
 
