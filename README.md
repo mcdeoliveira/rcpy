@@ -32,19 +32,20 @@ on your Beaglebone. Follow these
 command `rc_version` is not found to install the library or update it
 if you have an older version.
 
+You must also have python3 installed. If you have not installed
+python3 yet type
+
+    sudo apt install python3 python3-pip
+
+to install python3 and pip3.
+
 ## Installation
 
-Clone this repository:
+Starting with version 0.3 rcpy is available from PyPI. Just type
 
-    git clone https://github.com/mcdeoliveira/rcpy
-
-If you have not installed python3 yet type
-
-    sudo apt install python3 python3-setuptools python3-dev
-
-Finally run setup.py install:
-
-    python3 setup.py install
+    sudo pip3 install rcpy
+	
+to download and install the package.
 
 ## Available Documentation:
 
