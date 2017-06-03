@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # import python libraries
 import time
 import getopt, sys

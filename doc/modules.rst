@@ -75,8 +75,9 @@ command::
     if pause_button.low():
         print('Got <PAUSE>!')
 
-waits forever until the *PAUSE* button on the Robotics Cape is pressed
-and::
+waits forever until the *PAUSE* button on the Robotics Cape becomes
+:py:data:`rcpy.gpio.LOW`, which happens when it is pressed. The
+following slightly modified version::
 
     try:
         if pause_button.low(timeout = 2000):
@@ -84,10 +85,36 @@ and::
     except gpio.InputTimeout:
         print('Timed out!')
 
-waits for at most 2000 ms, i.e. 2 s, before giving up.
+waits for at most 2000 ms, i.e. 2 s, before giving up, which one can
+detect by catching the exception :py:class:`rcpy.gpio.InputTimeout`.
 
-This module also provides the class :py:class:`rcpy.gpio.InputEvent` to
-handle input events. For example::
+In the same vein, the method :py:meth:`rcpy.gpio.Input.high` would
+wait for the button *PAUSE* to become :py:data:`rcpy.gpio.HIGH`. For
+instance::
+
+    if pause_button.high():
+        print('<PAUSE> got high!')
+
+waits forever until the *PAUSE* button on the Robotics Cape is
+released. Note that nothing will print if you first have to press the
+button before releasing because :py:meth:`rcpy.gpio.Input.high`
+returns :samp:`False` after the first input event, which in this case
+would correspond to the GPIO pin going :py:data:`rcpy.gpio.LOW`.
+
+The methods :py:meth:`rcpy.gpio.Input.is_low` and
+:py:meth:`rcpy.gpio.Input.is_high` are *non-blocking* versions of the
+above methods. For example::
+
+    import time
+    while True:
+        if pause_button.is_low():
+            print('Got <PAUSE>!')
+	    break
+	time.sleep(1)
+
+checks the status of the button *PAUSE* every 1 s and breaks when
+*PAUSE* is pressed. A much better way to handle such events is to use
+the class :py:class:`rcpy.gpio.InputEvent`. For example::
 
     class MyInputEvent(gpio.InputEvent):
         def action(self, event):
@@ -110,8 +137,15 @@ and it can be stopped by::
   
     pause_event.stop()
 
-The :ref:`rcpy_gpio` defines two types of events:
-:py:data:`rcpy.gpio.LOW` and :py:data:`rcpy.gpio.HIGH`. It may be
+The event handler automatically runs on a separate *thread*, which
+means that the methods :py:meth:`rcpy.gpio.InputEvent.start` and
+:py:meth:`rcpy.gpio.InputEvent.stop` are *non-blocking*, that is they
+return immediately.
+    
+The class :py:class:`rcpy.gpio.InputEvent` defines two types of
+events: :py:data:`rcpy.gpio.InputEvent.HIGH` and
+:py:data:`rcpy.gpio.InputEvent.LOW`. Note that these are not the same
+as :py:data:`rcpy.gpio.HIGH` and :py:data:`rcpy.gpio.LOW`! It is often
 convenient to import the base class :py:data:`rcpy.gpio.InputEvent`::
 
     from rcpy.gpio import InputEvent
@@ -130,17 +164,17 @@ a function to the argument `target` of
                              InputEvent.LOW | InputEvent.HIGH,
 			     target = pause_action)
 
-Note that the function `pause_action` will be called when
-`pause_button` becomes either :py:data:`rcpy.gpio.HIGH` or
-:py:data:`rcpy.gpio.LOW` because the event passed to the the
-constructor :py:class:`InputEvent` is::
+The function `pause_action` will be called when `pause_button`
+generates either event :py:data:`rcpy.gpio.InputEvent.HIGH` or
+:py:data:`rcpy.gpio.InputEvent.LOW` because the events passed to the
+the constructor :py:class:`InputEvent` were combined using the
+*logical or* operator `|`, as in::
 
     InputEvent.LOW | InputEvent.HIGH,
 
-which is joined by the logical or operator `|`. The function
-`pause_action` decides on the type of event by checking the variable
-`event`. This event handler should be started and stopped using
-:py:meth:`rcpy.gpio.InputEvent.start` and
+The function `pause_action` decides on the type of event by checking
+the variable `event`. This event handler should be started and stopped
+using :py:meth:`rcpy.gpio.InputEvent.start` and
 :py:meth:`rcpy.gpio.InputEvent.stop` as before.
 
 Additional positional or keyword arguments can be passed as in::
@@ -165,10 +199,6 @@ Constants
 .. py:data:: LOW
 	     
    Logic low level; equals `0`.
-
-.. py:data:: POLL_TIMEOUT
-	     
-   Timeout in ms to be used when polling GPIO input (Default 100ms)
 
 .. py:data:: DEBOUNCE_INTERVAL
 	     
@@ -205,11 +235,8 @@ Classes
 
       Wait for pin to change state.
       
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
 
    .. py:method:: high(debounce = 0, timeout = None)
 
@@ -221,11 +248,7 @@ Classes
 	 
       Wait for pin to change state.
 
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 
    .. py:method:: low(debounce = 0, timeout = None)
 
@@ -237,11 +260,7 @@ Classes
 				      
       Wait for pin to change state.
 
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 			  
 .. py:class:: InputEvent(input, event, debounce = 0, timeout = None, target = None, vargs = (), kwargs = {})
 
@@ -344,10 +363,13 @@ waits forever until the *MODE* button on the Robotics Cape is
 released. Note that nothing will print if you first have to press the
 button before releasing because :py:meth:`rcpy.button.Button.released`
 returns :samp:`False` after the first input event, which in this case
-was :py:data:`rcpy.button.PRESSED`.
+would correspond to the GPIO pin associated to the button going
+:py:data:`rcpy.button.PRESSED`.
 
-As with :ref:`rcpy_gpio`, it is possible to use
-:py:class:`rcpy.gpio.InputTimeout` as in::
+:py:meth:`rcpy.button.Button.pressed` and
+:py:meth:`rcpy.button.Button.released` also raise the exception
+:py:class:`rcpy.gpio.InputTimeout` if the argument `timeout` is used
+as in::
 
     import rcpy.gpio as gpio
     try:
@@ -358,8 +380,21 @@ As with :ref:`rcpy_gpio`, it is possible to use
 
 which waits for at most 2000 ms, i.e. 2 s, before giving up.
 
-This module also provides the class :py:class:`rcpy.button.ButtonEvent` to
-handle input events. For example::
+The methods :py:meth:`rcpy.button.Button.is_pressed` and
+:py:meth:`rcpy.button.Button.is_released` are *non-blocking* versions
+of the above methods. For example::
+
+    import time
+    while True:
+        if mode.is_pressed():
+            print('<Mode> pressed!')
+	    break
+	time.sleep(1)
+
+checks the status of the button *MODE* every 1 s and breaks when
+*MODE* is pressed. As with :ref:`rcpy_gpio`, a much better way to
+handle such events is to use event handlers, in the case of
+buttons the class :py:class:`rcpy.button.ButtonEvent`. For example::
 
     class MyButtonEvent(button.ButtonEvent):
         def action(self, event):
@@ -372,21 +407,18 @@ handler use::
     pause_event = MyButtonEvent(pause, button.ButtonEvent.PRESSED)
     pause_event.start()
 
-Note that the event :py:data:`button.ButtonEvent.PRESSED` was used so
-that :py:meth:`MyButtonEvent.action` is called only when the *PAUSE*
+Note that the event :py:data:`rcpy.button.ButtonEvent.PRESSED` was
+used so that `MyButtonEvent.action` is called only when the *PAUSE*
 button is pressed. The event handler can be stopped by calling::
   
     pause_event.stop()
-
-It may be convenient to import the :py:class:`gpio.button.ButtonEvent`
-class::
-
-    from rcpy.button import ButtonEvent
-    
+   
 Alternatively one could have created an input event handler by passing
 a function to the argument `target` of
 :py:class:`rcpy.button.ButtonEvent` as in::
 
+    from rcpy.button import ButtonEvent
+    
     def pause_action(input, event):
         if event == ButtonEvent.PRESSED:
             print('<PAUSE> pressed!')
@@ -399,9 +431,8 @@ a function to the argument `target` of
 
 This event handler should be started and stopped using
 :py:meth:`rcpy.button.ButtonEvent.start` and
-:py:meth:`rcpy.button.ButtonEvent.stop` as in
-:ref:`rcpy_gpio`. Additional positional or keyword arguments can be
-passed as in::
+:py:meth:`rcpy.button.ButtonEvent.stop` as before. Additional
+positional or keyword arguments can be passed as in::
 
     def pause_action_with_parameter(input, event, parameter):
         print('Got <PAUSE> with {}!'.format(parameter))
@@ -451,11 +482,11 @@ Classes
 	   
    .. py:method:: is_pressed(debounce = rcpy.button.DEBOUNCE, timeout = None)
 
-      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.gpio.PRESSED` and :samp:`False` if pin is :py:data:`rcpy.gpio.RELEASED`
+      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.PRESSED` and :samp:`False` if pin is :py:data:`rcpy.button.RELEASED`
 		  
    .. py:method:: is_released(debounce = rcpy.button.DEBOUNCE, timeout = None)
     
-      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.gpio.RELEASED` and :samp:`False` if pin is :py:data:`rcpy.gpio.PRESSED`  
+      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.RELEASED` and :samp:`False` if pin is :py:data:`rcpy.button.PRESSED`  
 		  
    .. py:method:: pressed_or_released(debounce = rcpy.button.DEBOUNCE, timeout = None)
 
@@ -467,11 +498,7 @@ Classes
 		
       Wait for button state to change.
 
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
       
    .. py:method:: pressed(debounce = rcpy.button.DEBOUNCE, timeout = None)
 
@@ -483,11 +510,7 @@ Classes
 				      
       Wait for button state to change.
       
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
       
    .. py:method:: released(debounce = rcpy.button.DEBOUNCE, timeout = None)
 
@@ -499,11 +522,7 @@ Classes
 
       Wait for button state to change.
 		  
-      If `timeout` is not :samp:`None` wait at most `timeout` ms.
-
-      If `timeout` is negative wait forever. This call cannot be interrupted.
-      
-      If `timeout` is :samp:`None` wait forever by repeatedly polling in :py:data:`rcpy.gpio.POLL_TIMEOUT` ms. This call can only be interrupted by calling :py:func:`rcpy.exit`.
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
       
 .. py:class:: ButtonEvent(input, event, debounce = rcpy.button.DEBOUNCE, timeout = None, target = None, vargs = (), kwargs = {})
 
@@ -649,11 +668,11 @@ Classes
 
    .. py:method:: on()
 
-      Change LED state to :py:data:`rcpy.LED.ON`.
+      Change LED state to :py:data:`rcpy.led.ON`.
 
    .. py:method:: off()
 
-      Change LED state to :py:data:`rcpy.LED.OFF`.
+      Change LED state to :py:data:`rcpy.led.OFF`.
 		  
    .. py:method:: toggle()
 
