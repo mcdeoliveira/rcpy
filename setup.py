@@ -32,7 +32,7 @@ _motor = Extension("rcpy._motor",
 setup(
     
     name="rcpy",
-    version="0.3a",
+    version="0.2a",
     packages=find_packages(),
 
     # extensions
