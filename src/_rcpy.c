@@ -36,7 +36,7 @@ static PyMethodDef module_methods[] = {
 
 static struct PyModuleDef module = {
   PyModuleDef_HEAD_INIT,
-  "rcpy",
+  "_rcpy",
   "This module provides an interface to the robotics cape",
   -1,
    module_methods
@@ -44,7 +44,7 @@ static struct PyModuleDef module = {
 
 /* python functions */
 
-PyMODINIT_FUNC PyInit_rcpy(void)
+PyMODINIT_FUNC PyInit__rcpy(void)
 {
   PyObject *m;
 

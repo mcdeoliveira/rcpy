@@ -5,7 +5,7 @@ LIBS = ['roboticscape']
 if platform.system().lower() == 'linux':
     LIBS.append('rt')
 
-rcpy = Extension("rcpy.rcpy",
+_rcpy = Extension("rcpy._rcpy",
                sources = ["src/_rcpy.c"],
                libraries = LIBS)
 
@@ -32,7 +32,7 @@ _motor = Extension("rcpy._motor",
 setup(
     
     name="rcpy",
-    version="0.2a",
+    version="0.3a",
     packages=find_packages(),
 
     # extensions
@@ -42,11 +42,12 @@ setup(
                  _gpio, _gpio_mmap],
     
     # metadata
-    author="Mauricio C. de Oliveira",
-    author_email="mauricio@ucsd.edu",
-    description="Python interface for Robotics Cape",
-    license="MIT",
-    keywords="Robotics Cape beaglebone black",
-    url="https://github.com/mcdeoliveira/rcpy"
+    author = "Mauricio C. de Oliveira",
+    author_email = "mauricio@ucsd.edu",
+    description = "Python Library for Robotics Cape on Beaglebone Black and Beaglebone Blue",
+    license = "MIT",
+    keywords= ["Robotics Cape", "Beaglebone Black", "Beaglebone Blue"],
+    url = "https://github.com/mcdeoliveira/rcpy",
+    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.2a.tar.gz"
     
 )

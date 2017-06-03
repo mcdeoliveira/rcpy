@@ -2,9 +2,9 @@ import warnings
 import signal
 import os, time
 
-from rcpy.rcpy import initialize, cleanup, get_state
-from rcpy.rcpy import set_state as _set_state
-from rcpy.rcpy import cleanup as _cleanup
+from rcpy._rcpy import initialize, cleanup, get_state
+from rcpy._rcpy import set_state as _set_state
+from rcpy._rcpy import cleanup as _cleanup
 
 #from hanging_threads import start_monitoring
 #monitoring_thread = start_monitoring()
