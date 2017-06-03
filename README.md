@@ -45,7 +45,7 @@ to install python3 and pip3.
 ## Installation
 
 Starting with version 0.3, `rcpy` is available from
-[PyPI](https://testpypi.python.org/pypi?:action=display&name=rcpy). Just
+[PyPI](https://pypi.python.org/pypi?:action=display&name=rcpy). Just
 type
 
     sudo pip3 install rcpy
