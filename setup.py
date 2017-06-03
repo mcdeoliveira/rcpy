@@ -36,7 +36,7 @@ setup(
     packages=find_packages(),
 
     # extensions
-    ext_modules=[rcpy,
+    ext_modules=[_rcpy,
                  _mpu9250,
                  _encoder, _motor,
                  _gpio, _gpio_mmap],
@@ -44,10 +44,24 @@ setup(
     # metadata
     author = "Mauricio C. de Oliveira",
     author_email = "mauricio@ucsd.edu",
+    
     description = "Python Library for Robotics Cape on Beaglebone Black and Beaglebone Blue",
     license = "MIT",
+    
     keywords= ["Robotics Cape", "Beaglebone Black", "Beaglebone Blue"],
+    
     url = "https://github.com/mcdeoliveira/rcpy",
-    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.2a.tar.gz"
+    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.2a.tar.gz",
+
+    classifiers=[
+        'Development Status :: 3 - Alpha',
+        'Intended Audience :: Other Audience',
+        'Topic :: Scientific/Engineering',
+        'License :: OSI Approved :: MIT License',
+        
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 3.4',
+    ],
     
 )
