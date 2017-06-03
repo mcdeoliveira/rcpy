@@ -32,7 +32,7 @@ _motor = Extension("rcpy._motor",
 setup(
     
     name="rcpy",
-    version="0.2",
+    version="0.3",
     packages=find_packages(),
 
     # extensions
@@ -51,7 +51,7 @@ setup(
     keywords= ["Robotics Cape", "Beaglebone Black", "Beaglebone Blue"],
     
     url = "https://github.com/mcdeoliveira/rcpy",
-    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.2.tar.gz",
+    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.3.tar.gz",
 
     classifiers=[
         'Development Status :: 3 - Alpha',

@@ -1,6 +1,6 @@
 # rcpy: Python 3 Interface for the Robotics Cape on the Beaglebone Black and the Beaglebone Blue
 
-**Release 0.2**
+**Release 0.3**
 
 This is a Python library with bindings for some of the functionality of the [Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
 
