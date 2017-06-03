@@ -2,7 +2,9 @@
 
 **Release 0.3**
 
-This is a Python library with bindings for some of the functionality of the [Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
+This is a Python library with bindings for some of the functionality
+of the
+[Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
 
 We only support Python 3, and are not interested in Python 2 at all.
 
@@ -15,7 +17,8 @@ Not all functions are supported. Currently supported functions are:
 5. Buttons
 6. GPIO inputs
 
-You might also be interested in the [ctrl package](https://github.com/mcdeoliveira/ctrl).
+You might also be interested in the
+[ctrl package](https://github.com/mcdeoliveira/ctrl).
 
 ## Preliminaries
 
@@ -41,11 +44,13 @@ to install python3 and pip3.
 
 ## Installation
 
-Starting with version 0.3 rcpy is available from PyPI. Just type
+Starting with version 0.3, `rcpy` is available from
+[PyPI](https://testpypi.python.org/pypi?:action=display&name=rcpy). Just
+type
 
     sudo pip3 install rcpy
 	
-to download and install the package.
+to download and install.
 
 ## Available Documentation:
 
