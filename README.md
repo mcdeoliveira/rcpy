@@ -17,8 +17,9 @@ Not all functions are supported. Currently supported functions are:
 5. Buttons
 6. GPIO inputs
 
-You might also be interested in the
-[ctrl package](https://github.com/mcdeoliveira/ctrl).
+You might also be interested in the `pyctrl` package
+([github](https://github.com/mcdeoliveira/pyctrl),
+[PyPI](https://pypi.python.org/pypi?:action=display&name=pyctrl)).
 
 ## Preliminaries
 
@@ -52,7 +53,7 @@ type
 	
 to download and install.
 
-## Available Documentation:
+## Documentation:
 
 * [HTML](http://guitar.ucsd.edu/rcpy/html/index.html)
 

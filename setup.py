@@ -32,8 +32,9 @@ _motor = Extension("rcpy._motor",
 setup(
     
     name="rcpy",
-    version="0.3",
+    version="0.3.1",
     packages=find_packages(),
+    python_requires='>=3.4',
 
     # extensions
     ext_modules=[_rcpy,
