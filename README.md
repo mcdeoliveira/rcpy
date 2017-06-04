@@ -31,10 +31,18 @@ if it is installed and the current version by running
 
     rc_version
 	
-on your Beaglebone. Follow these
-[instructions](http://strawsondesign.com/#!manual-install) if the
-command `rc_version` is not found to install the library or update it
-if you have an older version.
+on your Beaglebone. If the command `rc_version` is not found type
+
+    sudo apt-get update
+    sudo apt-get install roboticscape
+
+to install or
+
+    sudo apt-get update
+    sudo apt-get upgrade roboticscape
+
+to update from an older version. For more details see these
+[instructions](http://strawsondesign.com/#!manual-install).
 
 You must also have python3 installed. If you have not installed
 python3 yet type

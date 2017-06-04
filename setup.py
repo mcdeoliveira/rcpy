@@ -29,10 +29,14 @@ _motor = Extension("rcpy._motor",
                    sources = ["src/_motor.c"],
                    libraries = LIBS)
 
+def readme():
+    with open('README.rst') as f:
+        return f.read()
+
 setup(
     
     name="rcpy",
-    version="0.3.1",
+    version="0.3.3",
     packages=find_packages(),
     python_requires='>=3.4',
 
@@ -47,6 +51,7 @@ setup(
     author_email = "mauricio@ucsd.edu",
     
     description = "Python Library for Robotics Cape on Beaglebone Black and Beaglebone Blue",
+    long_description=readme(),
     license = "MIT",
     
     keywords= ["Robotics Cape", "Beaglebone Black", "Beaglebone Blue"],
