@@ -49,7 +49,7 @@ to install or
     sudo apt-get update
     sudo apt-get upgrade roboticscape
 
-to update from an older version. For more details see these
+to upgrade from an older version. For more details see these
 `instructions <http://strawsondesign.com/#!manual-install>`__.
 
 You must also have python3 installed. If you have not installed python3
