@@ -21,11 +21,11 @@ class ButtonEvent(gpio.InputEvent):
     
 class Button(gpio.Input):
 
-    def is_pressed(self, debounce = DEBOUNCE, timeout = None):
-        return self.is_low(debounce, timeout)
+    def is_pressed(self):
+        return self.is_low()
 
-    def is_released(self, debounce = DEBOUNCE, timeout = None):
-        return self.is_high(debounce, timeout)
+    def is_released(self):
+        return self.is_high()
     
     def pressed_or_released(self, debounce = DEBOUNCE, timeout = None):
         return self.high_or_low(debounce, timeout)

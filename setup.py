@@ -36,7 +36,7 @@ def readme():
 setup(
     
     name="rcpy",
-    version="0.3.3",
+    version="0.3.4",
     packages=find_packages(),
     python_requires='>=3.4',
 

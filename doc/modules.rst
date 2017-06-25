@@ -480,11 +480,11 @@ Classes
 	   
    :py:class:`rcpy.button.Button` represents buttons in the Robotics Cape or Beaglebone Blue.
 	   
-   .. py:method:: is_pressed(debounce = rcpy.button.DEBOUNCE, timeout = None)
+   .. py:method:: is_pressed()
 
       :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.PRESSED` and :samp:`False` if pin is :py:data:`rcpy.button.RELEASED`
 		  
-   .. py:method:: is_released(debounce = rcpy.button.DEBOUNCE, timeout = None)
+   .. py:method:: is_released()
     
       :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.RELEASED` and :samp:`False` if pin is :py:data:`rcpy.button.PRESSED`  
 		  
