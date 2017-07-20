@@ -44,14 +44,26 @@ def set_state(state):
 
 # cleanup function
 _CLEANUP_FLAG = False
+_cleanup_functions = {}
+
+def add_cleanup(fun, pars):
+    global _cleanup_functions
+    _cleanup_functions[fun] = pars
+
 def cleanup():
     global _CLEANUP_FLAG
+    global _cleanup_functions
     # return to avoid multiple calls to cleanup
     if _CLEANUP_FLAG:
         return
     _CLEANUP_FLAG = True
 
     print('Initiating cleanup...')
+
+    # call cleanup functions 
+    for fun, pars in _cleanup_functions.items():
+        fun(*pars)
+
     # get state pipes
     pipes = _get_state_pipe_list()
     if len(pipes):
@@ -90,11 +102,10 @@ def exit():
     
 # cleanup handler
 def handler(signum, frame):
+
+    # warn
     warnings.warn('Signal handler called with signal {}'.format(signum))
-    # call cleanup functions 
-    for fun, pars in cleanup_functions.items():
-        fun(*pars)
-        
+
     # call rcpy cleanup
     cleanup()
     
@@ -114,11 +125,6 @@ initialize()
 # set initial state
 set_state(PAUSED)
 warnings.warn('> Robotics cape initialized')
-
-# setup clean up handler
-cleanup_functions = {}
-def add_cleanup(fun, pars):
-    cleanup_functions[fun] = pars
 
 # install handler
 warnings.warn('> Installing signal handlers')
