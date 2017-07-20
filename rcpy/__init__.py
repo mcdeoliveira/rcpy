@@ -1,6 +1,6 @@
 import warnings
 import signal
-import os, time
+import sys, os, time
 
 from rcpy._rcpy import initialize, cleanup, get_state
 from rcpy._rcpy import set_state as _set_state
@@ -116,15 +116,20 @@ def handler(signum, frame):
 
     raise KeyboardInterrupt()
     
-# make sure it is disabled when exiting cleanly
-import atexit; atexit.register(cleanup)
-
 # initialize cape
 initialize()
 
 # set initial state
 set_state(PAUSED)
 warnings.warn('> Robotics cape initialized')
+
+if 'rcpy.nohandlers' is in sys.modules:
+    print('NO HANDLERS')
+else:
+    print('GO HANDLERS')
+
+# make sure it is disabled when exiting cleanly
+import atexit; atexit.register(cleanup)
 
 # install handler
 warnings.warn('> Installing signal handlers')
