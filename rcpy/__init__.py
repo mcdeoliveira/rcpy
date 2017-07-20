@@ -123,13 +123,13 @@ initialize()
 set_state(PAUSED)
 warnings.warn('> Robotics cape initialized')
 
+# make sure it is disabled when exiting cleanly
+import atexit; atexit.register(cleanup)
+
 if 'RCPY_NO_HANDLERS' in os.environ:
-    warnings.warn('> RCPY_NO_HANDLERS is set. User is responsible for cleanup')
+    warnings.warn('> RCPY_NO_HANDLERS is set. User is responsible for handling signals')
     
 else:
-
-    # make sure it is disabled when exiting cleanly
-    import atexit; atexit.register(cleanup)
 
     # install handler
     warnings.warn('> Installing signal handlers')
