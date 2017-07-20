@@ -6,6 +6,8 @@ from rcpy._rcpy import initialize, cleanup, get_state
 from rcpy._rcpy import set_state as _set_state
 from rcpy._rcpy import cleanup as _cleanup
 
+print('__init__')
+
 #from hanging_threads import start_monitoring
 #monitoring_thread = start_monitoring()
 
@@ -123,7 +125,7 @@ initialize()
 set_state(PAUSED)
 warnings.warn('> Robotics cape initialized')
 
-if 'rcpy.nohandlers' is in sys.modules:
+if 'rcpy.nohandlers' in sys.modules:
     print('NO HANDLERS')
 else:
     print('GO HANDLERS')
