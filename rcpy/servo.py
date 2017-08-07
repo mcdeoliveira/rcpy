@@ -10,7 +10,12 @@ class Pulse(threading.Thread):
         super().__init__()
         
         self.condition = threading.Condition()
-        self.servos = servos
+        if isinstance(servos, Servo):
+            self.servos = [servos]
+        elif isinstance(servos, (list, tuple)):
+            self.servos = servos
+        else:
+            raise Exception("servos must be a Servo or lists of Servo objects")
         self.period = period
         self._suspend = False
 
