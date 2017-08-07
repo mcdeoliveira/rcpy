@@ -29,6 +29,10 @@ _motor = Extension("rcpy._motor",
                    sources = ["src/_motor.c"],
                    libraries = LIBS)
 
+_servo = Extension("rcpy._servo",
+                   sources = ["src/_servo.c"],
+                   libraries = LIBS)
+
 def readme():
     with open('README.rst') as f:
         return f.read()
@@ -36,14 +40,14 @@ def readme():
 setup(
     
     name="rcpy",
-    version="0.3.5",
+    version="0.3.6",
     packages=find_packages(),
     python_requires='>=3.4',
 
     # extensions
     ext_modules=[_rcpy,
                  _mpu9250,
-                 _encoder, _motor,
+                 _encoder, _motor, _servo,
                  _gpio, _gpio_mmap],
     
     # metadata
