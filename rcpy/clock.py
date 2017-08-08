@@ -20,6 +20,7 @@ class Clock(threading.Thread):
 
     def __init__(self, action, period = 1):
 
+        # call super
         super().__init__()
         
         self.condition = threading.Condition()
