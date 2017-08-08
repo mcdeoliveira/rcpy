@@ -14,7 +14,7 @@ class Servo(clock.Action):
         self.duty = duty
 
     def pulse(self):
-        servo.pulse(self.channel, self.duty)
+        pulse(self.channel, self.duty)
 
     run = pulse
         
