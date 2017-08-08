@@ -35,6 +35,8 @@ def test1():
     time.sleep(1.1*obj.period)
     assert action.count == 3
 
+    obj.stop()
+    
 if __name__ == '__main__':
 
     test1()
