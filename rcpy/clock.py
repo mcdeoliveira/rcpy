@@ -48,7 +48,7 @@ class Clock(threading.Thread):
         if not self._suspend:
             try:
                 self.action.run()
-            except e:
+            except Exception as e:
                 warnings.warn(e)
         
         # Notify lock
