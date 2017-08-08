@@ -5,15 +5,15 @@ import time
 
 def test1():
 
-    class MyClock(Clock):
+    class MyAction(clock.Action):
 
         def __init__(self):
             self.count = 0
         
-        def action(self):
+        def run(self):
             self.count += 1
-    
-    obj = clock.MyClock()
+        
+    obj = clock.MyClock(MyAction())
 
     obj.start()
     assert obj.count == 0

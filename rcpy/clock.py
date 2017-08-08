@@ -1,13 +1,33 @@
 import threading, time
 
+class Action:
+    
+    def run(self):
+        raise Exception("Method run has not been defined yet.")
+
+class Actions(Action):
+
+    def __init__(self, *actions):
+        self.actions = actions
+
+    def run(self):
+        for a in self.actions:
+            a.run()
+    
 class Clock(threading.Thread):
 
-    def __init__(self, period = 1):
+    def __init__(self, action, period = 1):
 
         super().__init__()
         
         self.condition = threading.Condition()
         self.period = period
+
+        if isinstance(action, Action):
+            self.action = action
+        else:
+            raise Exception("action must be of class Action")
+        
         self._suspend = False
 
     def set_period(self, period):
@@ -16,9 +36,6 @@ class Clock(threading.Thread):
     def toggle(self):
         self._suspend = not self._suspend
 
-    def action(self):
-        raise Exception("Action has not been defined yet.")
-        
     def _run(self):
 
         # Acquire lock
@@ -26,7 +43,7 @@ class Clock(threading.Thread):
 
         # Toggle
         if not self._suspend:
-            self.action()
+            self.action.run()
         
         # Notify lock
         self.condition.notify_all()
