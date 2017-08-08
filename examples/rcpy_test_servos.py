@@ -15,6 +15,7 @@ Options are:
 -d duty     define a duty cycle from -1.5 to 1.5
 -c servo    specify a single servo from 1-8, 0 for all servos
 -s          sweep servos back and forward at duty cycle
+-t period   period
 -h          print this help message""")
 
 def main():
@@ -26,7 +27,7 @@ def main():
     
     # Parse command line
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hsd:c:", ["help"])
+        opts, args = getopt.getopt(sys.argv[1:], "hst:d:c:", ["help"])
 
     except getopt.GetoptError as err:
         # print help information and exit:
@@ -36,6 +37,7 @@ def main():
 
     # defaults
     duty = 1.5
+    period = 0.02
     channel = 0
     sweep = False
     brk = False
@@ -47,6 +49,8 @@ def main():
             sys.exit()
         elif o in "-d":
             duty = float(a)
+        elif o in "-t":
+            period = float(a)
         elif o in "-c":
             channel = int(a)
         elif o == "-s":
@@ -71,7 +75,7 @@ def main():
     # message
     print("Press Ctrl-C to exit")
 
-    clck = clock.Clock(srvo, 0.02)
+    clck = clock.Clock(srvo, period)
     
     try:
 
