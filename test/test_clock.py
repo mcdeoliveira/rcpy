@@ -12,27 +12,28 @@ def test1():
         
         def run(self):
             self.count += 1
-        
-    obj = clock.Clock(MyAction())
+
+    action = MyAction()            
+    obj = clock.Clock(action)
 
     obj.start()
-    assert obj.count == 0
+    assert action.count == 0
 
     time.sleep(self.period)
-    assert obj.count == 1
+    assert action.count == 1
     
     time.sleep(self.period)
-    assert obj.count == 2
-
-    obj.toggle()
-    
-    time.sleep(self.period)
-    assert obj.count == 2
+    assert action.count == 2
 
     obj.toggle()
     
     time.sleep(self.period)
-    assert obj.count == 3
+    assert action.count == 2
+
+    obj.toggle()
+    
+    time.sleep(self.period)
+    assert action.count == 3
 
 if __name__ == '__main__':
 
