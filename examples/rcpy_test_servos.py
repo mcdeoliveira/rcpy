@@ -90,7 +90,7 @@ def main():
 
             d = 0
             direction = 1
-            delta = duty/20
+            delta = duty/100
             
             # keep running
             while rcpy.get_state() != rcpy.EXITING:
