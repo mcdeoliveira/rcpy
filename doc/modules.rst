@@ -53,6 +53,80 @@ Low-level functions
    
 .. _rcpy_gpio:
 
+Module `rcpy.clock`
+-------------------
+
+.. py:module:: rcpy.clock
+
+This module provides a class :py:class:`rcpy.clock.Clock` that can be
+used to run actions periodically. Actions must inherit from the class
+:py:class:`rcpy.clock.Action` and implement the method
+:py:meth:`rcpy.clock.Action.run`. Examples of objects that inherit
+from :py:class:`rcpy.clock.Action` are :py:class:`rcpy.led.LED` and
+:py:class:`rcpy.servo.Servo`.
+
+For example::
+
+    import rcpy.clock as clock
+    from rcpy.led import red
+    clk = clock.Clock(red)
+    clk.start()
+
+will start a *thread* that will blink the *red* LED every second. The
+command::
+
+    clk.stop()
+
+will stop the LED blinking. The subclass :py:class:`rcpy.led.Blink`
+will in addition turn off the led after stopping.
+
+Classes
+^^^^^^^
+
+.. py:class:: Action()
+
+   :py:class:`rcpy.clock.Action` represents and action.
+	      
+   .. py:method:: run()
+
+      Run the action.
+
+.. py:class:: Actions(*actions)
+
+   :bases: :py:class:`rcpy.clock.Action`
+	      
+   :py:class:`rcpy.clock.Actions` represents a sequence of actions.
+
+   :param actions: comma separated list of actions.
+	      
+.. py:class:: Clock(action, period)
+
+   :bases: threading.Thread
+
+   :py:class:`rcpy.clock.Clock` executes actions periodically.
+
+   :param Action action: the action to be executed
+   :param int period: the period in seconds (default 1 second)
+	   
+   .. py:method:: set_period(period)
+
+      :param float period: period in seconds
+
+      Set action period.
+		  
+   .. py:method:: toggle()
+
+      Toggle action on and off. Call toggle again to resume or stop action.
+
+   .. py:method:: start()
+
+      Start the action thread.
+    
+   .. py:method:: stop()
+
+      Stop the action thread. Action cannot resume after calling :py:meth:`rcpy.led.Blink.stop`. Use :py:meth:`rcpy.clock.Clock.toggle` to temporarily interrupt an action.
+
+
 Module `rcpy.gpio`
 ------------------
 
@@ -687,25 +761,12 @@ Classes
 		  
 .. py:class:: Blink(led, period)
 
-   :bases: threading.Thread
+   :bases: :py:class:`rcpy.clock.Clock`
 
-   .. py:method:: set_period(period)
+   :py:class:`rcpy.led.Blink` toggles led on and off periodically.
 
-      :param float period: period of blinking
-
-      Set blinking period.
-		  
-   .. py:method:: toggle()
-
-      Toggle blinking on and off. Call toggle again to resume or stop blinking.
-
-   .. py:method:: start()
-
-      Start the blinking thread.
-    
-   .. py:method:: stop()
-
-      Stop the blinking thread. Blinking cannot resume after calling :py:meth:`rcpy.led.Blink.stop`.
+   :param LED led: the led to toggle
+   :param int period: the period in seconds
 		  
 .. _rcpy_encoder:
    
@@ -918,6 +979,242 @@ Low-level functions
    :param int channel: motor channel number
 
    Puts the motor channel `channel` in *brake mode*.
+		       
+   This is a non-blocking call.
+
+.. _rcpy_servo:
+
+Module `rcpy.servo`
+-------------------
+
+.. py:module:: rcpy.servo
+
+This module provides an interface to the four *servo channels* in the
+Robotics Cape. Those control a high power PWM (Pulse Width Modulation)
+signal which is typically used to control *DC Servos*. The command::
+
+    import rcpy.servo as servo
+
+imports the module. The :ref:`rcpy_servo` provides objects
+corresponding to the each of the servo channels on the Robotics Cape,
+namely :py:data:`rcpy.servo.servo1`, :py:data:`rcpy.servo.servo2`,
+:py:data:`rcpy.servo.servo3`, and :py:data:`rcpy.servo.servo4`. It may
+be convenient to import one or all of these objects as in ::
+
+    from rcpy.servo import servo2
+
+The current average voltage applied to the servo can be set using::
+
+    duty = 1
+    servo2.set(duty)
+
+where `duty` is a number varying from -1 to 1 which controls the
+percentage of the voltage available to the Robotics Cape that should
+be applied on the servo. A servo can be turned off by::
+
+    servo2.set(0)
+
+or using one of the special methods
+:py:meth:`rcpy.servo.Servo.free_spin` or
+:py:meth:`rcpy.servo.Servo.brake`, which can be used to turn off the
+servo and set it in a *free-spin* or *braking* configuration. For
+example::
+
+    servo2.free_spin()
+
+puts :py:data:`servo2` in *free-spin* mode. In *free-spin mode* the
+servo behaves as if there were no voltage applied to its terminal,
+that is it is allowed to spin freely. In *brake mode* the terminals of
+the servo are *short-circuited* and the servo winding will exert an
+opposing force if the servo shaft is moved. *Brake mode* is
+essentially the same as setting the duty cycle to zero.
+
+Constants
+^^^^^^^^^
+
+.. py:data:: servo1
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 1*.
+
+.. py:data:: servo2
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 2*.
+       
+.. py:data:: servo3
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 3*.
+       
+.. py:data:: servo4
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 4*.
+	       
+.. py:data:: servo5
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 5*.
+
+.. py:data:: servo6
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 6*.
+
+.. py:data:: servo7
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 7*.
+
+.. py:data:: servo8
+
+   :py:class:`rcpy.servo.Servo` representing the Robotics Cape *Servo 8*.
+
+.. py:data:: esc1
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 1*.
+
+.. py:data:: esc2
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 2*.
+       
+.. py:data:: esc3
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 3*.
+       
+.. py:data:: esc4
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 4*.
+	       
+.. py:data:: esc5
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 5*.
+
+.. py:data:: esc6
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 6*.
+
+.. py:data:: esc7
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 7*.
+
+.. py:data:: esc8
+
+   :py:class:`rcpy.servo.ESC` representing the Robotics Cape *ESC 8*.
+       
+Classes
+^^^^^^^
+
+.. py:class:: Servo(channel, duty = None)
+
+   :param output: servo channel (1 through 4)
+   :param state: initial servo duty cycle (Default 0)
+	      
+   :py:class:`rcpy.servo.Servo` represents servos in the Robotics Cape or Beaglebone Blue.
+       
+   .. py:method:: set(duty)
+            
+      Set current servo duty cycle to `duty`. `duty` is a number
+      between -1.5 and 1.5. This method does not pulse the servo. Use
+      :py:meth:`rcpy.servo.Servo.pulse` for setting *and* pulsing the
+      servo at the same time. Otherwise use a
+      :py:class:`rcpy.clock.Clock` or the method
+      :py:meth:`rcpy.servo.Servo.start` to create one. The value of
+      `duty` corresponds to the following pulse widths and servo
+      angles:
+
+      .. tabularcolumns:: c|c|c|c
+			  
+      =====  ======  ======  =================
+      input   width  angle   direction
+      =====  ======  ======  =================
+      -1.5   600us   90 deg  counter-clockwise
+      -1.0   900us   60 deg  counter-clockwise
+       0.0   1500us  0 deg   neutral
+      +1.0   2100us  60 deg  clockwise
+      +1.5   2400us  90 deg  clockwise
+      =====  ======  ======  =================
+
+   .. py:method:: pulse(duty)
+            
+      Set current servo duty cycle to `duty` and send a single pulse
+      to the servo.
+
+   .. py:method:: run()
+            
+      Send a single pulse to the servo using the current value of `duty`.
+      
+   .. py:method:: start(period)
+
+      :param float period: period
+      :returns: an instance of :py:class:`rcpy.clock.Clock`.
+
+      Pulses servo periodically every `period` seconds.
+      
+.. py:class:: ESC(channel, duty = None)
+
+   :param output: ESC channel (1 through 4)
+   :param state: initial ESC duty cycle (Default 0)
+	      
+   :py:class:`rcpy.servo.ESC` represents ESCs in the Robotics Cape
+       or Beaglebone Blue.
+       
+   .. py:method:: set(duty)
+            
+      Set current ESC duty cycle to `duty`, in which `duty` is a
+      number between -0.1 and 1.0. This method does not pulse the
+      ESC. Use :py:meth:`rcpy.servo.ESC.pulse` for setting *and*
+      pulsing the ESC at the same time. Otherwise use a
+      :py:class:`rcpy.clock.Clock` or the method
+      :py:meth:`rcpy.servo.ESC.start` to create one. The value of
+      `duty` corresponds to the following pulse widths and servo
+      angles:
+
+      .. tabularcolumns:: c|c|c|c
+			  
+      =====  ======  =====  =============
+      input   width  power  status
+      =====  ======  =====  =============
+      -0.1   900us   armed  idle
+       0.0   1000us  0%     off
+      +0.5   1500us  50%    half-throttle
+      +1.0   2000us  100%   full-throttle
+      =====  ======  =====  =============
+      
+   .. py:method:: pulse(duty)
+            
+      Set current ESC duty cycle to `duty` and send a single pulse to the ESC.
+
+   .. py:method:: run()
+            
+      Send a single pulses to the ESC using the current value of `duty`.
+      
+   .. py:method:: start(period)
+
+      :param float period: period
+      :returns: an instance of :py:class:`rcpy.clock.Clock`.
+
+      Pulses ESC periodically every `period` seconds.
+      
+Low-level functions
+^^^^^^^^^^^^^^^^^^^
+
+.. py:function:: set(channel, duty)
+
+   :param int channel: servo channel number
+   :param int duty: desired servo duty cycle
+
+   Sets the servo channel `channel` duty cycle to `duty`.
+
+   This is a non-blocking call.
+		    
+.. py:function:: set_free_spin(channel)
+
+   :param int channel: servo channel number
+
+   Puts the servo channel `channel` in *free-spin mode*.
+		       
+   This is a non-blocking call.
+	       
+.. py:function:: set_brake(channel)
+
+   :param int channel: servo channel number
+
+   Puts the servo channel `channel` in *brake mode*.
 		       
    This is a non-blocking call.
 
