@@ -71,7 +71,7 @@ def main():
     # message
     print("Press Ctrl-C to exit")
 
-    clock = clock.Clock(srvo, 0.02)
+    clck = clock.Clock(srvo, 0.02)
     
     try:
 
@@ -79,7 +79,7 @@ def main():
         servo.enable()
         
         # start clock
-        clock.start()
+        clck.start()
         
         # sweep
         if sweep:
@@ -121,7 +121,7 @@ def main():
     finally:
 
         # stop clock
-        clock.stop()
+        clck.stop()
         
         # disable servos
         servo.disable()
