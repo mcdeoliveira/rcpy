@@ -13,7 +13,7 @@ def test1():
         def run(self):
             self.count += 1
         
-    obj = clock.MyClock(MyAction())
+    obj = clock.Clock(MyAction())
 
     obj.start()
     assert obj.count == 0
