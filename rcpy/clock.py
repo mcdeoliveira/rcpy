@@ -46,10 +46,7 @@ class Clock(threading.Thread):
 
         # Toggle
         if not self._suspend:
-            try:
-                self.action.run()
-            except Exception as e:
-                warnings.warn(e)
+            self.action.run()
         
         # Notify lock
         self.condition.notify_all()

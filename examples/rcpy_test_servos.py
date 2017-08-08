@@ -93,14 +93,17 @@ def main():
 
                 # increment duty
                 d = d + direction * delta
-                srvo.set(d)
 
                 # end of range?
                 if d > duty or d < -duty:
                     direction = direction * -1
-
-                print('duty = {}'.format(d))
+                    if d > duty:
+                        d = duty
+                    else:
+                        d = -duty
                     
+                srvo.set(d)
+
                 # sleep some
                 time.sleep(.1)
 
