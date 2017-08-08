@@ -6,16 +6,15 @@ import threading, time
 
 class Servo(clock.Action):
 
-    def __init__(self, channel, duty = None):
+    def __init__(self, channel, duty = 0):
         self.channel = channel
-        if duty is not None:
-            self.set(duty)
+        self.duty = duty
 
     def set(self, duty):
         self.duty = duty
 
     def pulse(self):
-        pulse(self.channel, self.duty)
+        servo.pulse(self.channel, self.duty)
 
     run = pulse
         
