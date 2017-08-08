@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # import python libraries
-import time
+import time, math
 import getopt, sys
 
 # import rcpy library
@@ -90,6 +90,7 @@ def main():
 
             d = 0
             direction = 1
+            duty = math.fabs(duty)
             delta = duty/100
             
             # keep running
