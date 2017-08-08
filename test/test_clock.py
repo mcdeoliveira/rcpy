@@ -19,20 +19,20 @@ def test1():
     obj.start()
     assert action.count == 0
 
-    time.sleep(self.period)
+    time.sleep(obj.period)
     assert action.count == 1
     
-    time.sleep(self.period)
+    time.sleep(obj.period)
     assert action.count == 2
 
     obj.toggle()
     
-    time.sleep(self.period)
+    time.sleep(obj.period)
     assert action.count == 2
 
     obj.toggle()
     
-    time.sleep(self.period)
+    time.sleep(obj.period)
     assert action.count == 3
 
 if __name__ == '__main__':
