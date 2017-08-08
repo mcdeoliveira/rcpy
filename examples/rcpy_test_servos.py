@@ -35,7 +35,7 @@ def main():
         sys.exit(2)
 
     # defaults
-    duty = 0.0
+    duty = 1.5
     channel = 0
     sweep = False
     brk = False
@@ -91,16 +91,13 @@ def main():
             # keep running
             while rcpy.get_state() != rcpy.EXITING:
 
-                # running
-                if rcpy.get_state() == rcpy.RUNNING:
+                # increment duty
+                d = d + direction * delta
+                srvo.set(d)
 
-                    # increment duty
-                    d = d + direction * delta
-                    srvo.set(d)
-
-                    # end of range?
-                    if d > duty or d < -duty:
-                        direction = direction * -1
+                # end of range?
+                if d > duty or d < -duty:
+                    direction = direction * -1
                         
                 # sleep some
                 time.sleep(.1)
