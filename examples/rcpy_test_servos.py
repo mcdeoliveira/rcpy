@@ -7,6 +7,7 @@ import getopt, sys
 # This automatically initizalizes the robotics cape
 import rcpy 
 import rcpy.servo as servo
+import rcpy.clock as clock
 
 def usage():
     print("""usage: python rcpy_test_servos [options] ...
@@ -57,10 +58,11 @@ def main():
     rcpy.set_state(rcpy.RUNNING)
 
     # set servo duty (only one option at a time)
+    srvo = servo.Servo(channel)
     if duty != 0:
         if not sweep:
             print('Setting servo {} to {} duty'.format(channel, duty))
-            servo.set(channel, duty)
+            srvo.set(duty)
         else:
             print('Sweeping servo {} to {} duty'.format(channel, duty))
     else:
@@ -68,9 +70,17 @@ def main():
 
     # message
     print("Press Ctrl-C to exit")
-        
+
+    clock = clock.Clock(srvo, 0.02)
+    
     try:
 
+        # enable servos
+        servo.enable()
+        
+        # start clock
+        clock.start()
+        
         # sweep
         if sweep:
 
@@ -86,7 +96,7 @@ def main():
 
                     # increment duty
                     d = d + direction * delta
-                    servo.set(channel, d)
+                    srvo.set(d)
 
                     # end of range?
                     if d > duty or d < -duty:
@@ -110,6 +120,12 @@ def main():
         
     finally:
 
+        # stop clock
+        clock.stop()
+        
+        # disable servos
+        servo.disable()
+        
         # say bye
         print("\nBye Beaglebone!")
             
