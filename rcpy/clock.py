@@ -1,6 +1,6 @@
 import rcpy
 
-import threading, time
+import threading, time, warnings
 
 class Action:
     
@@ -46,7 +46,10 @@ class Clock(threading.Thread):
 
         # Toggle
         if not self._suspend:
-            self.action.run()
+            try:
+                self.action.run()
+            except e:
+                warnings.warn(e)
         
         # Notify lock
         self.condition.notify_all()
