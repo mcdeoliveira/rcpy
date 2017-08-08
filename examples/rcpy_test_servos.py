@@ -105,7 +105,7 @@ def main():
                 srvo.set(d)
 
                 # sleep some
-                time.sleep(.1)
+                time.sleep(.02)
 
         # or do nothing
         else:
