@@ -98,7 +98,9 @@ def main():
                 # end of range?
                 if d > duty or d < -duty:
                     direction = direction * -1
-                        
+
+                print('duty = {}'.format(d))
+                    
                 # sleep some
                 time.sleep(.1)
 

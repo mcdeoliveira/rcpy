@@ -19,7 +19,7 @@ class Servo(clock.Action):
     run = pulse
         
     def start(self, period):
-        thread = Pulse([self], period)
+        thread = clock.Clock(self, period)
         thread.start()
         return thread
         
