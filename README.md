@@ -1,6 +1,6 @@
 # rcpy: Python 3 Interface for the Robotics Cape on the Beaglebone Black and the Beaglebone Blue
 
-**Release 0.3**
+**Release 0.4**
 
 This is a Python library with bindings for some of the functionality
 of the
@@ -12,10 +12,11 @@ Not all functions are supported. Currently supported functions are:
 
 1. MPU9250
 2. PWM motors
-3. Encoders
-4. LEDs
-5. Buttons
-6. GPIO inputs
+3. Servos and ESCs
+4. Encoders
+5. LEDs
+6. Buttons
+7. GPIO inputs
 
 You might also be interested in the `pyctrl` package
 ([github](https://github.com/mcdeoliveira/pyctrl),
