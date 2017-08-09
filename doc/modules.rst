@@ -887,6 +887,10 @@ be convenient to import one or all of these objects as in ::
 
     from rcpy.motor import motor2
 
+This is a convenience object which is equivalent to::
+
+    motor2 = Motor(2)
+    
 The current average voltage applied to the motor can be set using::
 
     duty = 1
@@ -989,45 +993,80 @@ Module `rcpy.servo`
 
 .. py:module:: rcpy.servo
 
-This module provides an interface to the four *servo channels* in the
-Robotics Cape. Those control a high power PWM (Pulse Width Modulation)
-signal which is typically used to control *DC Servos*. The command::
+This module provides an interface to the eight *servo* and *ESC*
+(Electronic Speed Control) *channels* in the Robotics Cape. The
+3-pin servo connectors are not polarized so make sure the black/brown
+ground wire is the one closest to the Robotics Cape. The command::
 
     import rcpy.servo as servo
 
 imports the module. The :ref:`rcpy_servo` provides objects
-corresponding to the each of the servo channels on the Robotics Cape,
-namely :py:data:`rcpy.servo.servo1`, :py:data:`rcpy.servo.servo2`,
-:py:data:`rcpy.servo.servo3`, and :py:data:`rcpy.servo.servo4`. It may
-be convenient to import one or all of these objects as in ::
+corresponding to the each of the servo and ESC channels on the
+Robotics Cape, namely :py:data:`rcpy.servo.servo1` through
+:py:data:`rcpy.servo.servo8`, and namely :py:data:`rcpy.servo.esc1`
+through :py:data:`rcpy.servo.esc8`. It may be convenient to import one
+or all of these objects as in ::
 
-    from rcpy.servo import servo2
+    from rcpy.servo import servo7
 
-The current average voltage applied to the servo can be set using::
+This is a convenience object which is equivalent to::
 
-    duty = 1
-    servo2.set(duty)
+    motor7 = Servo(7)
+    
+The position of the servo can be set using::
 
-where `duty` is a number varying from -1 to 1 which controls the
-percentage of the voltage available to the Robotics Cape that should
-be applied on the servo. A servo can be turned off by::
+    duty = 1.5
+    servo7.set(duty)
 
-    servo2.set(0)
+where `duty` is a number varying from -1.5 to 1.5, which controls the
+angle of the servo. This command does not send a pulse to the
+servo. In fact, before you can drive servos using the Robotics Cape
+you need to enable power to flow to servos using::
 
-or using one of the special methods
-:py:meth:`rcpy.servo.Servo.free_spin` or
-:py:meth:`rcpy.servo.Servo.brake`, which can be used to turn off the
-servo and set it in a *free-spin* or *braking* configuration. For
-example::
+    servo.enable()
 
-    servo2.free_spin()
+For safety the servo power rail is disabled by default. Do not enable
+the servo power rail when using brushless ESCs as they can be
+damaged. Typical brushless ESCs only use the ground and signal pins,
+so if you need to control servos and ESC simultaneously simply cut or
+disconnect the middle power wire from the ESC connector. Use the
+command::
 
-puts :py:data:`servo2` in *free-spin* mode. In *free-spin mode* the
-servo behaves as if there were no voltage applied to its terminal,
-that is it is allowed to spin freely. In *brake mode* the terminals of
-the servo are *short-circuited* and the servo winding will exert an
-opposing force if the servo shaft is moved. *Brake mode* is
-essentially the same as setting the duty cycle to zero.
+   servo.disable()
+
+to turn off the servo power rail.
+
+Back to servos, you can set the duty *and* send a pulse to the servo
+at the same time using the command::
+
+    duty = 1.5
+    servo7.pulse(duty)
+
+Alternatively, you can initiate a :py:class:`rcpy.clock.Clock` object
+using::
+
+    period = 0.1
+    clk = servo7.start(period)
+
+which starts sending the current servor `duty` value to the servo
+every 0.1s. The clock can be stopped by::
+
+    clk.stop()
+
+The above is equivalent to::
+
+    import rcpy.clock as clock
+    period = 0.1
+    clk = clock.Clock(servo7, period)
+    clk.start()
+
+Similar commands are available for ESC. For example::
+    
+    from rcpy.servo import esc3
+    duty = 1.0
+    esc3.pulse(duty)
+
+sends a *full-throttle* pulse to the ESC in channel 3.
 
 Constants
 ^^^^^^^^^
@@ -1193,31 +1232,93 @@ Classes
 Low-level functions
 ^^^^^^^^^^^^^^^^^^^
 
-.. py:function:: set(channel, duty)
+.. py:function:: enable()
+
+   Enables the servo power rail. Be careful when connecting ESCs! 
+   
+.. py:function:: disable()
+
+   Disables the servo power rail.
+   
+.. py:function:: pulse(channel, duty)
 
    :param int channel: servo channel number
    :param int duty: desired servo duty cycle
 
-   Sets the servo channel `channel` duty cycle to `duty`.
+   Sends a "normalized" pulse to the servo channel `channel`, in
+   which `duty` is a float varying from `-1.5` to `1.5`. See
+   :py:meth:`rcpy.servo.Servo.set` for details.
 
    This is a non-blocking call.
 		    
-.. py:function:: set_free_spin(channel)
+.. py:function:: pulse_all(channel, duty)
+
+   :param int duty: desired servo duty cycle
+
+   Sends a "normalized" pulse to all servo channels, in which `duty`
+   is a float varying from `-1.5` to `1.5`. See
+   :py:meth:`rcpy.servo.Servo.set` for details.
+
+   This is a non-blocking call.
+   
+.. py:function:: esc_pulse(channel, duty)
 
    :param int channel: servo channel number
+   :param int duty: desired ESC duty cycle
 
-   Puts the servo channel `channel` in *free-spin mode*.
-		       
+   Sends a "normalized" pulse to the ESC channel `channel`, in
+   which `duty` is a float varying from `-0.1` to `1.5`. See
+   :py:meth:`rcpy.servo.ESC.set` for details.
+
    This is a non-blocking call.
-	       
-.. py:function:: set_brake(channel)
+		    
+.. py:function:: esc_pulse_all(channel, duty)
+
+   :param int duty: desired ESC duty cycle
+
+   Sends a "normalized" pulse to all ESC channels, in which `duty`
+   is a float varying from `-0.1` to `1.5`. See
+   :py:meth:`rcpy.servo.ESC.set` for details.
+
+   This is a non-blocking call.
+
+.. py:function:: oneshot_pulse(channel, duty)
+
+   :param int channel: ESC channel number
+   :param int duty: desired ESC duty cycle
+
+   Sends a "normalized" *oneshot* pulse to the ESC channel
+   `channel`, in which `duty` is a float varying from `-0.1` to
+   `1.0`.
+
+   This is a non-blocking call.
+		    
+.. py:function:: oneshot_pulse_all(channel, duty)
+
+   :param int duty: desired ESC duty cycle
+
+   Sends a "normalized" *oneshot* pulse to all ESC channels, in
+   which `duty` is a float varying from `-0.1` to `1.0`.
+
+   This is a non-blocking call.
+   
+.. py:function:: pulse_us(channel, us)
 
    :param int channel: servo channel number
+   :param int us: desired servo duty cycle is :math:`\mu` s
 
-   Puts the servo channel `channel` in *brake mode*.
-		       
+   Sends a pulse of duration `us` :math:`\mu` s to all servo channels. 
    This is a non-blocking call.
 
+   This is a non-blocking call.
+		    
+.. py:function:: pulse_us_all(channel, us)
+
+   :param int us: desired servo duty cycle is :math:`\mu` s
+
+   Sends a pulse of duration `us` :math:`\mu` s to all servo channels.
+   This is a non-blocking call.
+   
 .. _rcpy_mpu9250:
 
 Module `rcpy.mpu9250`

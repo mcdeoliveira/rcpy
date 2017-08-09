@@ -40,7 +40,7 @@ def readme():
 setup(
     
     name="rcpy",
-    version="0.3.6",
+    version="0.4.0",
     packages=find_packages(),
     python_requires='>=3.4',
 
