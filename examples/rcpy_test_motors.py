@@ -16,6 +16,8 @@ Options are:
 -s          sweep motors back and forward at duty cycle
 -b          enable motor brake function
 -f          enable free spin function
+-n          number of steps per sweep (default = 20)
+-t          period of sweep (default = 4s)
 -h          print this help message""")
 
 def main():
@@ -41,6 +43,8 @@ def main():
     sweep = False
     brk = False
     free = False
+    steps = 20
+    period = 4
 
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -56,6 +60,10 @@ def main():
             brk = True
         elif o == "-f":
             free = True
+        elif o == "-t":
+            period = float(a)
+        elif o == "-n":
+            steps = int(a)
         else:
             assert False, "Unhandled option"
 
@@ -91,7 +99,8 @@ def main():
             d = 0
             direction = 1
             duty = math.fabs(duty)
-            delta = duty/20
+            delta = duty/steps
+            dt = period/steps/2
             
             # keep running
             while rcpy.get_state() != rcpy.EXITING:
@@ -114,7 +123,7 @@ def main():
                     d = 0
                     
                 # sleep some
-                time.sleep(.1)
+                time.sleep(dt)
 
         # or do nothing
         else:

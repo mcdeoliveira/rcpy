@@ -20,6 +20,7 @@ Options are:
 -t          Print Tait-Bryan angles
 -q          Print quaternion vector
 -f          Print fused data
+-n          Newline (default = '\r')
 -o          Show a menu to select IMU orientation
 -h          print this help message""")
 
@@ -50,6 +51,7 @@ def main():
     sample_rate = 100
     enable_fusion = False
     show_period = False
+    newline = '\r'
 
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -73,6 +75,8 @@ def main():
             enable_fusion = True
         elif o == "-p":
             show_period = True
+        elif o == "-n":
+            newline = a
         else:
             assert False, "Unhandled option"
 
@@ -123,7 +127,7 @@ def main():
                 dt = t1 - t0
                 t0 = t1
 
-                print('\r', end='')
+                print(newline, end='')
                 if show_accel:
                     print('{0[0]:6.2f} {0[1]:6.2f} {0[2]:6.2f} |'
                           .format(data['accel']), end='')
