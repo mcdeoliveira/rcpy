@@ -1,3 +1,5 @@
+/* Contributed by BrendanSimon */
+
 #include <Python.h>
 
 #include <rc_usefulincludes.h>

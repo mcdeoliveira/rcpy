@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# Contributed by BrendanSimon
+
 # import rcpy libraries
 import rcpy
 import rcpy.adc as adc
