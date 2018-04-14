@@ -9,6 +9,10 @@ _rcpy = Extension("rcpy._rcpy",
                sources = ["src/_rcpy.c"],
                libraries = LIBS)
 
+_adc = Extension("rcpy._adc",
+               sources = ["src/_adc.c"],
+               libraries = LIBS)
+
 _mpu9250 = Extension("rcpy._mpu9250",
                      sources = ["src/_mpu9250.c"],
                      libraries = LIBS)
@@ -38,7 +42,7 @@ def readme():
         return f.read()
 
 setup(
-    
+
     name="rcpy",
     version="0.4.0",
     packages=find_packages(),
@@ -46,20 +50,21 @@ setup(
 
     # extensions
     ext_modules=[_rcpy,
+                 _adc,
                  _mpu9250,
                  _encoder, _motor, _servo,
                  _gpio, _gpio_mmap],
-    
+
     # metadata
     author = "Mauricio C. de Oliveira",
     author_email = "mauricio@ucsd.edu",
-    
+
     description = "Python Library for Robotics Cape on Beaglebone Black and Beaglebone Blue",
     long_description=readme(),
     license = "MIT",
-    
+
     keywords= ["Robotics Cape", "Beaglebone Black", "Beaglebone Blue"],
-    
+
     url = "https://github.com/mcdeoliveira/rcpy",
     download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.4.tar.gz",
 
@@ -70,5 +75,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Programming Language :: Python :: 3.4',
     ],
-    
+
 )
+
