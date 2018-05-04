@@ -52,8 +52,8 @@ setup(
     ext_modules=[_rcpy,
                  _adc,
                  _mpu9250,
-                 _encoder, _motor, _servo,
-                 _gpio, _gpio_mmap],
+                 _encoder, _motor, _servo],
+                 #_gpio, _gpio_mmap],
 
     # metadata
     author = "Mauricio C. de Oliveira",

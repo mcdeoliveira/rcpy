@@ -1,7 +1,7 @@
 #include <Python.h>
 
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
+#include <rc/encoder_eqep.h>
+#include <rc/encoder_pru.h>
 
 static char module_docstring[] =
   "This module provides an interface for encoder.";
@@ -51,13 +51,15 @@ PyMODINIT_FUNC PyInit__encoder(void)
   Py_INCREF(encoderError);
   PyModule_AddObject(m, "error", encoderError);
 
-  /* initialize cape */
-  if (rc_get_state() == UNINITIALIZED) {
-    printf("* * * encoder: WILL CALL INIT * * *\n");
-    if(rc_initialize())
-      return NULL;
-  }
-  
+  /* initialize encoders */
+  /* remember to call rc_encoder_eqep_cleanup() later */
+  if(rc_encoder_eqep_init())
+    return NULL;
+  // this may fail if not root or someone broke PRU again
+  // continue anyway if it fails, encoder 4 just won't work
+  // remember to call rc_encoder_pru_cleanup() later
+  if(rc_encoder_pru_init()==-1){}
+
   return m;
 }
 
@@ -73,9 +75,12 @@ PyObject *encoder_read(PyObject *self,
     return NULL;
   }
 
+  int count;
+
   /* read encoder */
-  int count = rc_get_encoder_pos(channel);
-  
+  if(channel==4) count=rc_encoder_pru_read();
+  else count=rc_encoder_eqep_read(channel);
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("i", count);
 
@@ -95,8 +100,9 @@ PyObject *encoder_set(PyObject *self,
   }
 
   /* set encoder */
-  rc_set_encoder_pos(channel, count);
-  
+  if(channel==4) count=rc_encoder_pru_write(count);
+  else count=rc_encoder_eqep_write(channel, count);
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 

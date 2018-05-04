@@ -1,7 +1,6 @@
 #include <Python.h>
 
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
+#include <rc/mpu.h>
 
 static char module_docstring[] =
   "This module provides an interface for mpu9250.";
@@ -87,8 +86,8 @@ static struct PyModuleDef module = {
 
 static int imu_enable_dmp = 0;       // enable dmp
 static int imu_enable_fusion = 0;    // enable fusion
-static rc_imu_config_t imu_conf;     // imu configuration
-static rc_imu_data_t imu_data;       // imu data
+static rc_mpu_config_t imu_conf;     // imu configuration
+static rc_mpu_data_t imu_data;       // imu data
 
 /* python functions */
 
@@ -105,17 +104,10 @@ PyMODINIT_FUNC PyInit__mpu9250(void)
   mpu9250Error = PyErr_NewException("mpu9250.error", NULL, NULL);
   Py_INCREF(mpu9250Error);
   PyModule_AddObject(m, "error", mpu9250Error);
-  
-  /* initialize cape */
-  if (rc_get_state() == UNINITIALIZED) {
-    printf("* * * mpu9250: WILL CALL INIT * * *\n");
-    if(rc_initialize())
-      return NULL;
-  }
 
   /* set default parameters for imu */
-  imu_conf = rc_default_imu_config();
-  
+  imu_conf = rc_mpu_default_config();
+
   return m;
 }
 
@@ -141,7 +133,7 @@ PyObject *mpu9250_initialize(PyObject *self,
     "enable_fusion",          /* int */
     NULL
   };
-  
+
   PyObject *ret;
 
   /* Parse parameters */
@@ -151,11 +143,11 @@ PyObject *mpu9250_initialize(PyObject *self,
 				    &imu_conf.accel_dlpf,             /* rc_accel_dlpf_t (int) */
 				    &imu_conf.gyro_dlpf,              /* rc_gyro_dlpf_t (int) */
 				    &imu_conf.enable_magnetometer,    /* int */
-				    &imu_conf.orientation,            /* rc_imu_orientation_t (int) */
+				    &imu_conf.orient,                 /* rc_imu_orientation_t (int) */
 				    &imu_conf.compass_time_constant,  /* float */
 				    &imu_conf.dmp_interrupt_priority, /* int */
 				    &imu_conf.dmp_sample_rate,        /* int */
-				    &imu_conf.show_warnings,          /* int */ 
+				    &imu_conf.show_warnings,          /* int */
 				    &imu_enable_dmp,                  /* int */
 				    &imu_enable_fusion                /* int */ )) {
     PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
@@ -168,14 +160,14 @@ PyObject *mpu9250_initialize(PyObject *self,
   if (imu_enable_dmp) {
 
     // initialize imu + dmp
-    if(rc_initialize_imu_dmp(&imu_data, imu_conf)){
+    if(rc_mpu_initialize_dmp(&imu_data, imu_conf)){
       PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
       return NULL;
     }
 
   }
   else {
-    if(rc_initialize_imu(&imu_data, imu_conf)){
+    if(rc_mpu_initialize(&imu_data, imu_conf)){
       PyErr_SetString(mpu9250Error, "Failed to initialize IMU");
       return NULL;
     }
@@ -192,13 +184,13 @@ PyObject *mpu9250_power_off(PyObject *self)
 {
 
   /* power off imu */
-  if (rc_power_off_imu()) {
+  if (rc_mpu_power_off()) {
     PyErr_SetString(mpu9250Error, "Failed to power off IMU");
     return NULL;
   }
-  
+
   /* Build the output tuple */
-  PyObject *ret = 
+  PyObject *ret =
     Py_BuildValue("");
 
   return ret;
@@ -209,7 +201,7 @@ PyObject *mpu9250_get(PyObject *self)
 {
 
   /* Build the output tuple */
-  PyObject *ret = 
+  PyObject *ret =
     Py_BuildValue("{sisisisisisfsisisOsOsOsO}",
 		  "accel_fsr",
 		  imu_conf.accel_fsr,
@@ -220,7 +212,7 @@ PyObject *mpu9250_get(PyObject *self)
 		  "gyro_dlpf",
 		  imu_conf.gyro_dlpf,
 		  "orientation",
-		  imu_conf.orientation,
+		  imu_conf.orient,
 		  "compass_time_constant",
 		  imu_conf.compass_time_constant,
 		  "dmp_interrupt_priority",
@@ -235,7 +227,7 @@ PyObject *mpu9250_get(PyObject *self)
 		  imu_enable_dmp ? Py_True : Py_False,
 		  "enable_fusion",
 		  imu_enable_fusion ? Py_True : Py_False);
-  
+
   return ret;
 }
 
@@ -244,14 +236,14 @@ PyObject *mpu9250_read_accel_data(PyObject *self)
 {
 
   /* read data */
-  if (rc_read_accel_data(&imu_data)<0) {
+  if (rc_mpu_read_accel(&imu_data)<0) {
     PyErr_SetString(mpu9250Error, "Failed to read IMU");
     return NULL;
   }
-  
+
   /* Build the output tuple */
-  PyObject *ret = 
-    Py_BuildValue("(fff)", 
+  PyObject *ret =
+    Py_BuildValue("(fff)",
 		  imu_data.accel[0],
 		  imu_data.accel[1],
 		  imu_data.accel[2]);
@@ -264,14 +256,14 @@ PyObject *mpu9250_read_gyro_data(PyObject *self)
 {
 
   /* read data */
-  if (rc_read_gyro_data(&imu_data)<0) {
+  if (rc_mpu_read_gyro(&imu_data)<0) {
     PyErr_SetString(mpu9250Error, "Failed to read IMU");
     return NULL;
   }
-  
+
   /* Build the output tuple */
-  PyObject *ret = 
-    Py_BuildValue("(fff)", 
+  PyObject *ret =
+    Py_BuildValue("(fff)",
 		  imu_data.gyro[0],
 		  imu_data.gyro[1],
 		  imu_data.gyro[2]);
@@ -288,16 +280,16 @@ PyObject *mpu9250_read_mag_data(PyObject *self)
     PyErr_SetString(mpu9250Error, "Magnetometer is disabled");
     return NULL;
   }
-  
+
   /* read data */
-  if (rc_read_mag_data(&imu_data)<0) {
+  if (rc_mpu_read_mag(&imu_data)<0) {
     PyErr_SetString(mpu9250Error, "Failed to read magnetometer data");
     return NULL;
   }
-  
+
   /* Build the output tuple */
-  PyObject *ret = 
-    Py_BuildValue("(fff)", 
+  PyObject *ret =
+    Py_BuildValue("(fff)",
 		  imu_data.mag[0],
 		  imu_data.mag[1],
 		  imu_data.mag[2]);
@@ -310,13 +302,13 @@ PyObject *mpu9250_read_imu_temp(PyObject *self)
 {
 
   /* read data */
-  if (rc_read_imu_temp(&imu_data)<0) {
+  if (rc_mpu_read_temp(&imu_data)<0) {
     PyErr_SetString(mpu9250Error, "Failed to read IMU");
     return NULL;
   }
-  
+
   /* Build the output tuple */
-  PyObject *ret = 
+  PyObject *ret =
     Py_BuildValue("f", imu_data.temp);
 
   return ret;
@@ -330,41 +322,41 @@ PyObject *mpu9250_read(PyObject *self)
   if (imu_enable_dmp) {
 
     /* from dmp  */
-    
-    // aquires mutex
-    pthread_mutex_lock( &rc_imu_read_mutex );
 
     // waits until a measurement is available
-    pthread_cond_wait( &rc_imu_read_condition, &rc_imu_read_mutex );
+    if (rc_mpu_block_until_dmp_data()!=0) {
+      PyErr_SetString(mpu9250Error, "Failed to read IMU");
+      return NULL;
+    }
 
   } else {
 
     /* or from registers */
 
-    if (rc_read_accel_data(&imu_data)<0) {
+    if (rc_mpu_read_accel(&imu_data)<0) {
       PyErr_SetString(mpu9250Error, "Failed to read IMU");
       return NULL;
     }
-    
-    if (rc_read_gyro_data(&imu_data)<0) {
+
+    if (rc_mpu_read_gyro(&imu_data)<0) {
       PyErr_SetString(mpu9250Error, "Failed to read IMU");
       return NULL;
     }
 
     if (imu_conf.enable_magnetometer) {
-      if (rc_read_mag_data(&imu_data)<0) {
+      if (rc_mpu_read_mag(&imu_data)<0) {
 	PyErr_SetString(mpu9250Error, "Failed to read magnetometer data");
 	return NULL;
       }
     }
-    
-    if (rc_read_imu_temp(&imu_data)<0) {
+
+    if (rc_mpu_read_temp(&imu_data)<0) {
       PyErr_SetString(mpu9250Error, "Failed to read IMU");
       return NULL;
     }
 
   }
-    
+
   /* Build the output tuple */
   PyObject *ret;
 
@@ -396,7 +388,7 @@ PyObject *mpu9250_read(PyObject *self)
 			  imu_data.fused_TaitBryan[TB_YAW_Z],
 			  "head",
 			  imu_data.compass_heading);
-      
+
     } else {
 
       ret = Py_BuildValue("{s(fff)s(fff)s(fff)s(ffff)s(fff)sf}",
@@ -425,7 +417,7 @@ PyObject *mpu9250_read(PyObject *self)
 			  imu_data.compass_heading_raw);
 
     }
-  
+
   } else {
 
     ret = Py_BuildValue("{s(fff)s(fff)s(ffff)s(fff)}",
@@ -446,15 +438,7 @@ PyObject *mpu9250_read(PyObject *self)
 			imu_data.dmp_TaitBryan[TB_PITCH_X],
 			imu_data.dmp_TaitBryan[TB_ROLL_Y],
 			imu_data.dmp_TaitBryan[TB_YAW_Z]);
-    
-  }
 
-  /* release mutex */
-  if (imu_enable_dmp) {
-    
-    // releases mutex
-    pthread_mutex_unlock( &rc_imu_read_mutex );
-    
   }
 
   return ret;

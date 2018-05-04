@@ -1,7 +1,6 @@
 #include <Python.h>
 
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
+#include <rc/servo.h>
 
 static char module_docstring[] =
   "This module provides an interface for servo.";
@@ -104,10 +103,8 @@ PyMODINIT_FUNC PyInit__servo(void)
   PyModule_AddObject(m, "error", servoError);
 
   /* initialize cape */
-  if (rc_get_state() == UNINITIALIZED) {
-    // printf("* * * servo: WILL CALL INIT * * *\n");
-    if(rc_initialize())
-      return NULL;
+  if (rc_servo_init() != 0){
+    return NULL;
   }
 
   return m;
@@ -118,11 +115,11 @@ PyObject *servo_enable(PyObject *self)
 {
 
   /* enable servo */
-  if (rc_enable_servo_power_rail()<0) {
+  if (rc_servo_power_rail_en(1)<0) {
     PyErr_SetString(servoError, "Failed to enable servos");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -134,11 +131,11 @@ PyObject *servo_disable(PyObject *self)
 {
 
   /* enable servo */
-  if (rc_disable_servo_power_rail()<0) {
+  if (rc_servo_power_rail_en(0)<0) {
     PyErr_SetString(servoError, "Failed to disable servos");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -159,11 +156,11 @@ PyObject *servo_pulse_us(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_servo_pulse_us(servo, us)<0) {
+  if (rc_servo_send_pulse_us(servo, us)<0) {
     PyErr_SetString(servoError, "Failed to send pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -183,11 +180,11 @@ PyObject *servo_pulse_us_all(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_servo_pulse_us_all(us)<0) {
+  if (rc_servo_send_pulse_us(0, us)<0) {
     PyErr_SetString(servoError, "Failed to send pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -208,11 +205,11 @@ PyObject *servo_pulse(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_servo_pulse_normalized(servo, duty)<0) {
+  if (rc_servo_send_pulse_normalized(servo, duty)<0) {
     PyErr_SetString(servoError, "Failed to send normalized pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -232,11 +229,11 @@ PyObject *servo_pulse_all(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_servo_pulse_normalized_all(duty)<0) {
+  if (rc_servo_send_pulse_normalized(0,duty)<0) {
     PyErr_SetString(servoError, "Failed to send normalized pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -257,11 +254,11 @@ PyObject *servo_esc_pulse(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_esc_pulse_normalized(servo, duty)<0) {
+  if (rc_servo_send_esc_pulse_normalized(servo, duty)<0) {
     PyErr_SetString(servoError, "Failed to send normalized pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -281,11 +278,11 @@ PyObject *servo_esc_pulse_all(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_esc_pulse_normalized_all(duty)<0) {
+  if (rc_servo_send_esc_pulse_normalized(0,duty)<0) {
     PyErr_SetString(servoError, "Failed to send normalized pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -306,11 +303,11 @@ PyObject *servo_oneshot_pulse(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_oneshot_pulse_normalized(servo, duty)<0) {
+  if (rc_servo_send_oneshot_pulse_normalized(servo, duty)<0) {
     PyErr_SetString(servoError, "Failed to send normalized pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -330,11 +327,11 @@ PyObject *servo_oneshot_pulse_all(PyObject *self,
   }
 
   /* set servo */
-  if (rc_send_oneshot_pulse_normalized_all(duty)<0) {
+  if (rc_servo_send_oneshot_pulse_normalized(0,duty)<0) {
     PyErr_SetString(servoError, "Failed to send normalized pulse to servo");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 

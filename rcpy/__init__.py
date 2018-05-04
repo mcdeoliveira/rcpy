@@ -2,9 +2,8 @@ import warnings
 import signal
 import sys, os, time
 
-from rcpy._rcpy import initialize, cleanup, get_state
+from rcpy._rcpy import get_state
 from rcpy._rcpy import set_state as _set_state
-from rcpy._rcpy import cleanup as _cleanup
 
 #from hanging_threads import start_monitoring
 #monitoring_thread = start_monitoring()
@@ -34,7 +33,7 @@ def destroy_pipe(pipe):
     os.close(r_fd)
     os.close(w_fd)
 
-# set state 
+# set state
 def set_state(state):
     # write to open pipes
     for (r_fd, w_fd) in _get_state_pipe_list():
@@ -60,7 +59,7 @@ def cleanup():
 
     print('Initiating cleanup...')
 
-    # call cleanup functions 
+    # call cleanup functions
     for fun, pars in _cleanup_functions.items():
         fun(*pars)
 
@@ -71,19 +70,15 @@ def cleanup():
 
     # set state as exiting
     set_state(EXITING)
-        
-    print('Calling roboticscape cleanup')
-    # call robotics cape cleanup
-    _cleanup()
 
     if len(pipes):
         print('Closing pipes')
         # close open pipes left
         while len(pipes):
             destroy_pipe(pipes[0])
-        
-    print('Dnoe with cleanup')
-    
+
+    print('Done with cleanup')
+
 # idle function
 def idle():
     set_state(IDLE)
@@ -91,15 +86,15 @@ def idle():
 # run function
 def run():
     set_state(RUNNING)
-    
+
 # pause function
 def pause():
     set_state(PAUSED)
-    
+
 # exit function
 def exit():
     set_state(EXITING)
-    
+
 # cleanup handler
 def handler(signum, frame):
 
@@ -108,16 +103,13 @@ def handler(signum, frame):
 
     # call rcpy cleanup
     cleanup()
-    
+
     # no need to cleanup later
     atexit.unregister(cleanup)
 
     warnings.warn('> Robotics cape exited cleanly')
 
     raise KeyboardInterrupt()
-    
-# initialize cape
-initialize()
 
 # set initial state
 set_state(PAUSED)
@@ -128,7 +120,7 @@ import atexit; atexit.register(cleanup)
 
 if 'RCPY_NO_HANDLERS' in os.environ:
     warnings.warn('> RCPY_NO_HANDLERS is set. User is responsible for handling signals')
-    
+
 else:
 
     # install handler

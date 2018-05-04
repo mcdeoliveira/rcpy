@@ -2,8 +2,7 @@
 
 #include <Python.h>
 
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
+#include <rc/adc.h>
 
 static char module_docstring[] =
   "This module provides an interface for the ADC (Analog Digital Converter).";
@@ -54,7 +53,7 @@ static struct PyModuleDef module = {
 PyMODINIT_FUNC PyInit__adc(void)
 {
   PyObject *m;
-  
+
   /* create module */
   m = PyModule_Create(&module);
   if (m == NULL)
@@ -66,12 +65,10 @@ PyMODINIT_FUNC PyInit__adc(void)
   PyModule_AddObject(m, "error", adcError);
 
   /* initialize cape */
-  if (rc_get_state() == UNINITIALIZED) {
-    // printf("* * * adc: WILL CALL INIT * * *\n");
-    if(rc_initialize())
+  if(rc_adc_init() != 0){
       return NULL;
   }
-  
+
   return m;
 }
 
@@ -88,7 +85,7 @@ PyObject *adc_get_raw(PyObject *self,
 
   /* get adc value */
   int value;
-  if ((value = rc_adc_raw((int)channel)) < 0) {
+  if ((value = rc_adc_read_raw((int)channel)) < 0) {
     PyErr_SetString(adcError, "Failed to get adc raw value");
     return NULL;
   }
@@ -112,11 +109,11 @@ PyObject *adc_get_voltage(PyObject *self,
 
   /* get adc voltage */
   float voltage;
-  if ((voltage = rc_adc_volt((int)channel)) < 0) {
+  if ((voltage = rc_adc_read_volt((int)channel)) < 0) {
     PyErr_SetString(adcError, "Failed to get adc voltage");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("f", voltage);
 
@@ -131,7 +128,7 @@ PyObject *adc_get_dc_jack_voltage(PyObject *self,
 
   /* get dc jack voltage */
   float voltage;
-  if ((voltage = rc_dc_jack_voltage()) < 0) {
+  if ((voltage = rc_adc_dc_jack()) < 0) {
     PyErr_SetString(adcError, "Failed to get DC jack voltage");
     return NULL;
   }
@@ -150,7 +147,7 @@ PyObject *adc_get_battery_voltage(PyObject *self,
 
   /* get dc jack voltage */
   float voltage;
-  if ((voltage = rc_battery_voltage()) < 0) {
+  if ((voltage = rc_adc_batt()) < 0) {
     PyErr_SetString(adcError, "Failed to get battery voltage");
     return NULL;
   }

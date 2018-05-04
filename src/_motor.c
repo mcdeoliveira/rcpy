@@ -1,7 +1,6 @@
 #include <Python.h>
 
-#include <rc_usefulincludes.h>
-#include <roboticscape.h>
+#include <rc/motor.h>
 
 static char module_docstring[] =
   "This module provides an interface for motor.";
@@ -70,15 +69,10 @@ PyMODINIT_FUNC PyInit__motor(void)
   PyModule_AddObject(m, "error", motorError);
 
   /* initialize cape */
-  if (rc_get_state() == UNINITIALIZED) {
-    // printf("* * * motor: WILL CALL INIT * * *\n");
-    if(rc_initialize())
-      return NULL;
+  if(rc_motor_init()!=0){
+    return NULL;
   }
 
-  /* enable motors */
-  rc_enable_motors();
-  
   return m;
 }
 
@@ -87,11 +81,11 @@ PyObject *motor_enable(PyObject *self)
 {
 
   /* enable motor */
-  if (rc_enable_motors()<0) {
+  if (rc_motor_standby(0)<0) {
     PyErr_SetString(motorError, "Failed to enable motors");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -103,11 +97,11 @@ PyObject *motor_disable(PyObject *self)
 {
 
   /* enable motor */
-  if (rc_disable_motors()<0) {
+  if (rc_motor_standby(1)<0) {
     PyErr_SetString(motorError, "Failed to disable motors");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -128,11 +122,11 @@ PyObject *motor_set(PyObject *self,
   }
 
   /* set motor */
-  if (rc_set_motor(motor, duty)<0) {
+  if (rc_motor_set(motor, duty)<0) {
     PyErr_SetString(motorError, "Failed to set motor");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -152,11 +146,11 @@ PyObject *motor_set_free_spin(PyObject *self,
   }
 
   /* set motor */
-  if (rc_set_motor_free_spin(motor)<0) {
+  if (rc_motor_free_spin(motor)<0) {
     PyErr_SetString(motorError, "Failed to set motor free spin");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
@@ -176,11 +170,11 @@ PyObject *motor_set_brake(PyObject *self,
   }
 
   /* set motor */
-  if (rc_set_motor_brake(motor)<0) {
+  if (rc_motor_brake(motor)<0) {
     PyErr_SetString(motorError, "Failed to brake motor");
     return NULL;
   }
-  
+
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
 
