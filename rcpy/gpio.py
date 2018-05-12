@@ -1,5 +1,4 @@
 import rcpy
-from rcpy._gpio_mmap import *
 
 # definitions
 HIGH = 1
@@ -20,7 +19,7 @@ PAUSE_BTN         = 69 	# gpio2.5 P8.9
 MODE_BTN          = 68	# gpio2.4 P8.10
 IMU_INTERRUPT_PIN = 117 # gpio3.21 P9.25
 
-# gpio output pins 
+# gpio output pins
 RED_LED     = 66 # gpio2.2  P8.7
 GRN_LED     = 67 # gpio2.3  P8.8
 MDIR1A      = 60 # gpio1.28 P9.12
@@ -37,8 +36,8 @@ MOT_STBY    = 20 # gpio0.20 P9.41
 DSM_PIN     = 30 # gpio0.30 P9.11
 SERVO_PWR   = 80 # gpio2.16 P8.36
 
-SPI1_SS1_GPIO_PIN = 113 # gpio3.17	P9.28 
-SPI1_SS2_GPIO_PIN = 49  # gpio1.17	P9.23 
+SPI1_SS1_GPIO_PIN = 113 # gpio3.17	P9.28
+SPI1_SS2_GPIO_PIN = 49  # gpio1.17	P9.23
 
 # BB Blue GPIO OUT
 BLUE_GP0_PIN_4 = 49 #  gpio 1_17 pin P9.23
@@ -67,10 +66,10 @@ def read(pin, timeout = None, pipe = None):
     if pipe is None:
         pipe = rcpy.create_pipe()
         destroy_pipe = True
-    
+
     # open stream
     filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
-    
+
     with open(filename, 'rb', buffering = 0) as f:
 
         # create poller
@@ -96,7 +95,7 @@ def read(pin, timeout = None, pipe = None):
                         rcpy.destroy_pipe(pipe)
                     # raise timeout exception
                     raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
-                
+
             else:
                 # timeout = None, never fails
                 events = poller.poll()
@@ -122,7 +121,7 @@ def read(pin, timeout = None, pipe = None):
                             rcpy.destroy_pipe(pipe)
                         # return read value
                         return get(pin)
-                
+
                     elif flag & (select.POLLHUP | select.POLLERR):
                         # destroy pipe
                         if destroy_pipe:
@@ -133,15 +132,15 @@ def read(pin, timeout = None, pipe = None):
         # destroy pipe
         if destroy_pipe:
             rcpy.destroy_pipe(pipe)
-                    
+
 class Output:
     pass
-                
+
 class Input:
 
     def __init__(self, pin):
         self.pin = pin
-    
+
     def is_high(self):
         return get(self.pin) == HIGH
 
@@ -149,7 +148,7 @@ class Input:
         return get(self.pin) == LOW
 
     def high_or_low(self, debounce = 0, timeout = None, pipe = None):
-        
+
         # repeat until event is detected
         while rcpy.get_state() != rcpy.EXITING:
 
@@ -163,11 +162,11 @@ class Input:
                 time.sleep(DEBOUNCE_INTERVAL/1000)
                 value = get(self.pin)
                 k += 1
-                
+
             # check value
             if value == event:
                 return value
-                    
+
     def high(self, debounce = 0, timeout = None, pipe = None):
         event = self.high_or_low(debounce, timeout, pipe)
         if event == HIGH:
@@ -186,15 +185,15 @@ class InputEvent(threading.Thread):
 
     LOW = 1
     HIGH = 2
-    
+
     class InputEventInterrupt(Exception):
         pass
-    
-    def __init__(self, input, event, debounce = 0, timeout = None, 
+
+    def __init__(self, input, event, debounce = 0, timeout = None,
                  target = None, vargs = (), kwargs = {}):
 
         super().__init__()
-        
+
         self.input = input
         self.event = event
         self.target = target
@@ -212,7 +211,7 @@ class InputEvent(threading.Thread):
             # just check for valid event
             if event != InputEvent.HIGH and event != InputEvent.LOW:
                 raise Exception('Unkown InputEvent {}'.format(event))
-            
+
     def run(self):
         self.run = True
         while rcpy.get_state() != rcpy.EXITING and self.run:
@@ -226,7 +225,7 @@ class InputEvent(threading.Thread):
                     if evnt & self.event:
                         # fire callback
                         self.action(evnt)
-                        
+
             except InputTimeout:
                 self.run = False
 
@@ -238,4 +237,4 @@ class InputEvent(threading.Thread):
         time.sleep(1)
         rcpy.destroy_pipe(self.pipe)
         self.pipe = None
-        
+

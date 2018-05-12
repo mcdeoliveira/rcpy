@@ -5,13 +5,13 @@ import getopt, sys
 
 # import rcpy library
 # This automatically initizalizes the robotics cape
-import rcpy 
+import rcpy
 import rcpy.encoder as encoder
 
 def usage():
     print("""usage: python rcpy_test_encoders [options] ...
 Options are:
--e encoder  specify a single encoder from 1-4, 0 for all motors
+-e encoder  specify a single encoder from 1-4, 0 for all channels
 -h          print this help message""")
 
 def main():
@@ -20,7 +20,7 @@ def main():
     if len(sys.argv) < 2:
         usage()
         sys.exit(2)
-    
+
     # Parse command line
     try:
         opts, args = getopt.getopt(sys.argv[1:], "he:", ["help"])
@@ -79,19 +79,19 @@ def main():
                     e = encoder.get(channel)
 
                     print('\r {:+6d}'.format(e), end='')
-                        
+
             # sleep some
             time.sleep(.5)
 
     except KeyboardInterrupt:
         # Catch Ctrl-C
         pass
-    
+
     finally:
 
         # say bye
         print("\nBye Beaglebone!")
-            
+
 # exiting program will automatically clean up cape
 
 if __name__ == "__main__":

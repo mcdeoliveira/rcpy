@@ -25,9 +25,9 @@ _gpio = Extension("rcpy._gpio",
                   sources = ["src/_gpio.c"],
                   libraries = LIBS)
 
-_gpio_mmap = Extension("rcpy._gpio_mmap",
-                       sources = ["src/_gpio_mmap.c"],
-                       libraries = LIBS)
+_led = Extension("rcpy._led",
+                  sources = ["src/_led.c"],
+                  libraries = LIBS)
 
 _motor = Extension("rcpy._motor",
                    sources = ["src/_motor.c"],
@@ -52,7 +52,10 @@ setup(
     ext_modules=[_rcpy,
                  _adc,
                  _mpu9250,
-                 _encoder, _motor, _servo],
+                 _encoder,
+                 _motor,
+                 _led,
+                 _servo],
                  #_gpio, _gpio_mmap],
 
     # metadata

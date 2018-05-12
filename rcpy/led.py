@@ -1,11 +1,11 @@
 import rcpy
-import rcpy.gpio as gpio
 import rcpy.clock as clock
+from rcpy._led import *
 
 import threading, time
 
-ON = gpio.HIGH
-OFF = gpio.LOW
+ON = 1
+OFF = 0
 
 class Blink(clock.Clock):
 
@@ -18,11 +18,11 @@ class Blink(clock.Clock):
 
         # call super
         super().stop()
-        
+
         # turn off
         time.sleep(2*self.period)
         self.action.off()
-        
+
 class LED(clock.Action):
 
     def __init__(self, pin, state = OFF):
@@ -38,14 +38,14 @@ class LED(clock.Action):
 
     def is_off(self):
         return self.state == OFF
-            
+
     def on(self):
         self.state = ON
-        gpio.set(self.pin, ON)
+        set(self.pin, ON)
 
     def off(self):
         self.state = OFF
-        gpio.set(self.pin, OFF)
+        set(self.pin, OFF)
 
     def toggle(self):
         if self.state == ON:
@@ -54,13 +54,14 @@ class LED(clock.Action):
             self.on()
 
     run = toggle
-            
+
     def blink(self, period):
-        thread = Blink(self, period)
+        thread = blink(self, period)
         thread.start()
         return thread
 
-    
+
 # define leds
-red = LED(gpio.RED_LED)
-green = LED(gpio.GRN_LED)
+green = 0
+red = 1
+

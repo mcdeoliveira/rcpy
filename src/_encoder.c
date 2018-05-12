@@ -1,10 +1,9 @@
 #include <Python.h>
 
-#include <rc/encoder_eqep.h>
-#include <rc/encoder_pru.h>
+#include <rc/encoder.h>
 
 static char module_docstring[] =
-  "This module provides an interface for encoder.";
+  "This module provides an interface for quadrature encoders.";
 
 static PyObject *encoderError;
 
@@ -53,12 +52,10 @@ PyMODINIT_FUNC PyInit__encoder(void)
 
   /* initialize encoders */
   /* remember to call rc_encoder_eqep_cleanup() later */
-  if(rc_encoder_eqep_init())
+  if(rc_encoder_init())
     return NULL;
-  // this may fail if not root or someone broke PRU again
-  // continue anyway if it fails, encoder 4 just won't work
-  // remember to call rc_encoder_pru_cleanup() later
-  if(rc_encoder_pru_init()==-1){}
+
+  // remember to call rc_encoder_cleanup() later
 
   return m;
 }
@@ -78,8 +75,7 @@ PyObject *encoder_read(PyObject *self,
   int count;
 
   /* read encoder */
-  if(channel==4) count=rc_encoder_pru_read();
-  else count=rc_encoder_eqep_read(channel);
+  count=rc_encoder_read(channel);
 
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("i", count);
@@ -100,8 +96,7 @@ PyObject *encoder_set(PyObject *self,
   }
 
   /* set encoder */
-  if(channel==4) count=rc_encoder_pru_write(count);
-  else count=rc_encoder_eqep_write(channel, count);
+  rc_encoder_write(channel,count);
 
   /* Build the output tuple */
   PyObject *ret = Py_BuildValue("");
