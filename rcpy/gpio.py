@@ -1,5 +1,8 @@
 import rcpy
 
+import sys
+import gpiod
+
 # definitions
 HIGH = 1
 LOW = 0
@@ -15,32 +18,32 @@ EDGE_FALLING = 2
 EDGE_BOTH    = 3
 
 # input pins
-PAUSE_BTN         = 69 	# gpio2.5 P8.9
-MODE_BTN          = 68	# gpio2.4 P8.10
-IMU_INTERRUPT_PIN = 117 # gpio3.21 P9.25
+PAUSE_BTN         = (2, 5)  # gpio2.5 P8.9
+MODE_BTN          = (2, 4)  # gpio2.4 P8.10
+IMU_INTERRUPT_PIN = (3, 21) # gpio3.21 P9.25
 
 # gpio output pins
-RED_LED     = 66 # gpio2.2  P8.7
-GRN_LED     = 67 # gpio2.3  P8.8
-MDIR1A      = 60 # gpio1.28 P9.12
-MDIR1A_BLUE = 64 # gpio2.0 pin T13
-MDIR1B      = 31 # gpio0.31 P9.13
-MDIR2A      = 48 # gpio1.16 P9.15
-MDIR2B      = 81 # gpio2.17 P8.34
-MDIR2B_BLUE = 10 # gpio0.10 P8_31
-MDIR4A      = 70 # gpio2.6  P8.45
-MDIR4B      = 71 # gpio2.7  P8.46
-MDIR3B      = 72 # gpio2.8  P8.43
-MDIR3A      = 73 # gpio2.9  P8.44
-MOT_STBY    = 20 # gpio0.20 P9.41
-DSM_PIN     = 30 # gpio0.30 P9.11
-SERVO_PWR   = 80 # gpio2.16 P8.36
+RED_LED     = (2,2)  # gpio2.2  P8.7
+GRN_LED     = (2,3)  # gpio2.3  P8.8
+MDIR1A      = (1,28) # gpio1.28 P9.12
+MDIR1A_BLUE = (2,0)  # gpio2.0 pin T13
+MDIR1B      = (0,31) # gpio0.31 P9.13
+MDIR2A      = (1,16) # gpio1.16 P9.15
+MDIR2B      = (2,17) # gpio2.17 P8.34
+MDIR2B_BLUE = (0,10) # gpio0.10 P8_31
+MDIR4A      = (2,6)  # gpio2.6  P8.45
+MDIR4B      = (2,7)  # gpio2.7  P8.46
+MDIR3B      = (2,8)  # gpio2.8  P8.43
+MDIR3A      = (2,9)  # gpio2.9  P8.44
+MOT_STBY    = (0,20) # gpio0.20 P9.41
+DSM_PIN     = (0,30) # gpio0.30 P9.11
+SERVO_PWR   = (2,16) # gpio2.16 P8.36
 
-SPI1_SS1_GPIO_PIN = 113 # gpio3.17	P9.28
-SPI1_SS2_GPIO_PIN = 49  # gpio1.17	P9.23
+SPI1_SS1_GPIO_PIN = (3,17) # gpio3.17 P9.28
+SPI1_SS2_GPIO_PIN = (1,17) # gpio1.17 P9.23
 
 # BB Blue GPIO OUT
-BLUE_GP0_PIN_4 = 49 #  gpio 1_17 pin P9.23
+BLUE_GP0_PIN_4 = (1,17)    # gpio1.17 P9.23
 
 # Battery Indicator LEDs
 BATT_LED_1 = 27      #  P8.17
@@ -53,13 +56,15 @@ SYSFS_GPIO_DIR = '/sys/class/gpio'
 
 DEBOUNCE_INTERVAL = 0.5
 
+CONSUMER = 'rcpy'
+
 import io, threading, time, os
 import select
 
 class InputTimeout(Exception):
     pass
 
-def read(pin, timeout = None, pipe = None):
+def read(input, timeout = None, pipe = None):
 
     # create pipe if necessary
     destroy_pipe = False
@@ -67,115 +72,149 @@ def read(pin, timeout = None, pipe = None):
         pipe = rcpy.create_pipe()
         destroy_pipe = True
 
-    # open stream
-    filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
+    # retrieve file descriptor
+    # filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
 
-    with open(filename, 'rb', buffering = 0) as f:
+    # request both edges and get file descriptor
+    input.release()
+    input.request(type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+    fdescriptor = input.line.event_get_fd()
 
-        # create poller
-        poller = select.poll()
-        f.read()
-        poller.register(f,
-                        select.POLLPRI | select.POLLHUP | select.POLLERR)
+    try:
+    
+        with os.fdopen(fdescriptor, 'rb', buffering = 0) as f:
 
-        # listen to state change as well
-        state_r_fd, state_w_fd = pipe
-        poller.register(state_r_fd,
-                        select.POLLIN | select.POLLHUP | select.POLLERR)
+            # create poller
+            poller = select.poll()
+            # f.read()
+            poller.register(f,
+                            select.POLLPRI | select.POLLIN | 
+                            select.POLLHUP | select.POLLERR)
 
-        while rcpy.get_state() != rcpy.EXITING:
+            # listen to state change as well
+            state_r_fd, state_w_fd = pipe
+            poller.register(state_r_fd,
+                            select.POLLIN | select.POLLHUP | select.POLLERR)
 
-            # wait for events
-            if timeout:
-                # can fail if timeout is given
-                events = poller.poll(timeout)
-                if len(events) == 0:
-                    # destroy pipe
-                    if destroy_pipe:
-                        rcpy.destroy_pipe(pipe)
-                    # raise timeout exception
-                    raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
+            while rcpy.get_state() != rcpy.EXITING:
 
-            else:
-                # timeout = None, never fails
-                events = poller.poll()
+                # wait for events
+                if timeout:
+                    # can fail if timeout is given
+                    events = poller.poll(timeout)
+                    if len(events) == 0:
+                        raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
 
-            for fd, flag in events:
+                else:
+                    # timeout = None, never fails
+                    events = poller.poll()
 
-                # state change
-                if fd is state_r_fd:
-                    # get state
-                    state = int(os.read(state_r_fd, 1))
-                    if state == rcpy.EXITING:
-                        # exit!
-                        if destroy_pipe:
-                            rcpy.destroy_pipe(pipe)
-                        return
+                for fd, flag in events:
 
-                # input event
-                if fd is f.fileno():
-                    # Handle inputs
-                    if flag & (select.POLLIN | select.POLLPRI):
-                        # destroy pipe
-                        if destroy_pipe:
-                            rcpy.destroy_pipe(pipe)
-                        # return read value
-                        return get(pin)
+                    # state change
+                    if fd is state_r_fd:
+                        # get state
+                        state = int(os.read(state_r_fd, 1))
+                        if state == rcpy.EXITING:
+                            # exit!
+                            return
 
-                    elif flag & (select.POLLHUP | select.POLLERR):
-                        # destroy pipe
-                        if destroy_pipe:
-                            rcpy.destroy_pipe(pipe)
-                        # raise exception
-                        raise Exception('Could not read pin {}'.format(pin))
+                    # input event
+                    if fd == f.fileno():
+                        # Handle inputs
+                        if flag & (select.POLLIN | select.POLLPRI):
+                            # release line
+                            input.release()
+                            input.request(type=gpiod.LINE_REQ_DIR_IN)
+                            # return read value
+                            return input.get()
 
+                        elif flag & (select.POLLHUP | select.POLLERR):
+                            # raise exception
+                            raise Exception('Could not read input {}'.format(input))
+
+    finally:
+
+        # release line
+        input.release()
+        input.request(type=gpiod.LINE_REQ_DIR_IN)
+        
         # destroy pipe
         if destroy_pipe:
             rcpy.destroy_pipe(pipe)
 
-class Output:
-    pass
+class GPIO:
 
-class Input:
+    def __init__(self, chip, line):
+        self.chip = gpiod.Chip('gpiochip{}'.format(chip))
+        self.line = self.chip.get_line(line)
 
-    def __init__(self, pin):
-        self.pin = pin
+    def request(self, type):
+        self.line.request(consumer='rcpy', type=type)
 
+    def release(self):
+        self.line.release()
+        
+class Output(GPIO):
+            
+    def __init__(self, chip, line):
+
+        # call super
+        super().__init__(chip, line)
+        self.request(type=gpiod.LINE_REQ_DIR_OUT)
+
+    def set(self, state):
+        return self.line.set_value(state)
+    
+class Input(GPIO):
+
+    def __init__(self, chip, line):
+
+        # call super
+        super().__init__(chip, line)
+        self.request(type=gpiod.LINE_REQ_DIR_IN)
+
+    def get(self):
+        return self.line.get_value()
+        
     def is_high(self):
-        return get(self.pin) == HIGH
+        return self.get() == HIGH
 
     def is_low(self):
-        return get(self.pin) == LOW
+        return self.get() == LOW
 
-    def high_or_low(self, debounce = 0, timeout = None, pipe = None):
+    def high_or_low(self, debounce = 0, timeout = 0, pipe = None):
 
         # repeat until event is detected
         while rcpy.get_state() != rcpy.EXITING:
 
             # read event
-            event = read(self.pin, timeout, pipe)
-
+            event = read(self, timeout, pipe)
+            
             # debounce
             k = 0
             value = event
-            while k < debounce and value == event:
+            current_value = value
+            while k < debounce and value == current_value:
                 time.sleep(DEBOUNCE_INTERVAL/1000)
-                value = get(self.pin)
+                current_value = self.get()
                 k += 1
 
             # check value
-            if value == event:
+            if value == current_value:
+
+                # return value
                 return value
 
-    def high(self, debounce = 0, timeout = None, pipe = None):
+    def high(self, debounce = 0, timeout = 0, pipe = None):
         event = self.high_or_low(debounce, timeout, pipe)
         if event == HIGH:
             return True
         else:
             return False
 
-    def low(self, debounce = 0, timeout = None, pipe = None):
-        event = self.high_or_low(debounce, timeout, pipe = None)
+    def low(self, debounce = 0, timeout = 0, pipe = None):
+        event = self.high_or_low(debounce, timeout, pipe)
         if event == LOW:
             return True
         else:

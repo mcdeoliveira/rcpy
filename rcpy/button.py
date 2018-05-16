@@ -39,5 +39,5 @@ class Button(gpio.Input):
 # definitions
 
 # BUTTONs
-pause = Button(gpio.PAUSE_BTN)
-mode = Button(gpio.MODE_BTN)
+pause = Button(*gpio.PAUSE_BTN)
+mode = Button(*gpio.MODE_BTN)

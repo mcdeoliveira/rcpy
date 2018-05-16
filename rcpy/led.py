@@ -1,6 +1,6 @@
 import rcpy
-import rcpy.clock as clock
-from rcpy._led import *
+from . import clock
+from . import gpio
 
 import threading, time
 
@@ -25,9 +25,9 @@ class Blink(clock.Clock):
 
 class LED(clock.Action):
 
-    def __init__(self, pin, state = OFF):
+    def __init__(self, chip, line, state = OFF):
 
-        self.pin = pin
+        self.output = gpio.Output(chip, line)
         if state == ON:
             self.on()
         else:
@@ -41,11 +41,11 @@ class LED(clock.Action):
 
     def on(self):
         self.state = ON
-        set(self.pin, ON)
+        self.output.set(ON)
 
     def off(self):
         self.state = OFF
-        set(self.pin, OFF)
+        self.output.set(OFF)
 
     def toggle(self):
         if self.state == ON:
@@ -62,6 +62,5 @@ class LED(clock.Action):
 
 
 # define leds
-green = 0
-red = 1
-
+red = LED(*gpio.RED_LED)
+green = LED(*gpio.GRN_LED)

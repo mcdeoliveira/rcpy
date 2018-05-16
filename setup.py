@@ -21,14 +21,6 @@ _encoder = Extension("rcpy._encoder",
                      sources = ["src/_encoder.c"],
                      libraries = LIBS)
 
-_gpio = Extension("rcpy._gpio",
-                  sources = ["src/_gpio.c"],
-                  libraries = LIBS)
-
-_led = Extension("rcpy._led",
-                  sources = ["src/_led.c"],
-                  libraries = LIBS)
-
 _motor = Extension("rcpy._motor",
                    sources = ["src/_motor.c"],
                    libraries = LIBS)
@@ -54,9 +46,7 @@ setup(
                  _mpu9250,
                  _encoder,
                  _motor,
-                 _led,
                  _servo],
-                 #_gpio, _gpio_mmap],
 
     # metadata
     author = "Mauricio C. de Oliveira",
