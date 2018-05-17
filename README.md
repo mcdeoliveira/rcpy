@@ -1,6 +1,6 @@
 # rcpy: Python 3 Interface for the Robotics Cape on the Beaglebone Black and the Beaglebone Blue
 
-**Release 0.4**
+**Release 0.5**
 
 This is a Python library with bindings for some of the functionality
 of the
@@ -53,6 +53,30 @@ python3 yet type
 to install python3 and pip3.
 
 ## Installation
+
+### Dependency on libgpiod
+
+Starting with version 0.5, `rcpy` relies on `libgpiod` for its gpio
+access. As of now, you have to manually install this library as
+follows.
+
+#### Install some dependencies used by autoconf
+
+    sudo apt install autoconf-archive
+
+#### Clone repo, build and make
+
+    git clone https://github.com/brgl/libgpiod
+    cd libgpiod
+    ./autogen.sh --enable-tools=yes --enable-bindings-python --prefix=/usr/local
+    make
+    sudo make install
+
+#### Move packages to /usr/local/lib/python3.5/dist-packages
+
+    sudo mv /usr/local/lib/python3.5/site-packages/* /usr/local/lib/python3.5/dist-packages/.
+
+### Install from PyPI
 
 Starting with version 0.3, `rcpy` is available from
 [PyPI](https://pypi.python.org/pypi?:action=display&name=rcpy). Just

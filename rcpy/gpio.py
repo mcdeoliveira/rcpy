@@ -52,96 +52,13 @@ BATT_LED_2_BLUE = 11 #  different on BB Blue
 BATT_LED_3 = 61      #  P8.26
 BATT_LED_4 = 26      #  P8.14
 
-SYSFS_GPIO_DIR = '/sys/class/gpio'
-
 DEBOUNCE_INTERVAL = 0.5
-
-CONSUMER = 'rcpy'
 
 import io, threading, time, os
 import select
 
 class InputTimeout(Exception):
     pass
-
-def read(input, timeout = None, pipe = None):
-
-    # create pipe if necessary
-    destroy_pipe = False
-    if pipe is None:
-        pipe = rcpy.create_pipe()
-        destroy_pipe = True
-
-    # retrieve file descriptor
-    # filename = SYSFS_GPIO_DIR + '/gpio{}/value'.format(pin)
-
-    # request both edges and get file descriptor
-    input.release()
-    input.request(type=gpiod.LINE_REQ_EV_BOTH_EDGES)
-    fdescriptor = input.line.event_get_fd()
-
-    try:
-    
-        with os.fdopen(fdescriptor, 'rb', buffering = 0) as f:
-
-            # create poller
-            poller = select.poll()
-            # f.read()
-            poller.register(f,
-                            select.POLLPRI | select.POLLIN | 
-                            select.POLLHUP | select.POLLERR)
-
-            # listen to state change as well
-            state_r_fd, state_w_fd = pipe
-            poller.register(state_r_fd,
-                            select.POLLIN | select.POLLHUP | select.POLLERR)
-
-            while rcpy.get_state() != rcpy.EXITING:
-
-                # wait for events
-                if timeout:
-                    # can fail if timeout is given
-                    events = poller.poll(timeout)
-                    if len(events) == 0:
-                        raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
-
-                else:
-                    # timeout = None, never fails
-                    events = poller.poll()
-
-                for fd, flag in events:
-
-                    # state change
-                    if fd is state_r_fd:
-                        # get state
-                        state = int(os.read(state_r_fd, 1))
-                        if state == rcpy.EXITING:
-                            # exit!
-                            return
-
-                    # input event
-                    if fd == f.fileno():
-                        # Handle inputs
-                        if flag & (select.POLLIN | select.POLLPRI):
-                            # release line
-                            input.release()
-                            input.request(type=gpiod.LINE_REQ_DIR_IN)
-                            # return read value
-                            return input.get()
-
-                        elif flag & (select.POLLHUP | select.POLLERR):
-                            # raise exception
-                            raise Exception('Could not read input {}'.format(input))
-
-    finally:
-
-        # release line
-        input.release()
-        input.request(type=gpiod.LINE_REQ_DIR_IN)
-        
-        # destroy pipe
-        if destroy_pipe:
-            rcpy.destroy_pipe(pipe)
 
 class GPIO:
 
@@ -150,7 +67,7 @@ class GPIO:
         self.line = self.chip.get_line(line)
 
     def request(self, type):
-        self.line.request(consumer='rcpy', type=type)
+        self.line.request(consumer=str(id(self)), type=type)
 
     def release(self):
         self.line.release()
@@ -174,6 +91,87 @@ class Input(GPIO):
         super().__init__(chip, line)
         self.request(type=gpiod.LINE_REQ_DIR_IN)
 
+    def read(self, timeout = None, pipe = None):
+
+        # create pipe if necessary
+        destroy_pipe = False
+        if pipe is None:
+            pipe = rcpy.create_pipe()
+            destroy_pipe = True
+
+        # request both edges and get file descriptor
+        self.release()
+        self.request(type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+        fdescriptor = self.line.event_get_fd()
+
+        try:
+
+            with os.fdopen(fdescriptor, 'rb', buffering = 0) as f:
+
+                # create poller
+                poller = select.poll()
+                poller.register(f,
+                                select.POLLPRI | select.POLLIN | 
+                                select.POLLHUP | select.POLLERR)
+
+                # listen to state change as well
+                state_r_fd, state_w_fd = pipe
+                poller.register(state_r_fd,
+                                select.POLLIN |
+                                select.POLLHUP | select.POLLERR)
+
+                while rcpy.get_state() != rcpy.EXITING:
+
+                    # wait for events
+                    if timeout:
+                        # can fail if timeout is given
+                        events = poller.poll(timeout)
+                        if len(events) == 0:
+                            raise InputTimeout('Input did not change in more than {} ms'.format(timeout))
+
+                    else:
+                        # timeout = None, never fails
+                        events = poller.poll()
+
+                    # check flags
+                    for fd, flag in events:
+
+                        # state change
+                        if fd is state_r_fd:
+                            # get state
+                            state = int(os.read(state_r_fd, 1))
+                            if state == rcpy.EXITING:
+                                # exit!
+                                return
+
+                        # input event
+                        if fd == f.fileno():
+
+                            # read event
+                            event = self.line.event_read()
+
+                            # Handle inputs
+                            if flag & (select.POLLIN | select.POLLPRI):
+                                # release line
+                                self.release()
+                                self.request(type=gpiod.LINE_REQ_DIR_IN)
+                                # return read value
+                                return self.get()
+
+                            elif flag & (select.POLLHUP | select.POLLERR):
+                                # raise exception
+                                raise Exception('Could not read input {}'.format(self))
+
+        finally:
+
+            # release line
+            self.release()
+            self.request(type=gpiod.LINE_REQ_DIR_IN)
+
+            # destroy pipe
+            if destroy_pipe:
+                rcpy.destroy_pipe(pipe)
+            
     def get(self):
         return self.line.get_value()
         
@@ -189,11 +187,10 @@ class Input(GPIO):
         while rcpy.get_state() != rcpy.EXITING:
 
             # read event
-            event = read(self, timeout, pipe)
+            value = self.read(timeout, pipe)
             
             # debounce
             k = 0
-            value = event
             current_value = value
             while k < debounce and value == current_value:
                 time.sleep(DEBOUNCE_INTERVAL/1000)
