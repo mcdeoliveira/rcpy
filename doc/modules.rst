@@ -40,6 +40,18 @@ Low-level functions
 
    Set the current state, `state` is one of :py:data:`rcpy.IDLE`, :py:data:`rcpy.RUNNING`, :py:data:`rcpy.PAUSED`, :py:data:`rcpy.EXITING`.
    
+.. py:function:: idle()
+
+   Set state to :py:data:`rcpy.IDLE`.
+
+.. py:function:: run()
+
+   Set state to :py:data:`rcpy.RUNNING`.
+
+.. py:function:: pause()
+
+   Set state to :py:data:`rcpy.PAUSED`.
+   
 .. py:function:: exit()
 
    Set state to :py:data:`rcpy.EXITING`.
@@ -51,7 +63,359 @@ Low-level functions
 		 
    Add function `fun` and parameters `pars` to the list of cleanup functions.
    
-.. _rcpy_gpio:
+.. _rcpy_adc:
+
+Module `rcpy.adc`
+--------------------
+
+.. py:module:: rcpy.adc
+
+This module provides an interface to the Analog-to-digital converters
+(ADCs) in the Robotics Cape. The BeagleBone's 12-bit ADC is used on
+the robotics cape for reading the LiPo battery voltage, the DC jack
+input voltage, and 4 auxiliary signals that the user can connect to
+the 6-pin JST SH header labelled ADC. The pinout of this header is as
+follows:
+
+1. Ground
+2. VDD_ADC (1.8V)
+3. AIN0
+4. AIN1
+5. AIN2
+6. AIN3
+
+The command::
+
+    import rcpy.adc as adc
+
+imports the module. The DC Jack and battery voltages can be read using::
+
+    adc.dc_jack.get_voltage()
+
+and::
+
+    adc.battery.get_voltage()
+
+which return a floating point representation of the battery and DC
+jack voltage. All 7 ADC channels on the Sitara can be read with::
+
+    rc_adc_raw(channel)
+
+which returns the raw integer output of the 12-bit ADC.::
+
+    rc_adc_volt(channel)
+
+additionally converts this raw value to a floating point voltage
+before returning. `channel` must be an integer from 0 to 6.
+
+This module was contributed by `Brendan Simon <https://github.com/BrendanSimon>`_.
+
+Constants
+^^^^^^^^^
+
+.. py:data:: CHANNEL_COUNT = 7
+.. py:data:: CHANNEL_MIN = 0
+.. py:data:: CHANNEL__MAX = 6
+
+.. py:data:: adc0
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 0*.
+
+.. py:data:: adc1
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 1*.
+       
+.. py:data:: adc2
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 2*.
+       
+.. py:data:: adc3
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 3*.
+       
+.. py:data:: adc4
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 4*.
+       
+.. py:data:: adc5
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 5*.
+       
+.. py:data:: adc6
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 6*.
+
+.. py:data:: adc7
+
+   :py:class:`rcpy.adc.ADC` representing the Beaglebone *AIN 7*.
+	     
+Classes
+^^^^^^^
+	     	     
+.. py:class:: ADC()
+
+   :param int channel: ADC channel
+
+   :py:class:`rcpy.adc.ADC` represents one of the ADC channels in the Beaglebone.
+
+   .. py:method:: get_raw()
+
+      :returns: the raw integer output of the 12-bit ADC
+		  
+   .. py:method:: get_voltage()
+    
+      :returns: the corresponding floating point voltage
+
+.. py:class:: DC_Jack()
+
+   :py:class:`rcpy.adc.DC_Jack` represents the voltage in the Robotics Cape or Beaglebone Blue jack.
+
+   .. py:method:: get_voltage()
+    
+      :returns: the corresponding floating point voltage
+
+.. py:class:: Battery()
+
+   :py:class:`rcpy.adc.Battery` represents the voltage of the battery connected to the Robotics Cape or Beaglebone Blue.
+
+   .. py:method:: get_voltage()
+    
+      :returns: the corresponding floating point voltage
+	 
+.. _rcpy_button:
+
+Module `rcpy.button`
+--------------------
+
+.. py:module:: rcpy.button
+
+This module provides an interface to the *PAUSE* and *MODE* buttons in
+the Robotics Cape. The command::
+
+    import rcpy.button as button
+
+imports the module. The :ref:`rcpy_button` provides objects
+corresponding to the *PAUSE* and *MODE* buttons on the Robotics
+Cape. Those are :py:data:`rcpy.button.pause` and
+:py:data:`rcpy.button.mode`. One can import those objects directly
+using::
+
+    from rcpy.button import mode, pause
+
+After importing these objects::
+    
+    if mode.pressed():
+        print('<MODE> pressed!')
+
+waits forever until the *MODE* button on the Robotics Cape is pressed and::
+
+    if mode.released():
+        print('<MODE> released!')
+
+waits forever until the *MODE* button on the Robotics Cape is
+released. Note that nothing will print if you first have to press the
+button before releasing because :py:meth:`rcpy.button.Button.released`
+returns :samp:`False` after the first input event, which in this case
+would correspond to the GPIO line associated to the button going
+:py:data:`rcpy.button.PRESSED`.
+
+:py:meth:`rcpy.button.Button.pressed` and
+:py:meth:`rcpy.button.Button.released` also raise the exception
+:py:class:`rcpy.gpio.InputTimeout` if the argument `timeout` is used
+as in::
+
+    import rcpy.gpio as gpio
+    try:
+        if mode.pressed(timeout = 2000):
+            print('<MODE> pressed!')
+    except gpio.InputTimeout:
+        print('Timed out!')
+
+which waits for at most 2000 ms, i.e. 2 s, before giving up.
+
+The methods :py:meth:`rcpy.button.Button.is_pressed` and
+:py:meth:`rcpy.button.Button.is_released` are *non-blocking* versions
+of the above methods. For example::
+
+    import time
+    while True:
+        if mode.is_pressed():
+            print('<Mode> pressed!')
+	    break
+	time.sleep(1)
+
+checks the status of the button *MODE* every 1 s and breaks when
+*MODE* is pressed. As with :ref:`rcpy_gpio`, a much better way to
+handle such events is to use event handlers, in the case of
+buttons the class :py:class:`rcpy.button.ButtonEvent`. For example::
+
+    class MyButtonEvent(button.ButtonEvent):
+        def action(self, event):
+            print('Got <PAUSE>!')
+
+defines a class that can be used to print :samp:`Got <PAUSE>!` every
+time the *PAUSE* button is pressed. To instantiate and start the event
+handler use::
+
+    pause_event = MyButtonEvent(pause, button.ButtonEvent.PRESSED)
+    pause_event.start()
+
+Note that the event :py:data:`rcpy.button.ButtonEvent.PRESSED` was
+used so that `MyButtonEvent.action` is called only when the *PAUSE*
+button is pressed. The event handler can be stopped by calling::
+  
+    pause_event.stop()
+   
+Alternatively one could have created an input event handler by passing
+a function to the argument `target` of
+:py:class:`rcpy.button.ButtonEvent` as in::
+
+    from rcpy.button import ButtonEvent
+    
+    def pause_action(input, event):
+        if event == ButtonEvent.PRESSED:
+            print('<PAUSE> pressed!')
+        elif event == ButtonEvent.RELEASED:
+            print('<PAUSE> released!')
+	    
+    pause_event = ButtonEvent(pause,
+                              ButtonEvent.PRESSED | ButtonEvent.RELEASED,
+			      target = pause_action)
+
+This event handler should be started and stopped using
+:py:meth:`rcpy.button.ButtonEvent.start` and
+:py:meth:`rcpy.button.ButtonEvent.stop` as before. Additional
+positional or keyword arguments can be passed as in::
+
+    def pause_action_with_parameter(input, event, parameter):
+        print('Got <PAUSE> with {}!'.format(parameter))
+	    
+    pause_event = ButtonEvent(pause, ButtonEvent.PRESSED,
+                              target = pause_action_with_parameter,
+		              vargs = ('some parameter',))
+
+The main difference between :ref:`rcpy_button` and :ref:`rcpy_gpio` is
+that :ref:`rcpy_button` defines the constants
+:py:data:`rcpy.button.PRESSED` and :py:data:`rcpy.button.RELEASED`,
+the events :py:data:`rcpy.button.ButtonEvent.PRESSED` and
+:py:data:`rcpy.button.ButtonEvent.RELEASED`, and its classes handle
+debouncing by default.
+
+Constants
+^^^^^^^^^
+
+.. py:data:: pause
+	     
+   :py:class:`rcpy.button.Button` representing the Robotics Cape *PAUSE* button.
+
+.. py:data:: mode
+	     
+   :py:class:`rcpy.button.Button` representing the Robotics Cape *MODE* button.
+       
+.. py:data:: PRESSED
+	     
+   State of a pressed button; equal to :py:data:`rcpy.gpio.LOW`.
+	     
+.. py:data:: RELEASED
+	     
+   State of a released button; equal to :py:data:`rcpy.gpio.HIGH`.
+
+.. py:data:: DEBOUNCE
+	     
+   Number of times to test for deboucing (Default 3)
+
+Classes
+^^^^^^^
+	     	     
+.. py:class:: Button()
+
+   :bases: :py:class:`rcpy.gpio.Input`
+	   
+   :py:class:`rcpy.button.Button` represents buttons in the Robotics Cape or Beaglebone Blue.
+	   
+   .. py:method:: is_pressed()
+
+      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.PRESSED` and :samp:`False` if line is :py:data:`rcpy.button.RELEASED`
+		  
+   .. py:method:: is_released()
+    
+      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.RELEASED` and :samp:`False` if line is :py:data:`rcpy.button.PRESSED`  
+		  
+   .. py:method:: pressed_or_released(debounce = rcpy.button.DEBOUNCE, timeout = None)
+
+      :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
+      :param int timeout: timeout in milliseconds (default None)
+      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the button state changing
+
+      :returns: the new state as :py:data:`rcpy.button.PRESSED` or :py:data:`rcpy.button.RELEASED`
+		
+      Wait for button state to change.
+
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
+      
+   .. py:method:: pressed(debounce = rcpy.button.DEBOUNCE, timeout = None)
+
+      :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
+      :param int timeout: timeout in milliseconds (default None)
+      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the button state changing.
+
+      :returns: :samp:`True` if the new state is :py:data:`rcpy.button.PRESSED` and :samp:`False` if the new state is :py:data:`rcpy.button.RELEASED` 
+				      
+      Wait for button state to change.
+      
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
+      
+   .. py:method:: released(debounce = rcpy.button.DEBOUNCE, timeout = None)
+
+      :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
+      :param int timeout: timeout in milliseconds (default None)
+      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the button state changing.
+				      
+      :returns: :samp:`True` if the new state is :py:data:`rcpy.button.RELEASED` and :samp:`False` if the new state is :py:data:`rcpy.button.PRESSED`
+
+      Wait for button state to change.
+		  
+      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
+      
+.. py:class:: ButtonEvent(input, event, debounce = rcpy.button.DEBOUNCE, timeout = None, target = None, vargs = (), kwargs = {})
+
+   :bases: :py:class:`rcpy.gpio.InputEvent`
+
+   :param int input: instance of :py:class:`rcpy.gpio.Input`
+   :param int event: either :py:data:`rcpy.button.ButtonEvent.PRESSED` or :py:data:`rcpy.button.ButtonEvent.RELEASED`
+   :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
+   :param int timeout: timeout in milliseconds (default `None`)
+   :param int target: callback function to run in case input changes (default `None`)
+   :param int vargs: positional arguments for function `target` (default `()`)
+   :param int kwargs: keyword arguments for function `target` (default `{}`)
+	   
+   :py:class:`rcpy.button.ButtonEvent` is an event handler for button events.
+
+   .. py:data:: PRESSED
+
+      Event representing pressing a button; equal to :py:data:`rcpy.gpio.InputEvent.LOW`.
+		 
+   .. py:data:: RELEASED
+
+      Event representing releasing a button; equal to :py:data:`rcpy.gpio.InputEvent.HIGH`.
+
+   .. py:method:: action(event, *vargs, **kwargs)
+
+      :param event: either :py:data:`rcpy.button.PRESSED` or :py:data:`rcpy.button.RELEASED`
+      :param vargs: variable positional arguments
+      :param kwargs: variable keyword arguments
+		     
+      Action to perform when event is detected.
+            
+   .. py:method:: start()
+
+      Start the input event handler thread.
+      
+   .. py:method:: stop()
+
+      Attempt to stop the input event handler thread. Once it has stopped it cannot be restarted.
+
+.. _rcpy_clock:
 
 Module `rcpy.clock`
 -------------------
@@ -126,6 +490,105 @@ Classes
 
       Stop the action thread. Action cannot resume after calling :py:meth:`rcpy.led.Blink.stop`. Use :py:meth:`rcpy.clock.Clock.toggle` to temporarily interrupt an action.
 
+.. _rcpy_encoder:
+   
+Module `rcpy.encoder`
+---------------------
+
+.. py:module:: rcpy.encoder
+
+This module provides an interface to the four *encoder channels* in
+the Robotics Cape. The command::
+
+    import rcpy.encoder as encoder
+
+imports the module. The :ref:`rcpy_encoder` provides objects
+corresponding to the each of the encoder channels on the Robotics
+Cape, namely :py:data:`rcpy.encoder.encoder1`,
+:py:data:`rcpy.encoder.encoder2`, :py:data:`rcpy.encoder.encoder3`,
+and :py:data:`rcpy.encoder.encoder4`. It may be convenient to import
+one or all of these objects as in::
+
+    from rcpy.encoder import encoder2
+
+The current encoder count can be obtained using::
+
+    encoder2.get()
+
+One can also *reset* the count to zero using::
+
+    encoder2.reset()
+
+or to an arbitrary count using::
+
+    encoder2.set(1024)
+
+after which::
+
+    encoder2.get()
+
+will return 1024.
+  
+Constants
+^^^^^^^^^
+
+.. py:data:: encoder1
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 1*.
+
+.. py:data:: encoder2
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 2*.
+       
+.. py:data:: encoder3
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 3*.
+       
+.. py:data:: encoder4
+
+   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 4*.
+	       
+Classes
+^^^^^^^
+
+.. py:class:: Encoder(channel, count = None)
+
+   :param output: encoder channel (1 through 4)
+   :param state: initial encoder count (Default None)
+	      
+   :py:class:`rcpy.encoder.Encoder` represents encoders in the Robotics Cape or Beaglebone Blue.
+       
+   .. py:method:: get()
+
+      :returns: current encoder count
+		  
+   .. py:method:: set(count)
+            
+      Set current encoder count to `count`.
+
+   .. py:method:: reset()
+            
+      Set current encoder count to `0`.
+      
+Low-level functions
+^^^^^^^^^^^^^^^^^^^
+
+.. py:function:: get(channel)
+
+   :param int channel: encoder channel number
+
+   :returns: current encoder count
+
+   This is a non-blocking call.
+   
+.. py:function:: set(channel, count = 0)
+
+   :param int channel: encoder channel number
+   :param int count: desired encoder count
+
+   Set encoder `channel` count to `value`.
+		     
+.. _rcpy_gpio:
 
 Module `rcpy.gpio`
 ------------------
@@ -140,7 +603,7 @@ level interface.
 For example::
 
     import rcpy.gpio as gpio
-    pause_button = gpio.Input(gpio.PAUSE_BTN)
+    pause_button = gpio.Input(*gpio.PAUSE_BTN)
 
 imports the module and create an :py:class:`rcpy.gpio.Input` object
 corresponding to the *PAUSE* button on the Robotics Cape. The
@@ -285,19 +748,56 @@ Classes
 
    Exception representing an input timeout event.
 
-.. py:class:: Input(pin)
+.. py:class:: GPIO(chip, line)
 
-   :param int pin: GPIO pin
+   :param int chip: GPIO chip
+   :param int line: GPIO line
 
-   :py:class:`rcpy.gpio.Input` represents one of the GPIO input pins in the Robotics Cape or Beaglebone Blue.
+   :py:class:`rcpy.gpio.GPIO` represents one of the GPIO input or output lines in the Robotics Cape or Beaglebone Blue. Users are not supposed to directly use this class. Use :py:class:`rcpy.gpio.Input` or :py:class:`rcpy.gpio.Output` instead.
 
+   .. py:method:: request(type)
+		  
+      :param int type: the type of line as defined in `libgpiod <https://github.com/brgl/libgpiod/>`_
+
+      Request GPIO chip and line.
+		       
+   .. py:method:: release(type)
+
+      Release GPIO chip and line.
+
+.. py:class:: Output(chip, line)
+
+   :bases: :py:class:`rcpy.gpio.GPIO`
+	   
+   :param int chip: GPIO chip
+   :param int line: GPIO line
+
+   :py:class:`rcpy.gpio.Output` represents one of the GPIO output lines in the Robotics Cape or Beaglebone Blue.
+       
+   .. py:method:: set(state)
+
+      :param int state: set the state of the line, :py:data:`rcpy.gpio.HIGH` or :py:data:`rcpy.gpio.LOW`
+		
+.. py:class:: Input(chip, line)
+
+   :bases: :py:class:`rcpy.gpio.GPIO`
+	   
+   :param int chip: GPIO chip
+   :param int line: GPIO line
+
+   :py:class:`rcpy.gpio.Input` represents one of the GPIO input lines in the Robotics Cape or Beaglebone Blue.
+
+   .. py:method:: get()
+
+      :returns: the state of the line, :py:data:`rcpy.gpio.HIGH` or :py:data:`rcpy.gpio.LOW` (non-blocking)
+		
    .. py:method:: is_high()
 
-      :returns: :samp:`True` if pin is equal to :py:data:`rcpy.gpio.HIGH` and :samp:`False` if pin is :py:data:`rcpy.gpio.LOW`
+      :returns: :samp:`True` if line is equal to :py:data:`rcpy.gpio.HIGH` and :samp:`False` if line is :py:data:`rcpy.gpio.LOW` (non-blocking)
 
    .. py:method:: is_low()
 
-      :returns: :samp:`True` if pin is equal to :py:data:`rcpy.gpio.LOW` and :samp:`False` if pin is :py:data:`rcpy.gpio.HIGH`
+      :returns: :samp:`True` if line is equal to :py:data:`rcpy.gpio.LOW` and :samp:`False` if line is :py:data:`rcpy.gpio.HIGH` (non-blocking)
       
    .. py:method:: high_or_low(debounce = 0, timeout = None)
                    
@@ -307,7 +807,7 @@ Classes
 
       :returns: the new state as :py:data:`rcpy.gpio.HIGH` or :py:data:`rcpy.gpio.LOW`
 
-      Wait for pin to change state.
+      Wait for line to change state. This is a blocking call.
       
       If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 
@@ -320,7 +820,7 @@ Classes
 
       :returns: :samp:`True` if the new state is :py:data:`rcpy.gpio.HIGH` and :samp:`False` if the new state is :py:data:`rcpy.gpio.LOW`
 	 
-      Wait for pin to change state.
+      Wait for line to change state. This is a blocking call.
 
       If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
 
@@ -332,10 +832,19 @@ Classes
 
       :returns: :samp:`True` if the new state is :py:data:`rcpy.gpio.LOW` and :samp:`False` if the new state is :py:data:`rcpy.gpio.HIGH`
 				      
-      Wait for pin to change state.
+      Wait for line to change state. This is a blocking call.
 
       If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
-			  
+
+   .. py:method:: read(line, timeout = None)
+
+      :param int timeout: timeout in milliseconds (default None)
+      :raises rcpy.gpio.error: if it cannot read from `line`
+      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the input changing
+      :returns: the new value of the GPIO `line`
+
+   Wait for value of the GPIO `line` to change. This is a blocking call.
+      
 .. py:class:: InputEvent(input, event, debounce = 0, timeout = None, target = None, vargs = (), kwargs = {})
 
    :bases: threading.Thread
@@ -373,270 +882,7 @@ Classes
    .. py:method:: stop()
 
       Attempt to stop the input event handler thread. Once it has stopped it cannot be restarted.
-
-Low-level functions
-^^^^^^^^^^^^^^^^^^^
-
-.. py:function:: set(pin, value)
-
-   :param int pin: GPIO pin
-   :param int value: value to set the pin (:py:data:`rcpy.gpio.HIGH` or :py:data:`rcpy.gpio.LOW`)
-   :raises rcpy.gpio.error: if it cannot write to `pin`
-
-   Set GPIO `pin` to the new `value`.
-		     
-.. py:function:: get(pin)
-
-   :param int pin: GPIO pin
-   :raises rcpy.gpio.error: if it cannot read from `pin`
-   :returns: the current value of the GPIO `pin`
-
-   This is a non-blocking call.
-
-.. py:function:: read(pin, timeout = None)
-
-   :param int pin: GPIO pin
-   :param int timeout: timeout in milliseconds (default None)
-   :raises rcpy.gpio.error: if it cannot read from `pin`
-   :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the input changing
-   :returns: the new value of the GPIO `pin`
-
-   Wait for value of the GPIO `pin` to change. This is a blocking call.
-
-.. _rcpy_button:
-
-Module `rcpy.button`
---------------------
-
-.. py:module:: rcpy.button
-
-This module provides an interface to the *PAUSE* and *MODE* buttons in
-the Robotics Cape. The command::
-
-    import rcpy.button as button
-
-imports the module. The :ref:`rcpy_button` provides objects
-corresponding to the *PAUSE* and *MODE* buttons on the Robotics
-Cape. Those are :py:data:`rcpy.button.pause` and
-:py:data:`rcpy.button.mode`. One can import those objects directly
-using::
-
-    from rcpy.button import mode, pause
-
-After importing these objects::
-    
-    if mode.pressed():
-        print('<MODE> pressed!')
-
-waits forever until the *MODE* button on the Robotics Cape is pressed and::
-
-    if mode.released():
-        print('<MODE> released!')
-
-waits forever until the *MODE* button on the Robotics Cape is
-released. Note that nothing will print if you first have to press the
-button before releasing because :py:meth:`rcpy.button.Button.released`
-returns :samp:`False` after the first input event, which in this case
-would correspond to the GPIO pin associated to the button going
-:py:data:`rcpy.button.PRESSED`.
-
-:py:meth:`rcpy.button.Button.pressed` and
-:py:meth:`rcpy.button.Button.released` also raise the exception
-:py:class:`rcpy.gpio.InputTimeout` if the argument `timeout` is used
-as in::
-
-    import rcpy.gpio as gpio
-    try:
-        if mode.pressed(timeout = 2000):
-            print('<MODE> pressed!')
-    except gpio.InputTimeout:
-        print('Timed out!')
-
-which waits for at most 2000 ms, i.e. 2 s, before giving up.
-
-The methods :py:meth:`rcpy.button.Button.is_pressed` and
-:py:meth:`rcpy.button.Button.is_released` are *non-blocking* versions
-of the above methods. For example::
-
-    import time
-    while True:
-        if mode.is_pressed():
-            print('<Mode> pressed!')
-	    break
-	time.sleep(1)
-
-checks the status of the button *MODE* every 1 s and breaks when
-*MODE* is pressed. As with :ref:`rcpy_gpio`, a much better way to
-handle such events is to use event handlers, in the case of
-buttons the class :py:class:`rcpy.button.ButtonEvent`. For example::
-
-    class MyButtonEvent(button.ButtonEvent):
-        def action(self, event):
-            print('Got <PAUSE>!')
-
-defines a class that can be used to print :samp:`Got <PAUSE>!` every
-time the *PAUSE* button is pressed. To instantiate and start the event
-handler use::
-
-    pause_event = MyButtonEvent(pause, button.ButtonEvent.PRESSED)
-    pause_event.start()
-
-Note that the event :py:data:`rcpy.button.ButtonEvent.PRESSED` was
-used so that `MyButtonEvent.action` is called only when the *PAUSE*
-button is pressed. The event handler can be stopped by calling::
-  
-    pause_event.stop()
-   
-Alternatively one could have created an input event handler by passing
-a function to the argument `target` of
-:py:class:`rcpy.button.ButtonEvent` as in::
-
-    from rcpy.button import ButtonEvent
-    
-    def pause_action(input, event):
-        if event == ButtonEvent.PRESSED:
-            print('<PAUSE> pressed!')
-        elif event == ButtonEvent.RELEASED:
-            print('<PAUSE> released!')
-	    
-    pause_event = ButtonEvent(pause,
-                              ButtonEvent.PRESSED | ButtonEvent.RELEASED,
-			      target = pause_action)
-
-This event handler should be started and stopped using
-:py:meth:`rcpy.button.ButtonEvent.start` and
-:py:meth:`rcpy.button.ButtonEvent.stop` as before. Additional
-positional or keyword arguments can be passed as in::
-
-    def pause_action_with_parameter(input, event, parameter):
-        print('Got <PAUSE> with {}!'.format(parameter))
-	    
-    pause_event = ButtonEvent(pause, ButtonEvent.PRESSED,
-                              target = pause_action_with_parameter,
-		              vargs = ('some parameter',))
-
-The main difference between :ref:`rcpy_button` and :ref:`rcpy_gpio` is
-that :ref:`rcpy_button` defines the constants
-:py:data:`rcpy.button.PRESSED` and :py:data:`rcpy.button.RELEASED`,
-the events :py:data:`rcpy.button.ButtonEvent.PRESSED` and
-:py:data:`rcpy.button.ButtonEvent.RELEASED`, and its classes handle
-debouncing by default.
-
-Constants
-^^^^^^^^^
-
-.. py:data:: pause
-	     
-   :py:class:`rcpy.button.Button` representing the Robotics Cape *PAUSE* button.
-
-.. py:data:: mode
-	     
-   :py:class:`rcpy.button.Button` representing the Robotics Cape *MODE* button.
-       
-.. py:data:: PRESSED
-	     
-   State of a pressed button; equal to :py:data:`rcpy.gpio.LOW`.
-	     
-.. py:data:: RELEASED
-	     
-   State of a released button; equal to :py:data:`rcpy.gpio.HIGH`.
-
-.. py:data:: DEBOUNCE
-	     
-   Number of times to test for deboucing (Default 3)
-
-Classes
-^^^^^^^
-	     	     
-.. py:class:: Button()
-
-   :bases: :py:class:`rcpy.gpio.Input`
-	   
-   :py:class:`rcpy.button.Button` represents buttons in the Robotics Cape or Beaglebone Blue.
-	   
-   .. py:method:: is_pressed()
-
-      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.PRESSED` and :samp:`False` if pin is :py:data:`rcpy.button.RELEASED`
-		  
-   .. py:method:: is_released()
-    
-      :returns: :samp:`True` if button state is equal to :py:data:`rcpy.button.RELEASED` and :samp:`False` if pin is :py:data:`rcpy.button.PRESSED`  
-		  
-   .. py:method:: pressed_or_released(debounce = rcpy.button.DEBOUNCE, timeout = None)
-
-      :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
-      :param int timeout: timeout in milliseconds (default None)
-      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the button state changing
-
-      :returns: the new state as :py:data:`rcpy.button.PRESSED` or :py:data:`rcpy.button.RELEASED`
-		
-      Wait for button state to change.
-
-      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
-      
-   .. py:method:: pressed(debounce = rcpy.button.DEBOUNCE, timeout = None)
-
-      :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
-      :param int timeout: timeout in milliseconds (default None)
-      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the button state changing.
-
-      :returns: :samp:`True` if the new state is :py:data:`rcpy.button.PRESSED` and :samp:`False` if the new state is :py:data:`rcpy.button.RELEASED` 
-				      
-      Wait for button state to change.
-      
-      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
-      
-   .. py:method:: released(debounce = rcpy.button.DEBOUNCE, timeout = None)
-
-      :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
-      :param int timeout: timeout in milliseconds (default None)
-      :raises rcpy.gpio.InputTimeout: if more than `timeout` ms have elapsed without the button state changing.
-				      
-      :returns: :samp:`True` if the new state is :py:data:`rcpy.button.RELEASED` and :samp:`False` if the new state is :py:data:`rcpy.button.PRESSED`
-
-      Wait for button state to change.
-		  
-      If `timeout` is not :samp:`None` wait at most `timeout` ms otherwise wait forever until the input changes.
-      
-.. py:class:: ButtonEvent(input, event, debounce = rcpy.button.DEBOUNCE, timeout = None, target = None, vargs = (), kwargs = {})
-
-   :bases: :py:class:`rcpy.gpio.InputEvent`
-
-   :param int input: instance of :py:class:`rcpy.gpio.Input`
-   :param int event: either :py:data:`rcpy.button.ButtonEvent.PRESSED` or :py:data:`rcpy.button.ButtonEvent.RELEASED`
-   :param int debounce: number of times to read input for debouncing (default `rcpy.button.DEBOUNCE`)
-   :param int timeout: timeout in milliseconds (default `None`)
-   :param int target: callback function to run in case input changes (default `None`)
-   :param int vargs: positional arguments for function `target` (default `()`)
-   :param int kwargs: keyword arguments for function `target` (default `{}`)
-	   
-   :py:class:`rcpy.button.ButtonEvent` is an event handler for button events.
-
-   .. py:data:: PRESSED
-
-      Event representing pressing a button; equal to :py:data:`rcpy.gpio.InputEvent.LOW`.
-		 
-   .. py:data:: RELEASED
-
-      Event representing releasing a button; equal to :py:data:`rcpy.gpio.InputEvent.HIGH`.
-
-   .. py:method:: action(event, *vargs, **kwargs)
-
-      :param event: either :py:data:`rcpy.button.PRESSED` or :py:data:`rcpy.button.RELEASED`
-      :param vargs: variable positional arguments
-      :param kwargs: variable keyword arguments
-		     
-      Action to perform when event is detected.
-            
-   .. py:method:: start()
-
-      Start the input event handler thread.
-      
-   .. py:method:: stop()
-
-      Attempt to stop the input event handler thread. Once it has stopped it cannot be restarted.
-
-      
+     
 .. _rcpy_led:
 
 Module `rcpy.led`
@@ -727,7 +973,7 @@ Classes
 
    :bases: :py:class:`rcpy.gpio.Output`
 	   
-   :param output: GPIO pin
+   :param output: GPIO line
    :param state: initial LED state
 	      
    :py:class:`rcpy.led.LED` represents LEDs in the Robotics Cape or Beaglebone Blue.
@@ -768,104 +1014,6 @@ Classes
    :param LED led: the led to toggle
    :param int period: the period in seconds
 		  
-.. _rcpy_encoder:
-   
-Module `rcpy.encoder`
----------------------
-
-.. py:module:: rcpy.encoder
-
-This module provides an interface to the four *encoder channels* in
-the Robotics Cape. The command::
-
-    import rcpy.encoder as encoder
-
-imports the module. The :ref:`rcpy_encoder` provides objects
-corresponding to the each of the encoder channels on the Robotics
-Cape, namely :py:data:`rcpy.encoder.encoder1`,
-:py:data:`rcpy.encoder.encoder2`, :py:data:`rcpy.encoder.encoder3`,
-and :py:data:`rcpy.encoder.encoder4`. It may be convenient to import
-one or all of these objects as in::
-
-    from rcpy.encoder import encoder2
-
-The current encoder count can be obtained using::
-
-    encoder2.get()
-
-One can also *reset* the count to zero using::
-
-    encoder2.reset()
-
-or to an arbitrary count using::
-
-    encoder2.set(1024)
-
-after which::
-
-    encoder2.get()
-
-will return 1024.
-  
-Constants
-^^^^^^^^^
-
-.. py:data:: encoder1
-
-   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 1*.
-
-.. py:data:: encoder2
-
-   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 2*.
-       
-.. py:data:: encoder3
-
-   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 3*.
-       
-.. py:data:: encoder4
-
-   :py:class:`rcpy.encoder.Encoder` representing the Robotics Cape *Encoder 4*.
-	       
-Classes
-^^^^^^^
-
-.. py:class:: Encoder(channel, count = None)
-
-   :param output: encoder channel (1 through 4)
-   :param state: initial encoder count (Default None)
-	      
-   :py:class:`rcpy.encoder.Encoder` represents encoders in the Robotics Cape or Beaglebone Blue.
-       
-   .. py:method:: get()
-
-      :returns: current encoder count
-		  
-   .. py:method:: set(count)
-            
-      Set current encoder count to `count`.
-
-   .. py:method:: reset()
-            
-      Set current encoder count to `0`.
-      
-Low-level functions
-^^^^^^^^^^^^^^^^^^^
-
-.. py:function:: get(channel)
-
-   :param int channel: encoder channel number
-
-   :returns: current encoder count
-
-   This is a non-blocking call.
-   
-.. py:function:: set(channel, count = 0)
-
-   :param int channel: encoder channel number
-   :param int count: desired encoder count
-
-   Set encoder `channel` count to `value`.
-		     
 .. _rcpy_motor:
 
 Module `rcpy.motor`
@@ -986,6 +1134,198 @@ Low-level functions
 		       
    This is a non-blocking call.
 
+.. _rcpy_mpu9250:
+
+Module `rcpy.mpu9250`
+---------------------
+
+.. py:module:: rcpy.mpu9250
+
+This module provides an interface to the on-board `MPU-9250
+<https://www.invensense.com/products/motion-tracking/9-axis/mpu-9250/>`_
+Nine-Axis (Gyro + Accelerometer + Compass) MEMS device. The command::
+
+    import rcpy.mpu9250 as mpu9250
+
+imports the module.
+
+**IMPORTANT:** Beware that due to the way the Robotics Cape is written
+objects of the class :py:class:`rcpy.mpu9250.IMU` are singletons, that
+is they all refer to the same instance. 
+
+Setup can be done at creation, such as in ::
+
+    imu = mpu9250.IMU(enable_dmp = True, dmp_sample_rate = 4,
+                      enable_magnetometer = True)
+
+which starts and initializes the MPU-9250 to use its DMP (Dynamic
+Motion Processor) to provide periodic readings at a rate of 4 Hz and
+also its magnetometer.
+
+The data can be read using::
+
+    imu.read()
+
+which performs a blocking call and can be used to synchronize
+execution with the DMP. For example::
+
+    while True:
+        data = imu.read()
+	print('heading = {}'.format(data['head']))
+
+will print the current heading at a rate of 4 Hz. More details about
+the configuration options and the format of the data can be obtained
+in the help for the functions :py:func:`rcpy.mpu9250.initialize` and
+:py:func:`rcpy.mpu9250.read`.
+
+Constants
+^^^^^^^^^
+
+The following constants can be used to set the accelerometer full scale register:
+       
+.. py:data:: ACCEL_FSR_2G
+.. py:data:: ACCEL_FSR_4G
+.. py:data:: ACCEL_FSR_8G
+.. py:data:: ACCEL_FSR_16G
+
+The following constants can be used to set the gyroscope full scale register:
+
+.. py:data:: GYRO_FSR_250DPS
+.. py:data:: GYRO_FSR_500DPS
+.. py:data:: GYRO_FSR_1000DPS
+.. py:data:: GYRO_FSR_2000DPS
+
+The following constants can be used to set the accelerometer low-pass filter:
+   
+.. py:data:: ACCEL_DLPF_OFF
+.. py:data:: ACCEL_DLPF_184
+.. py:data:: ACCEL_DLPF_92
+.. py:data:: ACCEL_DLPF_41
+.. py:data:: ACCEL_DLPF_20
+.. py:data:: ACCEL_DLPF_10
+.. py:data:: ACCEL_DLPF_5
+
+The following constants can be used to set the gyroscope low-pass filter:
+	     
+.. py:data:: GYRO_DLPF_OFF
+.. py:data:: GYRO_DLPF_184
+.. py:data:: GYRO_DLPF_92
+.. py:data:: GYRO_DLPF_41
+.. py:data:: GYRO_DLPF_20
+.. py:data:: GYRO_DLPF_10
+.. py:data:: GYRO_DLPF_5
+
+The following constants can be used to set the imu orientation:
+   
+.. py:data:: ORIENTATION_Z_UP
+.. py:data:: ORIENTATION_Z_DOWN
+.. py:data:: ORIENTATION_X_UP
+.. py:data:: ORIENTATION_X_DOWN
+.. py:data:: ORIENTATION_Y_UP
+.. py:data:: ORIENTATION_Y_DOWN
+.. py:data:: ORIENTATION_X_FORWARD
+.. py:data:: ORIENTATION_X_BACK
+       
+Classes
+^^^^^^^
+
+.. py:class:: IMU(**kwargs)
+
+   :param kwargs kwargs: keyword arguments
+	      
+   :py:class:`rcpy.mpu9250.imu` represents the MPU-9250 in the Robotics Cape or Beaglebone Blue.
+
+   Any keyword accepted by :py:func:`rcpy.mpu9250.initialize` can be given.
+       
+   .. py:method:: set(**kwargs)
+            
+      :param kwargs kwargs: keyword arguments
+			 
+      Set current MPU-9250 parameters.
+
+      Any keyword accepted by :py:func:`rcpy.mpu9250.initialize` can be given.
+      
+   .. py:method:: read()
+            
+      :returns: dictionary with current MPU-9250 measurements
+
+      Dictionary is constructed as in :py:func:`rcpy.mpu9250.read`.
+
+Low-level functions
+^^^^^^^^^^^^^^^^^^^
+
+.. py:function:: initialize(accel_fsr, gyro_fsr, accel_dlpf, gyro_dlpf, enable_magnetometer, orientation, compass_time_constant, dmp_interrupt_priority, dmp_sample_rate, show_warnings, enable_dmp, enable_fusion)
+
+   :param int accel_fsr: accelerometer full scale
+   :param int gyro_fsr: gyroscope full scale
+   :param int accel_dlpf: accelerometer low-pass filter
+   :param int gyro_dlpf: gyroscope low-pass filter
+   :param bool enable_magnetometer: :py:data:`True` enables the magnetometer
+   :param int orientation: imu orientation
+   :param float compass_time_constant: compass time-constant
+   :param int dmp_interrupt_priority: DMP interrupt priority
+   :param int dmp_sample_rate: DMP sample rate
+   :param int show_warnings: :py:data:`True` shows warnings
+   :param bool enable_dmp: :py:data:`True` enables the DMP
+   :param bool enable_fusion: :py:data:`True` enables data fusion algorithm
+
+   Configure and initialize the MPU-9250.
+
+   All parameters are optional. Default values are obtained by calling
+   the :c:func:`rc_get_default_imu_config` from the Robotics Cape
+   library.
+   
+.. py:function:: power_off()
+
+   Powers off the MPU-9250
+		 
+.. py:function:: read_accel_data()
+
+   :returns: list with three-axis acceleration in m/s :math:`\!^2`
+
+   This function forces the MPU-9250 registers to be read.
+	     
+.. py:function:: read_gyro_data()
+
+   :returns: list with three-axis angular velocities in deg/s
+	     
+   This function forces the MPU-9250 registers to be read.
+   
+.. py:function:: read_mag_data()
+
+   :raises mup9250Error: if magnetometer is disabled
+			 
+   :returns: list with 3D magnetic field vector in :math:`\mu\!` T
+   
+   This function forces the MPU-9250 registers to be read.
+   
+.. py:function:: read_imu_temp()
+
+   :returns: the imu temperature in deg C
+
+   This function forces the MPU-9250 registers to be read.
+   
+.. py:function:: read()
+
+   :returns: dictionary with the imu data; the keys in the dictionary depend on the current configuration
+	     
+   If the magnetometer is *enabled* the dictionary contains the
+   following keys:
+   
+   * **accel**: 3-axis accelerations (m/s :math:`\!^2`)
+   * **gyro**: 3-axis angular velocities (degree/s)
+   * **mag**: 3D magnetic field vector in (:math:`\mu\!` T)
+   * **quat**: orientation quaternion 
+   * **tb**: pitch/roll/yaw X/Y/Z angles (radians)
+   * **head**: heading from magnetometer (radians)
+
+   If the magnetometer is *not enabled* the keys **mag** and **head**
+   are not present.
+
+   This function forces the MPU-9250 registers to be read only if the
+   DMP is disabled. Otherwise it returns the latest DMP data. It is a
+   blocking call.
+   
 .. _rcpy_servo:
 
 Module `rcpy.servo`
@@ -1027,7 +1367,7 @@ you need to enable power to flow to servos using::
 
 For safety the servo power rail is disabled by default. Do not enable
 the servo power rail when using brushless ESCs as they can be
-damaged. Typical brushless ESCs only use the ground and signal pins,
+damaged. Typical brushless ESCs only use the ground and signal lines,
 so if you need to control servos and ESC simultaneously simply cut or
 disconnect the middle power wire from the ESC connector. Use the
 command::
@@ -1319,194 +1659,3 @@ Low-level functions
    Sends a pulse of duration `us` :math:`\mu` s to all servo channels.
    This is a non-blocking call.
    
-.. _rcpy_mpu9250:
-
-Module `rcpy.mpu9250`
----------------------
-
-.. py:module:: rcpy.mpu9250
-
-This module provides an interface to the on-board `MPU-9250
-<https://www.invensense.com/products/motion-tracking/9-axis/mpu-9250/>`_
-Nine-Axis (Gyro + Accelerometer + Compass) MEMS device. The command::
-
-    import rcpy.mpu9250 as mpu9250
-
-imports the module.
-
-**IMPORTANT:** Beware that due to the way the Robotics Cape is written
-objects of the class :py:class:`rcpy.mpu9250.IMU` are singletons, that
-is they all refer to the same instance. 
-
-Setup can be done at creation, such as in ::
-
-    imu = mpu9250.IMU(enable_dmp = True, dmp_sample_rate = 4,
-                      enable_magnetometer = True)
-
-which starts and initializes the MPU-9250 to use its DMP (Dynamic
-Motion Processor) to provide periodic readings at a rate of 4 Hz and
-also its magnetometer.
-
-The data can be read using::
-
-    imu.read()
-
-which performs a blocking call and can be used to synchronize
-execution with the DMP. For example::
-
-    while True:
-        data = imu.read()
-	print('heading = {}'.format(data['head']))
-
-will print the current heading at a rate of 4 Hz. More details about
-the configuration options and the format of the data can be obtained
-in the help for the functions :py:func:`rcpy.mpu9250.initialize` and
-:py:func:`rcpy.mpu9250.read`.
-
-Constants
-^^^^^^^^^
-
-The following constants can be used to set the accelerometer full scale register:
-       
-.. py:data:: ACCEL_FSR_2G
-.. py:data:: ACCEL_FSR_4G
-.. py:data:: ACCEL_FSR_8G
-.. py:data:: ACCEL_FSR_16G
-
-The following constants can be used to set the gyroscope full scale register:
-
-.. py:data:: GYRO_FSR_250DPS
-.. py:data:: GYRO_FSR_500DPS
-.. py:data:: GYRO_FSR_1000DPS
-.. py:data:: GYRO_FSR_2000DPS
-
-The following constants can be used to set the accelerometer low-pass filter:
-   
-.. py:data:: ACCEL_DLPF_OFF
-.. py:data:: ACCEL_DLPF_184
-.. py:data:: ACCEL_DLPF_92
-.. py:data:: ACCEL_DLPF_41
-.. py:data:: ACCEL_DLPF_20
-.. py:data:: ACCEL_DLPF_10
-.. py:data:: ACCEL_DLPF_5
-
-The following constants can be used to set the gyroscope low-pass filter:
-	     
-.. py:data:: GYRO_DLPF_OFF
-.. py:data:: GYRO_DLPF_184
-.. py:data:: GYRO_DLPF_92
-.. py:data:: GYRO_DLPF_41
-.. py:data:: GYRO_DLPF_20
-.. py:data:: GYRO_DLPF_10
-.. py:data:: GYRO_DLPF_5
-
-The following constants can be used to set the imu orientation:
-   
-.. py:data:: ORIENTATION_Z_UP
-.. py:data:: ORIENTATION_Z_DOWN
-.. py:data:: ORIENTATION_X_UP
-.. py:data:: ORIENTATION_X_DOWN
-.. py:data:: ORIENTATION_Y_UP
-.. py:data:: ORIENTATION_Y_DOWN
-.. py:data:: ORIENTATION_X_FORWARD
-.. py:data:: ORIENTATION_X_BACK
-       
-Classes
-^^^^^^^
-
-.. py:class:: IMU(**kwargs)
-
-   :param kwargs kwargs: keyword arguments
-	      
-   :py:class:`rcpy.mpu9250.imu` represents the MPU-9250 in the Robotics Cape or Beaglebone Blue.
-
-   Any keyword accepted by :py:func:`rcpy.mpu9250.initialize` can be given.
-       
-   .. py:method:: set(**kwargs)
-            
-      :param kwargs kwargs: keyword arguments
-			 
-      Set current MPU-9250 parameters.
-
-      Any keyword accepted by :py:func:`rcpy.mpu9250.initialize` can be given.
-      
-   .. py:method:: read()
-            
-      :returns: dictionary with current MPU-9250 measurements
-
-      Dictionary is constructed as in :py:func:`rcpy.mpu9250.read`.
-
-Low-level functions
-^^^^^^^^^^^^^^^^^^^
-
-.. py:function:: initialize(accel_fsr, gyro_fsr, accel_dlpf, gyro_dlpf, enable_magnetometer, orientation, compass_time_constant, dmp_interrupt_priority, dmp_sample_rate, show_warnings, enable_dmp, enable_fusion)
-
-   :param int accel_fsr: accelerometer full scale
-   :param int gyro_fsr: gyroscope full scale
-   :param int accel_dlpf: accelerometer low-pass filter
-   :param int gyro_dlpf: gyroscope low-pass filter
-   :param bool enable_magnetometer: :py:data:`True` enables the magnetometer
-   :param int orientation: imu orientation
-   :param float compass_time_constant: compass time-constant
-   :param int dmp_interrupt_priority: DMP interrupt priority
-   :param int dmp_sample_rate: DMP sample rate
-   :param int show_warnings: :py:data:`True` shows warnings
-   :param bool enable_dmp: :py:data:`True` enables the DMP
-   :param bool enable_fusion: :py:data:`True` enables data fusion algorithm
-
-   Configure and initialize the MPU-9250.
-
-   All parameters are optional. Default values are obtained by calling
-   the :c:func:`rc_get_default_imu_config` from the Robotics Cape
-   library.
-   
-.. py:function:: power_off()
-
-   Powers off the MPU-9250
-		 
-.. py:function:: read_accel_data()
-
-   :returns: list with three-axis acceleration in m/s :math:`\!^2`
-
-   This function forces the MPU-9250 registers to be read.
-	     
-.. py:function:: read_gyro_data()
-
-   :returns: list with three-axis angular velocities in deg/s
-	     
-   This function forces the MPU-9250 registers to be read.
-   
-.. py:function:: read_mag_data()
-
-   :raises mup9250Error: if magnetometer is disabled
-			 
-   :returns: list with 3D magnetic field vector in :math:`\mu\!` T
-   
-   This function forces the MPU-9250 registers to be read.
-   
-.. py:function:: read_imu_temp()
-
-   :returns: the imu temperature in deg C
-
-   This function forces the MPU-9250 registers to be read.
-   
-.. py:function:: read()
-
-   :returns: dictionary with the imu data; the keys in the dictionary depend on the current configuration
-	     
-   If the magnetometer is *enabled* the dictionary contains the
-   following keys:
-   
-   * **accel**: 3-axis accelerations (m/s :math:`\!^2`)
-   * **gyro**: 3-axis angular velocities (degree/s)
-   * **mag**: 3D magnetic field vector in (:math:`\mu\!` T)
-   * **quat**: orientation quaternion 
-   * **tb**: pitch/roll/yaw X/Y/Z angles (radians)
-   * **head**: heading from magnetometer (radians)
-
-   If the magnetometer is *not enabled* the keys **mag** and **head**
-   are not present.
-
-   This function forces the MPU-9250 registers to be read only if the
-   DMP is disabled. Otherwise it returns the latest DMP data. It is a
-   blocking call.
