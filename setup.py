@@ -36,7 +36,7 @@ def readme():
 setup(
 
     name="rcpy",
-    version="0.4.0",
+    version="0.5.0",
     packages=find_packages(),
     python_requires='>=3.4',
 
@@ -59,7 +59,7 @@ setup(
     keywords= ["Robotics Cape", "Beaglebone Black", "Beaglebone Blue"],
 
     url = "https://github.com/mcdeoliveira/rcpy",
-    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.4.tar.gz",
+    download_url = "https://github.com/mcdeoliveira/rcpy/archive/0.5.tar.gz",
 
     classifiers=[
         'Development Status :: 3 - Alpha',
