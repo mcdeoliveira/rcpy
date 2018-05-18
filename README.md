@@ -17,6 +17,7 @@ Not all functions are supported. Currently supported functions are:
 5. LEDs
 6. Buttons
 7. GPIO inputs
+8. ADCs
 
 You might also be interested in the `pyctrl` package
 ([github](https://github.com/mcdeoliveira/pyctrl),

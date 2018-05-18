@@ -18,6 +18,7 @@ Not all functions are supported. Currently supported functions are:
 5. LEDs
 6. Buttons
 7. GPIO inputs
+8. ADCs
 
 You might also be interested in the ``pyctrl`` package
 (`github <https://github.com/mcdeoliveira/pyctrl>`__,
@@ -65,6 +66,38 @@ to install python3 and pip3.
 Installation
 ------------
 
+Starting with version 0.5, `rcpy` relies on `libgpiod
+<https://github.com/brgl/libgpiod>`__ for its gpio access. As of now,
+you have to manually install this library as follows.
+
+Install some dependencies used by autoconf
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+
+    sudo apt install autoconf-archive
+
+Clone repo, build and make
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+   
+    git clone https://github.com/brgl/libgpiod
+    cd libgpiod
+    ./autogen.sh --enable-tools=yes --enable-bindings-python --prefix=/usr/local
+    make
+    sudo make install
+
+Move packages to /usr/local/lib/python3.5/dist-packages
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+::
+   
+    sudo mv /usr/local/lib/python3.5/site-packages/* /usr/local/lib/python3.5/dist-packages/.
+
+Install from PyPI
+^^^^^^^^^^^^^^^^^
+
 Starting with version 0.3, ``rcpy`` is available from
 `PyPI <https://pypi.python.org/pypi?:action=display&name=rcpy>`__. Just
 type
@@ -73,7 +106,7 @@ type
 
     sudo pip3 install rcpy
 
-to download and install.
+to download and complete installation.
 
 Documentation:
 --------------
