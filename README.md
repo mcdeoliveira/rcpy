@@ -1,38 +1,32 @@
-# rcpy: Python 3 Interface for the Robotics Cape on the Beaglebone Black and the Beaglebone Blue
+rcpy: Python 3 Interface for the Robotics Cape on the Beaglebone Black and the Beaglebone Blue
+==============================================================================================
 
 **Release 0.5**
 
-This is a Python library with bindings for some of the functionality
-of the
-[Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
+This is a Python library with bindings for some of the functionality of the [Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer).
 
 We only support Python 3, and are not interested in Python 2 at all.
 
 Not all functions are supported. Currently supported functions are:
 
-1. MPU9250
-2. PWM motors
-3. Servos and ESCs
-4. Encoders
-5. LEDs
-6. Buttons
-7. GPIO inputs
-8. ADCs
+1.  MPU9250
+2.  PWM motors
+3.  Servos and ESCs
+4.  Encoders
+5.  LEDs
+6.  Buttons
+7.  GPIO inputs
+8.  ADCs
 
-You might also be interested in the `pyctrl` package
-([github](https://github.com/mcdeoliveira/pyctrl),
-[PyPI](https://pypi.python.org/pypi?:action=display&name=pyctrl)).
+You might also be interested in the `pyctrl` package ([github](https://github.com/mcdeoliveira/pyctrl), [PyPI](https://pypi.python.org/pypi?:action=display&name=pyctrl)).
 
-## Preliminaries
+Preliminaries
+-------------
 
-You will need the
-[Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer)
-version 0.3.4 or higher. Depending on the image you have on your
-Beaglebone Black or Blue it might already be installed! You can check
-if it is installed and the current version by running
+You will need the [Robotics Cape library](https://github.com/StrawsonDesign/Robotics_Cape_Installer) version 0.3.4 or higher. Depending on the image you have on your Beaglebone Black or Blue it might already be installed! You can check if it is installed and the current version by running
 
     rc_version
-	
+
 on your Beaglebone. If the command `rc_version` is not found type
 
     sudo apt-get update
@@ -43,29 +37,24 @@ to install or
     sudo apt-get update
     sudo apt-get upgrade roboticscape
 
-to upgrade from an older version. For more details see these
-[instructions](http://strawsondesign.com/#!manual-install).
+to upgrade from an older version. For more details see these [instructions](http://strawsondesign.com/#!manual-install).
 
-You must also have python3 installed. If you have not installed
-python3 yet type
+You must also have python3 installed. If you have not installed python3 yet type
 
     sudo apt install python3 python3-pip
 
 to install python3 and pip3.
 
-## Installation
+Installation
+------------
 
-### Dependency on libgpiod
+Starting with version 0.5, rcpy relies on [libgpiod](https://github.com/brgl/libgpiod) for its gpio access. As of now, you have to manually install this library as follows.
 
-Starting with version 0.5, `rcpy` relies on `libgpiod` for its gpio
-access. As of now, you have to manually install this library as
-follows.
-
-#### Install some dependencies used by autoconf
+### Install some dependencies used by autoconf
 
     sudo apt install autoconf-archive
 
-#### Clone repo, build and make
+### Clone repo, build and make
 
     git clone https://github.com/brgl/libgpiod
     cd libgpiod
@@ -73,26 +62,25 @@ follows.
     make
     sudo make install
 
-#### Move packages to /usr/local/lib/python3.5/dist-packages
+### Move packages to /usr/local/lib/python3.5/dist-packages
 
     sudo mv /usr/local/lib/python3.5/site-packages/* /usr/local/lib/python3.5/dist-packages/.
 
 ### Install from PyPI
 
-Starting with version 0.3, `rcpy` is available from
-[PyPI](https://pypi.python.org/pypi?:action=display&name=rcpy). Just
-type
+Starting with version 0.3, `rcpy` is available from [PyPI](https://pypi.python.org/pypi?:action=display&name=rcpy). Just type
 
     sudo pip3 install rcpy
-	
-to download and install.
 
-## Documentation:
+to download and complete installation.
 
-* [HTML](http://guitar.ucsd.edu/rcpy/html/index.html)
+Documentation:
+--------------
 
-* [PDF](http://guitar.ucsd.edu/rcpy/rcpy.pdf)
-  
-## Author:
+-   [HTML](http://guitar.ucsd.edu/rcpy/html/index.html)
+-   [PDF](http://guitar.ucsd.edu/rcpy/rcpy.pdf)
+
+Author:
+-------
 
 [Mauricio C. de Oliveira](http://control.ucsd.edu/mauricio)
