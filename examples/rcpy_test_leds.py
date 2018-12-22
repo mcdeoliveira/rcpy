@@ -8,8 +8,8 @@ ON = 1
 OFF = 0
 
 # blink leds
-green = led.LED(0,ON)
-red = led.LED(1,OFF)
+green = led.LED(2,3,ON)
+red = led.LED(2,2,OFF)
 
 
 # set state to rcpy.RUNNING
