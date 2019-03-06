@@ -91,7 +91,7 @@ def main():
     # magnetometer ?
     mpu9250.initialize(enable_dmp=True,
                        dmp_sample_rate=sample_rate,
-                       dmp_fetch_accel_gyro=True,
+                       # dmp_fetch_accel_gyro=True,
                        enable_fusion=enable_fusion,
                        enable_magnetometer=enable_magnetometer)
 
