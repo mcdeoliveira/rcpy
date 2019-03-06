@@ -108,6 +108,9 @@ PyMODINIT_FUNC PyInit__mpu9250(void)
   /* set default parameters for imu */
   imu_conf = rc_mpu_default_config();
 
+  /* override dmp_fetch_accel_gryo */
+  imu_conf.dmp_fetch_accel_gyro = 1;
+
   return m;
 }
 
@@ -128,6 +131,7 @@ PyObject *mpu9250_initialize(PyObject *self,
     "compass_time_constant",  /* float */
     "dmp_interrupt_priority", /* int */
     "dmp_sample_rate",        /* int */
+    "dmp_fetch_accel_gyro",   /* int */
     "show_warnings",          /* int */
     "enable_dmp",             /* int */
     "enable_fusion",          /* int */
@@ -137,7 +141,7 @@ PyObject *mpu9250_initialize(PyObject *self,
   PyObject *ret;
 
   /* Parse parameters */
-  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "|iiiiiifiiiii", kwlist,
+  if (! PyArg_ParseTupleAndKeywords(args, kwargs, "|iiiiiifiiiiii", kwlist,
 				    &imu_conf.accel_fsr,              /* rc_accel_fsr_t (int) */
 				    &imu_conf.gyro_fsr,               /* rc_gyro_fsr_t (int) */
 				    &imu_conf.accel_dlpf,             /* rc_accel_dlpf_t (int) */
@@ -147,6 +151,7 @@ PyObject *mpu9250_initialize(PyObject *self,
 				    &imu_conf.compass_time_constant,  /* float */
 				    &imu_conf.dmp_interrupt_priority, /* int */
 				    &imu_conf.dmp_sample_rate,        /* int */
+				    &imu_conf.dmp_fetch_accel_gyro,   /* int */
 				    &imu_conf.show_warnings,          /* int */
 				    &imu_enable_dmp,                  /* int */
 				    &imu_enable_fusion                /* int */ )) {
@@ -202,7 +207,7 @@ PyObject *mpu9250_get(PyObject *self)
 
   /* Build the output tuple */
   PyObject *ret =
-    Py_BuildValue("{sisisisisisfsisisOsOsOsO}",
+    Py_BuildValue("{sisisisisisfsisisOsOsOsOsO}",
 		  "accel_fsr",
 		  imu_conf.accel_fsr,
 		  "gyro_fsr",
@@ -219,6 +224,8 @@ PyObject *mpu9250_get(PyObject *self)
 		  imu_conf.dmp_interrupt_priority,
 		  "dmp_sample_rate",
 		  imu_conf.dmp_sample_rate,
+		  "dmp_fetch_accel_gyro",
+		  imu_conf.dmp_fetch_accel_gyro ? Py_True : Py_False,
 		  "enable_magnetometer",
 		  imu_conf.enable_magnetometer ? Py_True : Py_False,
 		  "show_warnings",

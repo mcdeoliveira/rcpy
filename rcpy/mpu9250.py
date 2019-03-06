@@ -27,14 +27,15 @@ GYRO_DLPF_20 = 4
 GYRO_DLPF_10 = 5
 GYRO_DLPF_5 = 6
 
-ORIENTATION_Z_UP	= 136,
-ORIENTATION_Z_DOWN	= 396,
-ORIENTATION_X_UP	= 14,
-ORIENTATION_X_DOWN	= 266,
-ORIENTATION_Y_UP	= 112,
-ORIENTATION_Y_DOWN	= 336,
-ORIENTATION_X_FORWARD	= 133,
-ORIENTATION_X_BACK	= 161
+ORIENTATION_Z_UP = 136,
+ORIENTATION_Z_DOWN = 396,
+ORIENTATION_X_UP = 14,
+ORIENTATION_X_DOWN = 266,
+ORIENTATION_Y_UP = 112,
+ORIENTATION_Y_DOWN = 336,
+ORIENTATION_X_FORWARD = 133,
+ORIENTATION_X_BACK = 161
+
 
 # Uses Alex Martelli's Borg for making MPU9250 a singleton
 
@@ -66,7 +67,7 @@ class IMU():
         # gyro_dlpf
         self.gyro_dlpf = kwargs.pop('gyro_dlpf', defaults['gyro_dlpf'])
 
-        # enable_magnetometer 
+        # enable_magnetometer
         self.enable_magnetometer = kwargs.pop('enable_magnetometer',
                                               defaults['enable_magnetometer'])
 
@@ -84,7 +85,11 @@ class IMU():
         # dmp_sample_rate
         self.dmp_sample_rate = kwargs.pop('dmp_sample_rate',
                                           defaults['dmp_sample_rate'])
-        
+
+        # dmp_fetch_accel_gyro
+        self.dmp_fetch_accel_gyro = kwargs.pop('dmp_fetch_accel_gyro',
+                                               defaults['dmp_fetch_accel_gyro'])
+
         # show_warnings
         self.show_warnings = kwargs.pop('show_warnings',
                                         defaults['show_warnings'])
@@ -98,18 +103,19 @@ class IMU():
                                         defaults['enable_fusion'])
 
         # call mpu9250 initialize
-        initialize(accel_fsr = self.accel_fsr,
-                   gyro_fsr = self.gyro_fsr,
-                   accel_dlpf = self.accel_dlpf,
-                   gyro_dlpf = self.gyro_dlpf,
-                   enable_magnetometer = self.enable_magnetometer,
-                   orientation = self.orientation,
-                   compass_time_constant = self.compass_time_constant,
-                   dmp_interrupt_priority = self.dmp_interrupt_priority,
-                   dmp_sample_rate = self.dmp_sample_rate,
-                   show_warnings = self.show_warnings,
-                   enable_dmp = self.enable_dmp,
-                   enable_fusion = self.enable_fusion)
+        initialize(accel_fsr=self.accel_fsr,
+                   gyro_fsr=self.gyro_fsr,
+                   accel_dlpf=self.accel_dlpf,
+                   gyro_dlpf=self.gyro_dlpf,
+                   enable_magnetometer=self.enable_magnetometer,
+                   orientation=self.orientation,
+                   compass_time_constant=self.compass_time_constant,
+                   dmp_interrupt_priority=self.dmp_interrupt_priority,
+                   dmp_sample_rate=self.dmp_sample_rate,
+                   dmp_fetch_accel_gyro=self.dmp_fetch_accel_gyro,
+                   show_warnings=self.show_warnings,
+                   enable_dmp=self.enable_dmp,
+                   enable_fusion=self.enable_fusion)
 
         # initialize data
         self.data = {}
@@ -151,7 +157,11 @@ class IMU():
         # dmp_sample_rate
         if 'dmp_sample_rate' in kwargs:
             self.dmp_sample_rate = kwargs.pop('dmp_sample_rate')
-        
+
+        # dmp_fetch_accel_gyro
+        if 'dmp_fetch_accel_gyro' in kwargs:
+            self.dmp_fetch_accel_gyro = kwargs.pop('dmp_fetch_accel_gyro')
+
         # show_warnings
         if 'show_warnings' in kwargs:
             self.show_warnings = kwargs.pop('show_warnings')
@@ -165,18 +175,19 @@ class IMU():
             self.enable_fusion = kwargs.pop('enable_fusion')
 
         # call mpu9250 initialize
-        initialize(accel_fsr = self.accel_fsr,
-                   gyro_fsr = self.gyro_fsr,
-                   accel_dlpf = self.accel_dlpf,
-                   gyro_dlpf = self.gyro_dlpf,
-                   enable_magnetometer = self.enable_magnetometer,
-                   orientation = self.orientation,
-                   compass_time_constant = self.compass_time_constant,
-                   dmp_interrupt_priority = self.dmp_interrupt_priority,
-                   dmp_sample_rate = self.dmp_sample_rate,
-                   show_warnings = self.show_warnings,
-                   enable_dmp = self.enable_dmp,
-                   enable_fusion = self.enable_fusion)
+        initialize(accel_fsr=self.accel_fsr,
+                   gyro_fsr=self.gyro_fsr,
+                   accel_dlpf=self.accel_dlpf,
+                   gyro_dlpf=self.gyro_dlpf,
+                   enable_magnetometer=self.enable_magnetometer,
+                   orientation=self.orientation,
+                   compass_time_constant=self.compass_time_constant,
+                   dmp_interrupt_priority=self.dmp_interrupt_priority,
+                   dmp_sample_rate=self.dmp_sample_rate,
+                   dmp_fetch_accel_gyro=self.dmp_fetch_accel_gyro,
+                   show_warnings=self.show_warnings,
+                   enable_dmp=self.enable_dmp,
+                   enable_fusion=self.enable_fusion)
     
     def read(self):
 
