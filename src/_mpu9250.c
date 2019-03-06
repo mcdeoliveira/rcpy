@@ -204,7 +204,7 @@ PyObject *mpu9250_get(PyObject *self)
 
   /* Build the output tuple */
   PyObject *ret =
-    Py_BuildValue("{sisisisisisfsisisisOsOsOsO}",
+    Py_BuildValue("{sisisisisisfsisisOsOsOsOsO}",
 		  "accel_fsr",
 		  imu_conf.accel_fsr,
 		  "gyro_fsr",
@@ -222,7 +222,7 @@ PyObject *mpu9250_get(PyObject *self)
 		  "dmp_sample_rate",
 		  imu_conf.dmp_sample_rate,
 		  "dmp_fetch_accel_gyro",
-		  imu_conf.dmp_fetch_accel_gyro,
+		  imu_conf.dmp_fetch_accel_gyro ? Py_True : Py_False,
 		  "enable_magnetometer",
 		  imu_conf.enable_magnetometer ? Py_True : Py_False,
 		  "show_warnings",
