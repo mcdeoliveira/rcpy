@@ -1,11 +1,13 @@
 import rcpy
+import rcpy.action
 from . import clock
 from . import gpio
 
-import threading, time
+import time
 
 ON = 1
 OFF = 0
+
 
 class Blink(clock.Clock):
 
@@ -23,7 +25,8 @@ class Blink(clock.Clock):
         time.sleep(2*self.period)
         self.action.off()
 
-class LED(clock.Action):
+
+class LED(rcpy.action.Action):
 
     def __init__(self, chip, line, state = OFF):
 

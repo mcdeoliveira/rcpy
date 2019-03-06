@@ -1,12 +1,12 @@
-import warnings
+import atexit
+import os
 import signal
-import sys, os, time
+import warnings
 
-from rcpy._rcpy import get_state
 from rcpy._rcpy import set_state as _set_state
 
-#from hanging_threads import start_monitoring
-#monitoring_thread = start_monitoring()
+# from hanging_threads import start_monitoring
+# monitoring_thread = start_monitoring()
 
 # constants
 IDLE = 0
@@ -17,21 +17,25 @@ EXITING = 3
 # create pipes for communicating state
 _RC_STATE_PIPE_LIST = []
 
+
 def _get_state_pipe_list(p = _RC_STATE_PIPE_LIST):
     return p
+
 
 # creates pipes for communication
 
 def create_pipe():
     r_fd, w_fd = os.pipe()
     _get_state_pipe_list().append((r_fd, w_fd))
-    return (r_fd, w_fd)
+    return r_fd, w_fd
+
 
 def destroy_pipe(pipe):
     _get_state_pipe_list().remove(pipe)
     (r_fd, w_fd) = pipe
     os.close(r_fd)
     os.close(w_fd)
+
 
 # set state
 def set_state(state):
@@ -41,13 +45,16 @@ def set_state(state):
     # call robotics cape set_state
     _set_state(state)
 
+
 # cleanup function
 _CLEANUP_FLAG = False
 _cleanup_functions = {}
 
+
 def add_cleanup(fun, pars):
     global _cleanup_functions
     _cleanup_functions[fun] = pars
+
 
 def cleanup():
     global _CLEANUP_FLAG
@@ -79,21 +86,26 @@ def cleanup():
 
     print('Done with cleanup')
 
+
 # idle function
 def idle():
     set_state(IDLE)
+
 
 # run function
 def run():
     set_state(RUNNING)
 
+
 # pause function
 def pause():
     set_state(PAUSED)
 
+
 # exit function
 def exit():
     set_state(EXITING)
+
 
 # cleanup handler
 def handler(signum, frame):
@@ -111,12 +123,13 @@ def handler(signum, frame):
 
     raise KeyboardInterrupt()
 
+
 # set initial state
 set_state(PAUSED)
 warnings.warn('> Robotics cape initialized')
 
 # make sure it is disabled when exiting cleanly
-import atexit; atexit.register(cleanup)
+atexit.register(cleanup)
 
 if 'RCPY_NO_HANDLERS' in os.environ:
     warnings.warn('> RCPY_NO_HANDLERS is set. User is responsible for handling signals')

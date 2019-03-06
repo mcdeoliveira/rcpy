@@ -8,11 +8,13 @@ import getopt, sys
 import rcpy 
 import rcpy.mpu9250 as mpu9250
 
+
 def usage():
     print("""usage: python rcpy_test_imu [options] ...
 Options are:
 -m          enable magnetometer
 -h          print this help message""")
+
 
 def main():
 
@@ -95,7 +97,8 @@ def main():
         # say bye
         print("\nBye Beaglebone!")
             
-# exiting program will automatically clean up cape
+    # exiting program will automatically clean up cape
+
 
 if __name__ == "__main__":
     main()

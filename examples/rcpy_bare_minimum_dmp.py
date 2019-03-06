@@ -54,4 +54,4 @@ finally:
     # say bye
     print("\nBye Beaglebone!")
             
-# exiting program will automatically clean up cape
+    # exiting program will automatically clean up cape

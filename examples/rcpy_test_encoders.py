@@ -8,11 +8,13 @@ import getopt, sys
 import rcpy
 import rcpy.encoder as encoder
 
+
 def usage():
     print("""usage: python rcpy_test_encoders [options] ...
 Options are:
 -e encoder  specify a single encoder from 1-4, 0 for all channels
 -h          print this help message""")
+
 
 def main():
 
@@ -92,7 +94,8 @@ def main():
         # say bye
         print("\nBye Beaglebone!")
 
-# exiting program will automatically clean up cape
+    # exiting program will automatically clean up cape
+
 
 if __name__ == "__main__":
     main()

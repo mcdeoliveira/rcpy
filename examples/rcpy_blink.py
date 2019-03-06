@@ -20,6 +20,7 @@ blink_green.start()
 # set state to rcpy.RUNNING
 rcpy.set_state(rcpy.RUNNING)
 
+
 # mode pressed?
 def mode_pressed(input, event, blink_red, blink_green, rates):
 
@@ -36,6 +37,7 @@ def mode_pressed(input, event, blink_red, blink_green, rates):
     # reinitialize leds
     led.red.on()
     led.green.off()
+
 
 # create and start ButtonEvent
 mode_event = button.ButtonEvent(button.mode,
@@ -92,4 +94,4 @@ finally:
     
     # say bye
     print("\nBye Beaglebone!")
-            
+

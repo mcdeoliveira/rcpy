@@ -6,6 +6,7 @@
 import rcpy
 import rcpy.adc as adc
 
+
 def adc_test():
     # Read ADC channels via function calls.
     for ch in range(adc.CHANNEL_COUNT):
@@ -30,7 +31,8 @@ def adc_test():
     battery_voltage = adc.battery.get_voltage()
     print("dc-jack : voltage={:+6.2f}".format(dc_jack_voltage))
     print("battery : voltage={:+6.2f}".format(battery_voltage))
-        
+
+
 if __name__ == "__main__":
     adc_test()
 

@@ -1,12 +1,12 @@
 import rcpy
 from rcpy._servo import *
-import rcpy.clock as clock
 
-import threading, time
+import rcpy.action as action
 
-class Servo(clock.Action):
 
-    def __init__(self, channel, duty = 0):
+class Servo(action.Action):
+
+    def __init__(self, channel, duty=0):
         self.channel = channel
         self.duty = duty
 
@@ -25,6 +25,7 @@ class Servo(clock.Action):
         thread.start()
         return thread
 
+
 class ESC(Servo):
 
     def pulse(self, duty):
@@ -34,6 +35,7 @@ class ESC(Servo):
     def run(self):
         esc_pulse(self.channel, self.duty)
     
+
 # define servos
 servo1 = Servo(1)
 servo2 = Servo(2)

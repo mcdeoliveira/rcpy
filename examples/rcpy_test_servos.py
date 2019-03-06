@@ -9,6 +9,7 @@ import rcpy
 import rcpy.servo as servo
 import rcpy.clock as clock
 
+
 def usage():
     print("""usage: python rcpy_test_servos [options] ...
 Options are:
@@ -17,6 +18,7 @@ Options are:
 -s          sweep servos back and forward at duty cycle
 -t period   period
 -h          print this help message""")
+
 
 def main():
 
@@ -136,7 +138,8 @@ def main():
         # say bye
         print("\nBye Beaglebone!")
             
-# exiting program will automatically clean up cape
+    # exiting program will automatically clean up cape
+
 
 if __name__ == "__main__":
     main()

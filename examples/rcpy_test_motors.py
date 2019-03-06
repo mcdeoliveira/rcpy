@@ -8,6 +8,7 @@ import getopt, sys
 import rcpy 
 import rcpy.motor as motor
 
+
 def usage():
     print("""usage: python rcpy_test_motors [options] ...
 Options are:
@@ -19,6 +20,7 @@ Options are:
 -n          number of steps per sweep (default = 20)
 -t          period of sweep (default = 4s)
 -h          print this help message""")
+
 
 def main():
 
@@ -143,7 +145,8 @@ def main():
         # say bye
         print("\nBye Beaglebone!")
             
-# exiting program will automatically clean up cape
+    # exiting program will automatically clean up cape
+
 
 if __name__ == "__main__":
     main()

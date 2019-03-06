@@ -1,11 +1,12 @@
 import pytest
 
+import rcpy.action
 import rcpy.clock as clock
 import time
 
 def test1():
 
-    class MyAction(clock.Action):
+    class MyAction(rcpy.action.Action):
 
         def __init__(self):
             self.count = 0

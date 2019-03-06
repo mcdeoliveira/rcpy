@@ -1,9 +1,11 @@
 import rcpy
 from rcpy._adc import *
 
-CHANNEL_COUNT   = 7
-CHANNEL_MIN     = 0
-CHANNEL_MAX     = 6
+
+CHANNEL_COUNT = 7
+CHANNEL_MIN = 0
+CHANNEL_MAX = 6
+
 
 class ADC:
 
@@ -16,15 +18,18 @@ class ADC:
     def get_voltage(self):
         return get_voltage(self.channel)
 
+
 class DC_Jack:
 
     def get_voltage(self):
         return get_dc_jack_voltage()
 
+
 class Battery:
 
     def get_voltage(self):
         return get_battery_voltage()
+
 
 # define adcs
 adc0 = ADC(0)
@@ -41,4 +46,3 @@ adc = [ adc0, adc1, adc2, adc3, adc4, adc5, adc6 ]
 dc_jack = DC_Jack()
 
 battery = Battery()
-

@@ -39,7 +39,7 @@ ORIENTATION_X_BACK = 161
 
 # Uses Alex Martelli's Borg for making MPU9250 a singleton
 
-class IMU():
+class IMU:
 
     _shared_state = {}
 

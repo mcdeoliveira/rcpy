@@ -8,18 +8,14 @@ ON = 1
 OFF = 0
 
 # blink leds
-green = led.LED(2,3,ON)
-red = led.LED(2,2,OFF)
-
+green = led.LED(2, 3, ON)
+red = led.LED(2, 2, OFF)
 
 # set state to rcpy.RUNNING
 rcpy.set_state(rcpy.RUNNING)
 
-
-
 # welcome message
 print("Green and red LEDs should be flashing")
-
 
 try:
 

@@ -1,6 +1,7 @@
 import rcpy
 from rcpy._encoder import *
 
+
 class Encoder:
 
     def __init__(self, channel, count = None):
@@ -18,6 +19,7 @@ class Encoder:
     def reset(self):
         set(self.channel, 0)
         
+
 # define leds
 encoder1 = Encoder(1)
 encoder2 = Encoder(2)

@@ -8,6 +8,7 @@ import threading
 import rcpy 
 import rcpy.mpu9250 as mpu9250
 
+
 # function to run on a thread
 def thread_function(imu, name):
 
@@ -25,6 +26,7 @@ def thread_function(imu, name):
     
         # there is no need to sleep
 
+
 # welcome message
 print("Hello BeagleBone!")
 print("Press Ctrl-C to exit")
@@ -38,9 +40,8 @@ imu = mpu9250.IMU(enable_dmp = True,
 rcpy.set_state(rcpy.RUNNING)
 
 # fire up threads
-threads = []
-threads.append(threading.Thread(target = thread_function, args = (imu, "#1")))
-threads.append(threading.Thread(target = thread_function, args = (imu, "#2")))
+threads = [threading.Thread(target=thread_function, args=(imu, "#1")),
+           threading.Thread(target=thread_function, args=(imu, "#2"))]
 for t in threads:
     t.start()
 
@@ -69,4 +70,4 @@ finally:
     # say bye
     print("\nBye Beaglebone!")
             
-# exiting program will automatically clean up cape
+    # exiting program will automatically clean up cape

@@ -1,6 +1,7 @@
 import rcpy
 from rcpy._motor import *
 
+
 class Motor:
 
     def __init__(self, channel, duty = None):
@@ -16,8 +17,9 @@ class Motor:
 
     def brake(self):
         set_brake(self.channel)
-        
-# define leds
+
+
+# define motors
 motor1 = Motor(1)
 motor2 = Motor(2)
 motor3 = Motor(3)

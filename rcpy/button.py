@@ -1,13 +1,11 @@
 import rcpy
 import rcpy.gpio as gpio
 
-import threading
-import time
-
 DEBOUNCE = 3
 PRESSED = gpio.LOW
 RELEASED = gpio.HIGH
-    
+
+
 class ButtonEvent(gpio.InputEvent):
 
     PRESSED = gpio.InputEvent.LOW
@@ -19,6 +17,7 @@ class ButtonEvent(gpio.InputEvent):
         super().__init__(input, event, debounce, timeout,
                          target, vargs, kwargs)
     
+
 class Button(gpio.Input):
 
     def is_pressed(self):
@@ -36,6 +35,7 @@ class Button(gpio.Input):
     def released(self, debounce = DEBOUNCE, timeout = None):
         return self.high(debounce, timeout)
         
+
 # definitions
 
 # BUTTONs
