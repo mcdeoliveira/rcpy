@@ -108,6 +108,9 @@ PyMODINIT_FUNC PyInit__mpu9250(void)
   /* set default parameters for imu */
   imu_conf = rc_mpu_default_config();
 
+  /* override dmp_fetch_accel_gryo */
+  imu_conf.dmp_fetch_accel_gyro = 1;
+
   return m;
 }
 

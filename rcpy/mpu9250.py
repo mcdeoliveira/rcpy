@@ -55,13 +55,6 @@ class IMU():
         # get defaults
         defaults = get()
 
-        # overide dmp_fetch_accel_gyro
-        if 'dmp_fetch_accel_gyro' not in kwargs:
-            print('Overiding dmp_fetch_accel_gyro = True')
-            defaults['dmp_fetch_accel_gyro'] = True
-        else:
-            print('dmp_fetch_accel_gyro = {}'.format(kwargs.get('dmp_fetch_accel_gyro')))
-
         # accel_fsr
         self.accel_fsr = kwargs.pop('accel_fsr', defaults['accel_fsr'])
 
