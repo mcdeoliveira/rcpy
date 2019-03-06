@@ -89,10 +89,11 @@ def main():
     rcpy.set_state(rcpy.RUNNING)
 
     # magnetometer ?
-    mpu9250.initialize(enable_dmp = True,
-                       dmp_sample_rate = sample_rate,
-                       enable_fusion = enable_fusion,
-                       enable_magnetometer = enable_magnetometer)
+    mpu9250.initialize(enable_dmp=True,
+                       dmp_sample_rate=sample_rate,
+                       dmp_fetch_accel_gyro=True,
+                       enable_fusion=enable_fusion,
+                       enable_magnetometer=enable_magnetometer)
 
     # message
     print("Press Ctrl-C to exit")
