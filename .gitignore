@@ -101,4 +101,6 @@ aed/settings.py
 # Object files
 *.o
 
+.idea
+
 python/source/mpu9150/test
